@@ -10,9 +10,9 @@ export async function getAllProducts() {
 
     const products: ProductType[] = await Product.find({});
 
-    if (!products) {
-      // return []
-      throw new Error("No products found");
+    if (!products || products.length === 0) {
+      // Error("No products found");
+      return [];
     }
 
     return products;

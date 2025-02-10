@@ -11,7 +11,7 @@ type Props = {
 const ProductCard: React.FC<Props> = ({ product }) => {
   return (
     <Link href={`/products/${product?.category}`}>
-      <Card className="bg-muted flex flex-col items-center max-w-[210px] max-h-[190px] lg:max-w-[280px] lg:max-h-[280px] px-3 py-4 transform transition-all duration-300 drop-shadow-md hover:scale-105 hover:shadow-lg">
+      <Card className="bg-muted flex flex-col items-center max-w-[210px] max-h-[190px] lg:max-w-[280px] lg:max-h-[280px] px-3 py-4 transform transition-all duration-300 drop-shadow-md hover:scale-105 hover:shadow-lg hover:shadow-primary/50">
         <CardHeader className="text-primary text-lg text-center font-medium min-h-[60px] p-1 transition-all duration-300 hover:tracking-widest">
           {product.category}
         </CardHeader>

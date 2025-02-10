@@ -20,6 +20,10 @@ const connectDB = async () => {
       console.log("Failed to connect to MongoDB", error);
       throw new Error("Failed to connect to MongoDB");
     }
+    // finally {
+    //   isConnected = false;
+    //   await mongoose.disconnect();
+    // }
   } else {
     console.log(" ⚠️ MongoDB is already connected ⚠️ ");
     return;
