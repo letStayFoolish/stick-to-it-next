@@ -1,6 +1,6 @@
 import React from "react";
 import LogoComponent from "@/components/LogoComponent";
-import SidebarWeb from "@/components/SidebarWeb";
+import SidebarWeb from "@/components/Sidebar/SidebarWeb";
 
 const Sidebar: React.FC = () => {
   return (

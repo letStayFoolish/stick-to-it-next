@@ -1,5 +1,5 @@
 import React from "react";
-import SideBarMobile from "@/components/SideBarMobile";
+import SidebarMobile from "@/components/Sidebar/SidebarMobile";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,7 +15,7 @@ import { CircleUser } from "lucide-react";
 const Header = () => {
   return (
     <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
-      <SideBarMobile />
+      <SidebarMobile />
       <div className="w-full flex-1">{/*  PLACEHOLDER SEARCH INPUT*/}</div>
       <ModeToggle />
       <DropdownMenu>

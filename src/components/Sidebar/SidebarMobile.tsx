@@ -1,7 +1,13 @@
 "use client";
 
 import React from "react";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { LogOut, Menu, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -9,7 +15,7 @@ import { cn } from "@/lib/utils";
 import { routes } from "@/lib/routes";
 import { usePathname } from "next/navigation";
 
-const SideBarMobile: React.FC = () => {
+const SidebarMobile: React.FC = () => {
   const pathname = usePathname();
 
   return (
@@ -21,6 +27,9 @@ const SideBarMobile: React.FC = () => {
         </Button>
       </SheetTrigger>
       <SheetContent side="left" className="flex flex-col">
+        <SheetHeader>
+          <SheetTitle>Navigation Menu</SheetTitle>
+        </SheetHeader>
         {/* ================================================ */}
         {/* MOBILE SIDEBAR MENU*/}
         <nav className="grid gap-2 text-lg font-medium">
@@ -65,4 +74,4 @@ const SideBarMobile: React.FC = () => {
   );
 };
 
-export default SideBarMobile;
+export default SidebarMobile;

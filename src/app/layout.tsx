@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   },
   description:
     "Stick To It Web Application To search and add groceries to your shopping (todo) shopping-list.",
-  keywords: ["groceries", "shopping-list", "todo", "list"],
+  keywords: ["groceries", "shopping list", "todo", "list"],
   applicationName: "Stick To It",
   authors: { name: "Nemanja Karaklajic" },
 };

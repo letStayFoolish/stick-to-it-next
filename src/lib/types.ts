@@ -10,3 +10,25 @@ export interface Product {
   category: string;
   isLiked?: boolean;
 }
+
+export type CategoriesType =
+  | "bakery"
+  | "vegetables"
+  | "fruits"
+  | "meat"
+  | "milk-eggs-cheese"
+  | "water-juice"
+  | "fish"
+  | "drinks"
+  | "chips-snacks"
+  | "sweets"
+  | "frozen"
+  | "pasta-cereals-flour"
+  | "oil-sauces-spices"
+  | "tea-coffee-cocoa"
+  | "cleaning"
+  | "house-kitchen"
+  | "canned-food"
+  | "health-beauty"
+  | "kids-parents"
+  | "animals";

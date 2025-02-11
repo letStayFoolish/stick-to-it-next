@@ -1,11 +1,12 @@
 import React from "react";
+import { FaCartShopping } from "react-icons/fa6";
 
 const LoadingDots: React.FC = () => {
   return (
     <div className="fixed inset-0 flex items-center justify-center flex-1 w-full space-x-2 bg-background">
       <span className="sr-only">Loading...</span>
       <div className="flex items-center text-lg font-semibold md:text-base mr-12">
-        {/*<FaCartShopping className="h-8 w-auto" />*/}
+        <FaCartShopping className="h-8 w-auto" />
         <span className="hidden md:block lg:text-xl font-bold ml-2">
           Stick To It
         </span>

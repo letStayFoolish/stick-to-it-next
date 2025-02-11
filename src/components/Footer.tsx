@@ -18,7 +18,7 @@ const Footer: React.FC = () => {
       <div className="w-full flex flex-col md:flex-row items-center justify-between">
         <div className="hidden md:flex items-center gap-2 mb-4 md:mb-0">
           <ShoppingCart />
-          <span className="sr-only">Stick To It!</span>
+          <span className="sr-only">Stick To It</span>
         </div>
 
         <div className="flex w-full md:hidden flex-wrap items-center  md:justify-start mb-4 md:mb-0 ">
@@ -50,7 +50,7 @@ const Footer: React.FC = () => {
 
         <div>
           <p className="text-sm text-secondary-foreground mt-2 md:mt-0 text-center">
-            &copy; {yearInFooter()} Footer Text...
+            &copy; {yearInFooter()} by Nemanja Karaklajic
           </p>
         </div>
       </div>
