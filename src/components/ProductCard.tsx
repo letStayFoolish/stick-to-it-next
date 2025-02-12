@@ -3,7 +3,7 @@ import { Product } from "@/lib/types";
 import Link from "next/link";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import Image from "next/image";
-import { handleSpacesInProductName } from "@/lib/utils";
+import { handleProductName } from "@/lib/utils";
 
 type Props = {
   product: Product;
@@ -19,7 +19,7 @@ const ProductCard: React.FC<Props> = ({ product }) => {
             width: "100%", // Ensures consistent width
           }}
         >
-          {handleSpacesInProductName(product.category)}
+          {handleProductName(product.category)}
         </CardHeader>
         <CardContent className="p-2 transition-transform duration-500">
           <Image

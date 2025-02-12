@@ -5,7 +5,7 @@ import { fetchProductsFromCategory } from "@/lib/actions";
 import GoToPage from "@/components/GoToPage";
 import NoData from "@/components/ui/NoData";
 import ProductItem from "@/components/ProductItem";
-import { convertObjectIdToPlainValues } from "@/lib/utils";
+import { convertObjectIdToPlainValues, handleProductName } from "@/lib/utils";
 
 const ProductList: React.FC<ComponentPropsWithParams> = async ({ params }) => {
   const { slug } = await params;
@@ -14,11 +14,13 @@ const ProductList: React.FC<ComponentPropsWithParams> = async ({ params }) => {
 
   const plainProducts = convertObjectIdToPlainValues(products);
 
+  const heading: string = handleProductName(slug as CategoriesType);
+
   return (
     <div className="flex flex-col items-center mt-6 p-4 ">
       <div className="flex md:flex-col gap-4 items-center justify-between md:justify-center mx-auto w-full">
         <h2 className="font-extrabold text-start text-2xl md:text-3xl text-primary uppercase drop-shadow-md">
-          {slug as CategoriesType}
+          {heading}
         </h2>
         {products &&
           products

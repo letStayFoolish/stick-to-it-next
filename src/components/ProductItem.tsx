@@ -2,13 +2,13 @@
 import { Product as ProductType } from "@/lib/types";
 import React from "react";
 import { FaHeart, FaMinus, FaPlus } from "react-icons/fa6";
-import { handleSpacesInProductName } from "@/lib/utils";
 import {
   Button,
   Button as IncrementDecrementButton,
 } from "@/components/ui/button";
 import { ShoppingBasket } from "lucide-react";
 import { Tooltip as ReactTooltip } from "react-tooltip";
+import { handleProductName } from "@/lib/utils";
 
 type Props = {
   product: Omit<ProductType, "_id"> & { _id: string };
@@ -31,18 +31,18 @@ const ProductItem: React.FC<Props> = ({ product }) => {
         />
         <span
           data-tooltip-id="tooltip-allProducts"
-          data-tooltip-content={handleSpacesInProductName(product.product_name)}
+          data-tooltip-content={handleProductName(product.product_name)}
           className={`text-md lg:text-lg overflow-hidden overflow-ellipsis whitespace-nowrap inline-block ${
             isDetailedAddingModeVisible ? "w-[100px]" : "w-[200px]"
           } lg:w-full`}
         >
-          {handleSpacesInProductName(product.product_name)}
+          {handleProductName(product.product_name)}
           <ReactTooltip
             className="block sm:hidden"
             id="tooltip-allProducts"
             variant="dark"
             place="top-end"
-            content={handleSpacesInProductName(product.product_name)}
+            content={handleProductName(product.product_name)}
           />
         </span>
       </div>

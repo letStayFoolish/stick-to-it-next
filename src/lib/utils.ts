@@ -83,3 +83,11 @@ export const handleSpacesInProductName = (value: any) => {
 
   return value.trim();
 };
+
+export const handleProductName = (value: any) => {
+  if (value.includes("-")) {
+    return value.split("-").join(" ");
+  }
+
+  return value as string;
+};
