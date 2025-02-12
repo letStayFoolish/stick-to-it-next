@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import { FaList, FaRegHeart } from "react-icons/fa";
+import { FaHome, FaList } from "react-icons/fa";
 import { FaCartShopping, FaUserLarge } from "react-icons/fa6";
 import { ShoppingCart } from "lucide-react";
 
@@ -25,6 +25,11 @@ const Footer: React.FC = () => {
           {session && (
             <ul className="flex w-full justify-between text-2xl">
               <li className="hover:text-primary">
+                <Link href={"/"}>
+                  <FaHome />
+                </Link>
+              </li>
+              <li className="hover:text-primary">
                 <Link href={"/products"}>
                   <FaList />
                 </Link>
@@ -32,11 +37,6 @@ const Footer: React.FC = () => {
               <li className="hover:text-primary">
                 <Link href={"/shopping-list"}>
                   <FaCartShopping />
-                </Link>
-              </li>
-              <li className="hover:text-primary">
-                <Link href={"/favorites"}>
-                  <FaRegHeart />
                 </Link>
               </li>
               <li className="hover:text-primary">
