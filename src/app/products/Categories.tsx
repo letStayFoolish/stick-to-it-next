@@ -10,7 +10,7 @@ const Categories: React.FC = async () => {
   }
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 p-3 gap-2 md:gap-4 lg:gap-6 mb-4 lg:mb-12">
+    <div className="grid grid-cols-2 m-auto md:grid-cols-3 lg:grid-cols-3 gap-4 lg:gap-8 mb-4 mt-16 lg:mb-12">
       {Object.entries(productsByCategory).map(([key, products]) => (
         <ProductCard key={key} product={products[0]} />
       ))}

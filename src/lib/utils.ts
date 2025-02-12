@@ -1,14 +1,24 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { fetchAllCategories, fetchAllProducts } from "@/lib/actions";
+import { fetchAllCategories, fetchProducts } from "@/lib/actions";
 import type { Product as ProductType } from "@/lib/types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+// Convert _id (type ObjectId) and any problematic fields to plain values
+export const convertObjectIdToPlainValues = <T extends ProductType>(
+  items: T[],
+) => {
+  return items.map((item) => ({
+    ...item,
+    _id: item._id.toString(), // Ensure _id is now a string
+  }));
+};
+
 export async function getLimitedNumberOfProducts(limit: number) {
-  const allProducts = await fetchAllProducts();
+  const allProducts = await fetchProducts();
 
   if (!allProducts) return;
 
@@ -17,9 +27,15 @@ export async function getLimitedNumberOfProducts(limit: number) {
   const selectedProducts: ProductType[] = [];
 
   try {
+    /**
+     * Here we create an array `selectedProducts` with one (first from the array) product for each category
+     * Also We create a set array `categorySet` of categories with the length of `limit` what we set
+     *
+     */
     for (const product of allProducts) {
       if (!categorySet.has(product.category)) {
         categorySet.add(product.category);
+
         selectedProducts.push(product);
       }
       if (selectedProducts.length >= limit) break;
@@ -34,7 +50,7 @@ export async function getLimitedNumberOfProducts(limit: number) {
 export async function getSortedProducts() {
   try {
     const [allProducts, categories] = await Promise.all([
-      fetchAllProducts(),
+      fetchProducts(),
       fetchAllCategories(),
     ]);
 

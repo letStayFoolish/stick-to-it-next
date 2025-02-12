@@ -32,3 +32,9 @@ export type CategoriesType =
   | "health-beauty"
   | "kids-parents"
   | "animals";
+
+export type ComponentPropsWithParams = {
+  params: Promise<{
+    slug: string;
+  }>;
+};

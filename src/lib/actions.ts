@@ -3,13 +3,16 @@
 import connectDB from "@/lib/database";
 import Product from "@/lib/schema/Product";
 import type { Product as ProductType } from "@/lib/types";
+import mongoose from "mongoose";
 
 // FETCH ALL PRODUCTS
-export async function fetchAllProducts() {
+export async function fetchProducts() {
   try {
-    await connectDB();
+    if (!mongoose.connection.readyState) {
+      await connectDB();
+    }
 
-    const products: ProductType[] = await Product.find({});
+    const products = await Product.find({}).lean<ProductType[]>();
 
     if (!products || products.length === 0) {
       // Error("No products found");
@@ -25,9 +28,11 @@ export async function fetchAllProducts() {
 // FETCH ALL CATEGORIES
 export async function fetchAllCategories(): Promise<string[]> {
   try {
-    await connectDB();
+    if (!mongoose.connection.readyState) {
+      await connectDB();
+    }
 
-    const categories: string[] = await Product.distinct("category").lean();
+    const categories = await Product.distinct("category").lean<string[]>();
 
     if (!categories || categories.length === 0) return [];
 
@@ -45,9 +50,9 @@ export async function fetchProductsFromCategory(
   try {
     await connectDB();
 
-    const products: ProductType[] | null = await Product.find({
+    const products = await Product.find({
       category: categoryName as string,
-    }).lean();
+    }).lean<ProductType[]>();
 
     if (!products) {
       return [];
@@ -75,7 +80,7 @@ export async function fetchFavoritesProducts() {
     //   throw new Error('User session not found');
     // }
 
-    const allProducts = await fetchAllProducts();
+    const allProducts = await fetchProducts();
 
     if (!allProducts) {
       throw new Error("Products not found");
@@ -88,13 +93,15 @@ export async function fetchFavoritesProducts() {
 
     // revalidatePath("/favorites", "page");
 
-    if (!productsFromFavoriteArray) {
-      return [];
-    }
+    // if (!productsFromFavoriteArray) {
+    //   return [];
+    // }
 
-    return allProducts?.filter((product) =>
-      productsFromFavoriteArray.includes(product?._id.toString()),
-    );
+    // return allProducts?.filter((product) =>
+    //   productsFromFavoriteArray.includes(product?._id.toString()),
+    // );
+
+    return []; // Todo: don't forget to remove this line of code.
   } catch (error) {
     console.error(error);
     throw error;

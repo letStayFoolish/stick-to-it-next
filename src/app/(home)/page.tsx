@@ -1,7 +1,7 @@
 import React from "react";
 import GoToPage from "@/components/GoToPage";
 import PageHeading from "@/components/PageHeading";
-import HomePageCategories from "@/components/HomePageCategories";
+import HomePageCategories from "@/app/(home)/components/HomePageCategories";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {

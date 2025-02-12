@@ -1,27 +1,18 @@
 import React from "react";
-import type { CategoriesType } from "@/lib/types";
+import type { CategoriesType, ComponentPropsWithParams } from "@/lib/types";
 import Image from "next/image";
 import { fetchProductsFromCategory } from "@/lib/actions";
 import GoToPage from "@/components/GoToPage";
 import NoData from "@/components/ui/NoData";
 import ProductItem from "@/components/ProductItem";
+import { convertObjectIdToPlainValues } from "@/lib/utils";
 
-type Props = {
-  params: Promise<{
-    slug: string;
-  }>;
-};
-
-const ProductList: React.FC<Props> = async ({ params }) => {
+const ProductList: React.FC<ComponentPropsWithParams> = async ({ params }) => {
   const { slug } = await params;
 
   const products = await fetchProductsFromCategory(slug);
 
-  // Convert _id and any problematic fields to plain values
-  const plainProducts = products.map((product) => ({
-    ...product,
-    _id: product._id.toString(), // Ensure _id is now a string
-  }));
+  const plainProducts = convertObjectIdToPlainValues(products);
 
   return (
     <div className="flex flex-col items-center mt-6 p-4 ">
