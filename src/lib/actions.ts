@@ -1,7 +1,7 @@
 "use server";
 
 import connectDB from "@/lib/database";
-import Product from "@/lib/schema/Product";
+import { Product as ProductSchema } from "@/lib/schema/Product";
 import type { Product as ProductType } from "@/lib/types";
 import mongoose from "mongoose";
 
@@ -12,7 +12,7 @@ export async function fetchProducts() {
       await connectDB();
     }
 
-    const products = await Product.find({}).lean<ProductType[]>();
+    const products = await ProductSchema.find({}).lean<ProductType[]>();
 
     if (!products || products.length === 0) {
       // Error("No products found");
@@ -32,7 +32,8 @@ export async function fetchAllCategories(): Promise<string[]> {
       await connectDB();
     }
 
-    const categories = await Product.distinct("category").lean<string[]>();
+    const categories =
+      await ProductSchema.distinct("category").lean<string[]>();
 
     if (!categories || categories.length === 0) return [];
 
@@ -50,7 +51,7 @@ export async function fetchProductsFromCategory(
   try {
     await connectDB();
 
-    const products = await Product.find({
+    const products = await ProductSchema.find({
       category: categoryName as string,
     }).lean<ProductType[]>();
 
