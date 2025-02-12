@@ -82,8 +82,8 @@ _To be added in the future..._
 
 ### Prerequisites
 
-To run this application locally, you need to have Yarn installed on your machine. For those new to Yarn, please refer
-to [Yarn's official documentation](https://classic.yarnpkg.com/en/docs/getting-started) for installation instructions.
+To run this application locally, you need to have `npm` installed on your machine. For those new to npm, please refer
+to [npm's official documentation](https://docs.npmjs.com/) for installation instructions.
 
 ### Environment Setup
 
