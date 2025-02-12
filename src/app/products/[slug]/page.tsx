@@ -16,6 +16,8 @@ const ProductList: React.FC<ComponentPropsWithParams> = async ({ params }) => {
 
   const heading: string = handleProductName(slug as CategoriesType);
 
+  throw new Error("Not implemented");
+
   return (
     <div className="flex flex-col items-center mt-6 p-4 ">
       <div className="flex md:flex-col gap-4 items-center justify-between md:justify-center mx-auto w-full">
