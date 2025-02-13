@@ -34,6 +34,21 @@ const SidebarWeb: React.FC = () => {
           );
         })}
       </div>
+      {/*/!*<SignIn />*!/ via Google*/}
+      <div className="mb-6 text-center flex flex-col gap-2 justify-center">
+        <Link
+          href={"/login"}
+          className="bg-green-500 rounded-md text-sm flex justify-start items-center gap-4 px-3 py-2"
+        >
+          Login
+        </Link>
+        <Link
+          href={"/register"}
+          className="bg-green-500 rounded-md text-sm flex justify-start items-center gap-4 px-3 py-2"
+        >
+          Register
+        </Link>
+      </div>
 
       {/*{session ? null : <LoginButton />}*/}
       {!session ? null : (

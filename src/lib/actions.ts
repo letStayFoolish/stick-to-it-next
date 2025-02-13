@@ -1,7 +1,7 @@
 "use server";
 
 import connectDB from "@/lib/database";
-import { Product as ProductSchema } from "@/lib/schema/Product";
+import { Product as ProductSchema } from "@/lib/models/Product";
 import type { Product as ProductType } from "@/lib/types";
 import mongoose from "mongoose";
 
