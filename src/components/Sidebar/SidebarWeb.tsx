@@ -6,7 +6,6 @@ import { routes } from "@/lib/routes";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import SignIn from "@/app/(auth)/components/SignIn";
 
 const SidebarWeb: React.FC = () => {
   const pathname = usePathname();
