@@ -6,6 +6,7 @@ import { routes } from "@/lib/routes";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import SignIn from "@/app/(auth)/components/SignIn";
 
 const SidebarWeb: React.FC = () => {
   const pathname = usePathname();
@@ -33,6 +34,21 @@ const SidebarWeb: React.FC = () => {
             </Link>
           );
         })}
+      </div>
+      {/*/!*<SignIn />*!/ via Google*/}
+      <div className="mb-6 text-center flex flex-col gap-2 justify-center">
+        <Link
+          href={"/login"}
+          className="bg-green-500 rounded-md text-sm flex justify-start items-center gap-4 px-3 py-2"
+        >
+          Login
+        </Link>
+        <Link
+          href={"/register"}
+          className="bg-green-500 rounded-md text-sm flex justify-start items-center gap-4 px-3 py-2"
+        >
+          Register
+        </Link>
       </div>
 
       {/*{session ? null : <LoginButton />}*/}
