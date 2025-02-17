@@ -2,9 +2,16 @@
 
 import connectDB from "@/lib/database";
 import { Product as ProductSchema } from "@/lib/models/Product";
-import type { Product as ProductType, ProductPlain } from "@/lib/types";
+import {
+  FormState,
+  Product as ProductType,
+  ProductPlain,
+  SignupFormSchema,
+} from "@/lib/types";
 import mongoose from "mongoose";
 import { User } from "@/lib/models/User";
+
+const BASE_URL = process.env.NEXT_PUBLIC_DOMAIN || "http://localhost:3000";
 
 // FETCH ALL PRODUCTS
 export async function fetchProducts() {
@@ -95,33 +102,44 @@ export async function fetchProductsFromCategory(
 }
 
 // FETCH LIST OF FAVORITES PRODUCTS
-// export async function fetchFavoritesProducts(
-//   userEmail: string | null | undefined,
-// ) {
-//   if (!userEmail) return;
-//
-//   try {
-//     const likedItems = await fetch(`/api/user/liked-items`, {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//       body: JSON.stringify({ email: userEmail }),
-//     });
-//
-//     console.log({ likedItems });
-//
-//     const allProducts = await fetchProducts();
-//
-//     if (!allProducts) {
-//       throw new Error("Products not found");
-//     }
-//
-//     // return allProducts?.filter((Product) =>
-//     //   productsFromFavoriteArray.includes(Product?._id.toString()),
-//     // );
-//   } catch (error) {
-//     console.error(error);
-//     throw error;
-//   }
-// }
+
+// Signup action
+export async function signupAction(state: FormState, formData: FormData) {
+  try {
+    const validatedFields = SignupFormSchema.safeParse({
+      name: formData.get("name"),
+      email: formData.get("email"),
+      password: formData.get("password"),
+    });
+
+    // If any form fields are invalid, return early
+    if (!validatedFields.success) {
+      return {
+        errors: validatedFields.error.flatten().fieldErrors,
+      };
+    }
+
+    console.log({ validatedFields });
+
+    const response = await fetch(`${BASE_URL}/api/register`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(validatedFields.data),
+    });
+
+    // Return success or throw error to the calling client
+    if (response.ok) {
+      return { success: true };
+    } else {
+      if (response.status === 409) {
+        return { error: "Email already in use" };
+      }
+
+      return { error: "Registration failed." };
+    }
+  } catch (error: any) {
+    console.error(error);
+  }
+}

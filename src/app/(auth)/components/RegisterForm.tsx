@@ -1,117 +1,45 @@
 "use client";
 
-import React, { ChangeEvent, useState } from "react";
-import { useRouter } from "next/navigation";
+import React, { useActionState, useEffect } from "react";
 import Link from "next/link";
 import { ShoppingCart } from "lucide-react";
-import FormError from "@/components/Form/FormError";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { signupAction } from "@/lib/actions";
+import { redirect } from "next/navigation";
+import FormError from "@/components/Form/FormError";
 
-type UserInfo = {
-  name: string;
-  email: string;
-  password: string;
-  likedItems?: string[];
-  listItems?: string[];
-};
-
+/**
+ * Sign-up functionality
+ * You can use the <form> element with React's Server Actions and `useActionState` to capture user credentials, validate form fields, and call your Authentication Provider's API or database.
+ *
+ * Since Server Actions always execute on the server, they provide a secure environment for handling authentication logic.
+ * @constructor
+ */
 const RegisterForm: React.FC = () => {
-  const [registrationData, setRegistrationData] = useState<{
-    user: UserInfo;
-    error: string | null;
-  }>({
-    user: {
-      name: "",
-      email: "",
-      password: "",
-      likedItems: [],
-      listItems: [],
-    },
-    error: null,
-  });
+  const [state, formAction, isPending] = useActionState(
+    signupAction,
+    undefined,
+  );
 
-  const router = useRouter();
-
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const dataValue = e.target.value;
-
-    setRegistrationData((prevData) => ({
-      ...prevData,
-      user: {
-        ...prevData.user,
-        [e.target.name]: dataValue,
-      },
-    }));
-  };
-
-  const handleSubmit = async (e: any) => {
-    e.preventDefault();
-
-    if (
-      !registrationData.user ||
-      !registrationData.user.name ||
-      !registrationData.user.email ||
-      !registrationData.user.password
-    ) {
-      setRegistrationData((prevState) => ({
-        ...prevState,
-        error: "Missing required fields",
-      }));
-
-      throw new Error("Missing required fields");
+  useEffect(() => {
+    if (state?.success) {
+      redirect("/login");
     }
-
-    const requestBody = registrationData.user;
-
-    try {
-      const response = await fetch("/api/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(requestBody),
-      });
-
-      if (response.ok) {
-        const form = e.target;
-
-        setRegistrationData((prevState) => ({
-          ...prevState,
-          error: null,
-        }));
-
-        form.reset();
-
-        router.push("/login");
-      } else {
-        console.log({ response });
-        if (response.status === 409) {
-          throw new Error("Email already in use");
-        }
-        throw new Error("Registration failed");
-      }
-    } catch (error: any) {
-      setRegistrationData((prevState) => ({
-        ...prevState,
-        error: error.message,
-      }));
-      console.log("Error during registration: ", error);
-    }
-  };
+    return;
+  }, [state]);
 
   return (
     <form
-      className="w-full h-screen flex justify-center flex-1 lg:grid lg:grid-cols-2"
-      noValidate
-      onSubmit={handleSubmit}
+      className="w-full h-screen flex justify-center flex-1 lg:grid lg:grid-cols-2 overflow-hidden"
+      action={formAction}
     >
       <fieldset
-        className="flex items-center justify-center py-12 space-y-6"
-        disabled={false}
+        className="flex items-center justify-center py-6 space-y-4 lg:overflow-auto"
+        disabled={isPending}
       >
-        <div className="mx-auto grid w-[350px] gap-6">
-          <div className="grid gap-2 text-center mb-4">
+        <div className="mx-auto grid w-[350px] gap-4">
+          <div className="grid gap-1 text-center mb-2">
             <Link
               href="/"
               className="bg-muted rounded-md px-4 py-2 flex items-center justify-center gap-1 text-lg font-semibold md:text-base mb-6"
@@ -130,40 +58,50 @@ const RegisterForm: React.FC = () => {
           </div>
           <div className="grid gap-4">
             <div className="grid gap-2">
-              <Input
-                placeholder="John Doe"
-                type="name"
-                name="name"
-                value={registrationData.user.name ?? ""}
-                onChange={handleInputChange}
-                // disabled={isLoading}
-              />
+              <Input id="name" type="name" placeholder="John Doe" name="name" />
+              {state?.errors?.name && (
+                <p className="mt-1 text-sm text-red-500">
+                  {state.errors.name ?? ""}
+                </p>
+              )}
             </div>
             <div className="grid gap-2">
               <Input
-                placeholder="m@example.com"
+                id="email"
                 type="email"
+                placeholder="m@example.com"
                 name="email"
-                value={registrationData.user.email ?? ""}
-                onChange={handleInputChange}
-                // disabled={isLoading}
               />
+              {state?.errors?.email && (
+                <p className="mt-1 text-sm text-red-500">
+                  {state.errors.email ?? ""}
+                </p>
+              )}
             </div>
             <div className="grid gap-2">
               <Input
-                placeholder="**********"
+                id="password"
                 type="password"
+                placeholder="**********"
                 name="password"
-                value={registrationData.user.password ?? ""}
-                onChange={handleInputChange}
-                // disabled={isLoading}
               />
+              {state?.errors?.password && (
+                <div>
+                  <p>Password must:</p>
+                  <ul>
+                    {state.errors.password.map((error) => (
+                      <li className="mt-1 text-sm text-red-500" key={error}>
+                        - {error}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
-            {registrationData.error ? (
-              <FormError message={registrationData.error} />
-            ) : null}
-
-            <Button className="w-full">Register</Button>
+            {state && state.error && <FormError message={state.error} />}
+            <Button className="w-full" disabled={isPending}>
+              {isPending ? "Submitting..." : "Register"}
+            </Button>
             <div className="flex items-center justify-center py-3 text-gray-500">
               <span className="border-b-2 border-border w-1/4"></span>
               <span className="text-center font-extralight uppercase text-sm px-4 m-0">
@@ -171,7 +109,6 @@ const RegisterForm: React.FC = () => {
               </span>
               <span className="border-b-2 border-border w-1/4"></span>
             </div>
-            {/*{isLoading ? (*/}
             {/*  <Button variant="outline" className="w-full">*/}
             {/*    {tr("SigningIn")}*/}
             {/*  </Button>*/}
@@ -185,7 +122,7 @@ const RegisterForm: React.FC = () => {
             {/*)}*/}
           </div>
           <div className="mt-4 text-center text-sm">
-            Already Have Account{" "}
+            Already Have Account?{" "}
             <Link
               href={"/login"}
               className="underline hover:opacity-65 hover:text-primary transition duration-300"
