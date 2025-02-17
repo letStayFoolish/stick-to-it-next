@@ -3,7 +3,6 @@ import GoToPage from "@/components/GoToPage";
 import PageHeading from "@/components/PageHeading";
 import HomePageCategories from "@/app/(home)/components/HomePageCategories";
 import type { Metadata } from "next";
-import UserInfo from "@/components/UserInfo";
 
 export const metadata: Metadata = {
   title: "Home",
@@ -13,7 +12,6 @@ const HomePage: React.FC = () => {
   return (
     <main className="flex flex-col items-center p-4">
       <PageHeading />
-      <UserInfo />
       <HomePageCategories />
       <GoToPage
         href="/products"

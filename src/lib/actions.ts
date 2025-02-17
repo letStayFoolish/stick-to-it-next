@@ -2,8 +2,9 @@
 
 import connectDB from "@/lib/database";
 import { Product as ProductSchema } from "@/lib/models/Product";
-import type { Product as ProductType } from "@/lib/types";
+import type { Product as ProductType, ProductPlain } from "@/lib/types";
 import mongoose from "mongoose";
+import { User } from "@/lib/models/User";
 
 // FETCH ALL PRODUCTS
 export async function fetchProducts() {
@@ -47,7 +48,8 @@ export async function fetchAllCategories(): Promise<string[]> {
 // FETCH ALL PRODUCT FOR CATEGORY
 export async function fetchProductsFromCategory(
   categoryName: string,
-): Promise<ProductType[]> {
+  userEmail?: string,
+): Promise<ProductPlain[]> {
   try {
     await connectDB();
 
@@ -59,9 +61,30 @@ export async function fetchProductsFromCategory(
       return [];
     }
 
-    // Sorting by name A -> Z
-    return products.sort((a, b) => {
-      if (a.product_name < b.product_name) return -1;
+    let likedItems: string[] = [];
+
+    if (userEmail) {
+      const user = await User.findOne({ email: userEmail }).select(
+        "likedItems",
+      );
+
+      if (user && user.likedItems) {
+        likedItems = user.likedItems.map(String); // Convert ObjectId to string for easier comparison
+      }
+    }
+
+    // Add 'isLiked' flag to products based on likedItems
+    const enrichedProducts = products.map((product) => ({
+      ...product,
+      _id: String(product._id),
+      isLiked: likedItems.includes(String(product._id)),
+    }));
+
+    // Sort by liked status, then alphabetical order
+    return enrichedProducts.sort((a, b) => {
+      if (a.isLiked && !b.isLiked) return -1; // Liked products first
+      if (!a.isLiked && b.isLiked) return 1;
+      if (a.product_name < b.product_name) return -1; // A-Z sorting
       if (a.product_name > b.product_name) return 1;
       return 0;
     });
@@ -72,39 +95,33 @@ export async function fetchProductsFromCategory(
 }
 
 // FETCH LIST OF FAVORITES PRODUCTS
-export async function fetchFavoritesProducts() {
-  try {
-    await connectDB();
-    // const session = await getServerSession(authOptions);
-
-    // if (!session) {
-    //   throw new Error('User session not found');
-    // }
-
-    const allProducts = await fetchProducts();
-
-    if (!allProducts) {
-      throw new Error("Products not found");
-    }
-
-    // const user = await User.findOne({ email: session?.user?.email });
-
-    // const productsFromFavoriteArray: Awaited<string[]> =
-    //   await user?.likedProducts;
-
-    // revalidatePath("/favorites", "page");
-
-    // if (!productsFromFavoriteArray) {
-    //   return [];
-    // }
-
-    // return allProducts?.filter((product) =>
-    //   productsFromFavoriteArray.includes(product?._id.toString()),
-    // );
-
-    return []; // Todo: don't forget to remove this line of code.
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-}
+// export async function fetchFavoritesProducts(
+//   userEmail: string | null | undefined,
+// ) {
+//   if (!userEmail) return;
+//
+//   try {
+//     const likedItems = await fetch(`/api/user/liked-items`, {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//       body: JSON.stringify({ email: userEmail }),
+//     });
+//
+//     console.log({ likedItems });
+//
+//     const allProducts = await fetchProducts();
+//
+//     if (!allProducts) {
+//       throw new Error("Products not found");
+//     }
+//
+//     // return allProducts?.filter((Product) =>
+//     //   productsFromFavoriteArray.includes(Product?._id.toString()),
+//     // );
+//   } catch (error) {
+//     console.error(error);
+//     throw error;
+//   }
+// }

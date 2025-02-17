@@ -1,6 +1,6 @@
 import React from "react";
 import { getLimitedNumberOfProducts } from "@/lib/utils";
-import ProductCard from "@/components/ProductCard";
+import ProductCard from "@/components/Product/ProductCard";
 
 const HomePageCategories: React.FC = async () => {
   const selectedProducts = await getLimitedNumberOfProducts(6);

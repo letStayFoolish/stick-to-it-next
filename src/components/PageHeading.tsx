@@ -1,15 +1,21 @@
+"use client";
+
 import React from "react";
+import { useSession } from "next-auth/react";
 
 const PageHeading: React.FC = () => {
-  const session = { user: "Nemanja Karaklajic" };
-  // const session = null;
+  const { data: session } = useSession();
 
   return (
     <div className="mb-6 text-center">
       <>
         {session ? (
           <h1 className="font-bold text-3xl md:text-4xl mb-2 drop-shadow-md">
-            Hello, <span className="text-primary">{session.user}</span>!
+            Hello,{" "}
+            <span className="text-primary">
+              {session.user?.name?.split(" "[0])}
+            </span>
+            !
           </h1>
         ) : (
           <h1 className="font-bold text-3xl md:text-4xl mb-2">Welcome!</h1>

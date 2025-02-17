@@ -12,6 +12,8 @@ type UserInfo = {
   name: string;
   email: string;
   password: string;
+  likedItems?: string[];
+  listItems?: string[];
 };
 
 const RegisterForm: React.FC = () => {
@@ -23,6 +25,8 @@ const RegisterForm: React.FC = () => {
       name: "",
       email: "",
       password: "",
+      likedItems: [],
+      listItems: [],
     },
     error: null,
   });
@@ -119,9 +123,9 @@ const RegisterForm: React.FC = () => {
               <span className="sr-only">Stick To It</span>
             </Link>
 
-            <h1 className="text-3xl font-bold">Create Account</h1>
+            <h1 className="text-3xl font-bold">Create an account</h1>
             <p className="text-balance text-muted-foreground">
-              Enter Your Name, Email and Password
+              {`Enter your full name, email and password below to create your account`}
             </p>
           </div>
           <div className="grid gap-4">
@@ -192,11 +196,11 @@ const RegisterForm: React.FC = () => {
         </div>
       </fieldset>
       <div className="hidden lg:flex justify-end flex-col px-3 py-6 border-l-2 border-border text-lg md:text-xl lg:text-2xl font-medium leading-relaxed text-gray-600">
-        <h2 className="mb-4">Welcome Back Short Message</h2>
-        <p>Text text text</p>
-        <p>Enter Credentials</p>
+        <h2 className="mb-4">{`Welcome!`}</h2>
+        <p>{`Welcome aboard, we're excited to have you join our community!`}</p>
+        <p>{`Enter your name, email, password and let's move things forward, together.`}</p>
         <blockquote className="italic border-l-4 border-primary pl-4 mt-6 text-base md:text-lg">
-          <p>Quote</p>
+          <p>{`"Success is not the key to happiness. Happiness is the key to success. If you love what you are doing, you will be successful." - Albert Schweitzer`}</p>
         </blockquote>
       </div>
     </form>

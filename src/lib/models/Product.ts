@@ -14,6 +14,7 @@ const ProductSchema = new Schema(
       type: String,
       required: [true, "Product image is required"],
     },
+    isLiked: { type: Boolean, default: false },
   },
   { timestamps: true },
 );

@@ -1,6 +1,7 @@
 "use client";
-import { Product as ProductType } from "@/lib/types";
-import React from "react";
+
+import type { ProductPlain } from "@/lib/types";
+import React, { useState } from "react";
 import { FaHeart, FaMinus, FaPlus } from "react-icons/fa6";
 import {
   Button,
@@ -9,14 +10,44 @@ import {
 import { ShoppingBasket } from "lucide-react";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import { handleProductName } from "@/lib/utils";
+import { FaRegHeart } from "react-icons/fa";
+import { useSession } from "next-auth/react";
 
 type Props = {
-  product: Omit<ProductType, "_id"> & { _id: string };
+  product: ProductPlain;
 };
 
 const ProductItem: React.FC<Props> = ({ product }) => {
-  const toggleLike = () => {
-    console.log("Like");
+  const { data: session } = useSession();
+
+  const [isLiked, setIsLiked] = useState<boolean>(product?.isLiked ?? false);
+
+  const userEmail = session?.user?.email;
+
+  const toggleLike = async () => {
+    if (!session) return; // Ensure the user is logged in
+
+    try {
+      const response = await fetch(`/api/user/toggle-like`, {
+        method: "POST",
+        body: JSON.stringify({
+          productId: product._id,
+          userEmail,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) throw new Error("Failed to toggle like");
+
+      const data = await response.json();
+      if (data.success) {
+        setIsLiked((prevState) => !prevState);
+      }
+    } catch (error: any) {
+      console.log(error);
+    }
   };
 
   const handleAddItem = () => {};
@@ -25,10 +56,19 @@ const ProductItem: React.FC<Props> = ({ product }) => {
   return (
     <div className="flex justify-between">
       <div className="flex gap-2 items-center w-full">
-        <FaHeart
-          className="text-lg w-auto mr-1 cursor-pointer hover:opacity-80 hover:scale-125 transition"
-          onClick={toggleLike}
-        />
+        {session ? (
+          isLiked ? (
+            <FaHeart
+              className="text-lg w-auto mr-1 cursor-pointer hover:opacity-80 hover:scale-125 transition"
+              onClick={toggleLike}
+            />
+          ) : (
+            <FaRegHeart
+              className="text-lg w-auto mr-1 cursor-pointer hover:opacity-80 hover:scale-125 transition"
+              onClick={toggleLike}
+            />
+          )
+        ) : null}
         <span
           data-tooltip-id="tooltip-allProducts"
           data-tooltip-content={handleProductName(product.product_name)}
@@ -47,14 +87,18 @@ const ProductItem: React.FC<Props> = ({ product }) => {
         </span>
       </div>
       <div className="flex gap-6">
-        <Button onClick={handleAddItem} className="px-3 py-2">
+        <Button
+          onClick={handleAddItem}
+          className="px-3 py-2"
+          disabled={!session}
+        >
           <ShoppingBasket width={20} height={20} />
         </Button>
 
         <section className="flex gap-4" id="add-box">
           <IncrementDecrementButton
             onClick={() => {}}
-            disabled={false}
+            disabled={!session}
             className="flex justify-center items-center min-w-[30px] px-3 py-0.5 m-0 border-r border-border text-primary bg-secondary hover:bg-popover transition rounded-tl-md rounded-bl-md focus:outline-none focus:ring ring-ring active:bg-secondary cursor-pointer"
           >
             <FaMinus />
@@ -62,6 +106,7 @@ const ProductItem: React.FC<Props> = ({ product }) => {
 
           <IncrementDecrementButton
             onClick={() => {}}
+            disabled={!session}
             className="flex justify-center items-center min-w-[30px] px-3 py-0.5 m-0 border-l border-border text-primary bg-secondary hover:bg-popover transition rounded-tr-md rounded-br-md focus:outline-none focus:ring ring-ring active:bg-secondary cursor-pointer"
           >
             <FaPlus />

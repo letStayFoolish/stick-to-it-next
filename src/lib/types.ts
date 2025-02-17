@@ -11,6 +11,10 @@ export interface Product {
   isLiked?: boolean;
 }
 
+export interface ProductPlain extends Omit<Product, "_id"> {
+  _id: string;
+}
+
 export type CategoriesType =
   | "bakery"
   | "vegetables"
@@ -37,4 +41,12 @@ export type ComponentPropsWithParams = {
   params: Promise<{
     slug: string;
   }>;
+};
+
+export type TUser = {
+  _id: ObjectId;
+  name: string;
+  email: string;
+  password: string;
+  likedItems: string[];
 };

@@ -157,7 +157,7 @@ const LoginForm: React.FC = () => {
             {/*)}*/}
           </div>
           <div className="mt-4 text-center text-sm">
-            Do Not Have Account{" "}
+            Do Not Have Account?{" "}
             <Link
               href={"/register"}
               className="underline hover:opacity-65 hover:text-primary transition duration-300"
@@ -168,11 +168,11 @@ const LoginForm: React.FC = () => {
         </div>
       </fieldset>
       <div className="hidden lg:flex justify-end flex-col px-3 py-6 border-l-2 border-border text-lg md:text-xl lg:text-2xl font-medium leading-relaxed text-gray-600">
-        <h2 className="mb-4">Welcome Back Short Message</h2>
-        <p>Text text text</p>
-        <p>Enter Credentials</p>
+        <h2 className="mb-4">{`Welcome back!`}</h2>
+        <p>{`We're glad to see you again.`}</p>
+        <p>{`Enter your credentials and let's move things forward, together.`}</p>
         <blockquote className="italic border-l-4 border-primary pl-4 mt-6 text-base md:text-lg">
-          <p>Quote</p>
+          <p>{`"Success is not the key to happiness. Happiness is the key to success. If you love what you are doing, you will be successful." - Albert Schweitzer`}</p>
         </blockquote>
       </div>
     </form>

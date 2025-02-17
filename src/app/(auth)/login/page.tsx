@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 const LoginPage: React.FC = () => {
   return (
     <main>
-      <LoginForm />;
+      <LoginForm />
     </main>
   );
 };

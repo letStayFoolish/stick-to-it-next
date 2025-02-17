@@ -1,18 +1,16 @@
 import React from "react";
 import type { CategoriesType, ComponentPropsWithParams } from "@/lib/types";
 import Image from "next/image";
-import { fetchProductsFromCategory } from "@/lib/actions";
 import GoToPage from "@/components/GoToPage";
-import NoData from "@/components/ui/NoData";
-import ProductItem from "@/components/ProductItem";
-import { convertObjectIdToPlainValues, handleProductName } from "@/lib/utils";
+import { handleProductName } from "@/lib/utils";
+import ProductList from "@/components/Product/ProductList";
+import { fetchProductsFromCategory } from "@/lib/actions";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
-const ProductList: React.FC<ComponentPropsWithParams> = async ({ params }) => {
+const Products: React.FC<ComponentPropsWithParams> = async ({ params }) => {
   const { slug } = await params;
 
-  const products = await fetchProductsFromCategory(slug);
-
-  const plainProducts = convertObjectIdToPlainValues(products);
+  const products = await fetchProductsFromCategory(slug); // await here or pass promise as props to a client component, and use them using React's `use` hook.
 
   const heading: string = handleProductName(slug as CategoriesType);
 
@@ -23,19 +21,19 @@ const ProductList: React.FC<ComponentPropsWithParams> = async ({ params }) => {
           {heading}
         </h2>
         {products &&
-          products
-            .slice(0, 1)
-            .map((product, _index) => (
-              <Image
-                key={_index}
-                src={`/images/categories/${product.category_image}.png`}
-                alt={`Image for groceries from category ${product.category}`}
-                width={140}
-                height={140}
-                priority
-                className="object-cover object-center"
-              />
-            ))}
+          products.slice(0, 1).map((product, _index) => (
+            <Image
+              key={_index}
+              src={`/images/categories/${product.category_image}.png`}
+              alt={`Image for groceries from category ${product.category}`}
+              width={140}
+              height={140}
+              // placeholder="blur" // Optional blur-up while loading
+              // blurDataURL={`/images/categories/${product.category_image}.png`}
+              priority
+              className="object-cover object-center"
+            />
+          ))}
       </div>
 
       <div className="flex justify-between w-full">
@@ -45,6 +43,7 @@ const ProductList: React.FC<ComponentPropsWithParams> = async ({ params }) => {
         >
           Back To All Products
         </GoToPage>
+
         <GoToPage
           href={"/shopping-list"}
           className="self-start mt-4 mb-6 px-6 py-3 md:px-4 md:py-3 bg-primary text-primary-foreground rounded-md hover:bg-secondary hover:text-secondary-foreground transition-opacity"
@@ -52,22 +51,16 @@ const ProductList: React.FC<ComponentPropsWithParams> = async ({ params }) => {
           Shopping List
         </GoToPage>
       </div>
+      <LoadingSpinner />
 
-      <div className="flex flex-col w-full md:w-1/2 my-4">
-        {products?.length === 0 && <NoData text={"No Data"} />}
-        <ul>
-          {plainProducts?.map((product) => (
-            <li
-              className="border-b border-border last:border-none mb-2 p-2"
-              key={product._id}
-            >
-              <ProductItem product={product} />
-            </li>
-          ))}
-        </ul>
-      </div>
+      {/* Wrap client component i na Suspense boundary - the fallback will be shown while the promise is being resolved. */}
+      {/*<Suspense>*/}
+      {/*    <ProductList products={products} /> */}
+      {/*</Suspense>*/}
+
+      <ProductList selectedCategory={slug} />
     </div>
   );
 };
 
-export default ProductList;
+export default Products;

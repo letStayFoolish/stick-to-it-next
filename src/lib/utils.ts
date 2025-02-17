@@ -30,7 +30,7 @@ export async function getLimitedNumberOfProducts(limit: number) {
 
   try {
     /**
-     * Here we create an array `selectedProducts` with one (first from the array) product for each category
+     * Here we create an array `selectedProducts` with one (first from the array) Product for each category
      * Also We create a set array `categorySet` of categories with the length of `limit` what we set
      *
      */

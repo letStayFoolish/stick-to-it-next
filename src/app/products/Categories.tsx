@@ -1,6 +1,6 @@
 import React from "react";
 import { getSortedProducts } from "@/lib/utils";
-import ProductCard from "@/components/ProductCard";
+import ProductCard from "@/components/Product/ProductCard";
 
 const Categories: React.FC = async () => {
   const productsByCategory = await getSortedProducts();
