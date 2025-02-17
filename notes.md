@@ -4,7 +4,7 @@
 
 [x] Store favorite items on db (related to user)
 
-[] Add items to favorites
+[x] Add items to favorites
 
 [] Add items to list
 
@@ -14,9 +14,9 @@
 
 [] Get shopping list from db
 
-[] Form actions?
+[x] Form actions?
 
-[] Form Validation (ZOD)
+[x] Form Validation (ZOD)
 
 ## Notes on 16.02.2025
 

@@ -11,7 +11,7 @@ import {
 import mongoose from "mongoose";
 import { User } from "@/lib/models/User";
 
-const BASE_URL = process.env.NEXT_PUBLIC_DOMAIN || "http://localhost:3000";
+const BASE_URL = process.env.NEXT_PUBLIC_DOMAIN || "http://localhost:3000/";
 
 // FETCH ALL PRODUCTS
 export async function fetchProducts() {
@@ -119,9 +119,7 @@ export async function signupAction(state: FormState, formData: FormData) {
       };
     }
 
-    console.log({ validatedFields });
-
-    const response = await fetch(`${BASE_URL}/api/register`, {
+    const response = await fetch(`${BASE_URL}api/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

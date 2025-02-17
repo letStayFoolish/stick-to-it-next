@@ -5,7 +5,6 @@ import GoToPage from "@/components/GoToPage";
 import { handleProductName } from "@/lib/utils";
 import ProductList from "@/components/Product/ProductList";
 import { fetchProductsFromCategory } from "@/lib/actions";
-import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 const Products: React.FC<ComponentPropsWithParams> = async ({ params }) => {
   const { slug } = await params;
@@ -51,11 +50,9 @@ const Products: React.FC<ComponentPropsWithParams> = async ({ params }) => {
           Shopping List
         </GoToPage>
       </div>
-      <LoadingSpinner />
-
       {/* Wrap client component i na Suspense boundary - the fallback will be shown while the promise is being resolved. */}
-      {/*<Suspense>*/}
-      {/*    <ProductList products={products} /> */}
+      {/*<Suspense fallback={<LoadingSpinner />}>*/}
+      {/*  <ProductList selectedCategory={slug} />*/}
       {/*</Suspense>*/}
 
       <ProductList selectedCategory={slug} />

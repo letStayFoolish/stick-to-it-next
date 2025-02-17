@@ -1,83 +1,83 @@
 "use client";
 
-import React, { ChangeEvent, useState } from "react";
+import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
 import { ShoppingCart } from "lucide-react";
-import FormError from "@/components/Form/FormError";
 import { Button } from "@/components/ui/button";
-
-type UserInfo = {
-  email: string;
-  password: string;
-};
+import FormError from "@/components/Form/FormError";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const LoginForm: React.FC = () => {
-  const [registrationData, setRegistrationData] = useState<{
-    user: UserInfo;
-    error: string | null;
-  }>({
-    user: {
-      email: "",
-      password: "",
-    },
-    error: null,
+  const [formState, setFormState] = useState({
+    errors: {} as Record<string, string[] | undefined>,
+    isPending: false,
+    success: false,
+    error: "",
   });
 
   const router = useRouter();
 
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const dataValue = e.target.value;
-
-    setRegistrationData((prevData) => ({
-      ...prevData,
-      user: {
-        ...prevData.user,
-        [e.target.name]: dataValue,
-      },
-    }));
-  };
-
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    try {
-      const response = await signIn("credentials", {
-        redirect: false,
-        email: registrationData.user.email,
-        password: registrationData.user.password,
-      });
+    setFormState((prev) => ({
+      ...prev,
+      isPending: true,
+      errors: {},
+      error: "",
+    }));
 
-      if (response?.error) {
-        setRegistrationData((prevData) => ({
-          ...prevData,
-          error: response.error as string,
-        }));
+    // Extract form data
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
 
-        return;
-      }
-
-      router.push("/profile");
-    } catch (error: any) {
-      setRegistrationData((prevState) => ({
-        ...prevState,
-        error: error.message,
+    // Client-side validation (optional, in addition to Zod validation)
+    if (!email || !password) {
+      setFormState((prev) => ({
+        ...prev,
+        isPending: false,
+        errors: {
+          email: !email ? ["Email is required"] : undefined,
+          password: !password ? ["Password is required"] : undefined,
+        },
       }));
-      console.log("Error during registration: ", error);
+      return;
+    }
+
+    // Attempt to log in using NextAuth's signIn
+    const response = await signIn("credentials", {
+      redirect: false,
+      email,
+      password,
+    });
+
+    if (response && !response.error) {
+      setFormState((prev) => ({ ...prev, isPending: false, success: true }));
+
+      // window.location.href = "/profile"; // Redirect to /profile on success
+      router.push("/profile");
+    } else {
+      setFormState((prev) => ({
+        ...prev,
+        isPending: false,
+        error: response?.error || "Login failed. Please try again.",
+      }));
     }
   };
+
+  const { errors, isPending, error } = formState;
 
   return (
     <form
       className="w-full h-screen flex justify-center flex-1 lg:grid lg:grid-cols-2"
-      noValidate
       onSubmit={handleSubmit}
     >
       <fieldset
         className="flex items-center justify-center py-12 space-y-6"
-        disabled={false}
+        disabled={isPending}
       >
         <div className="mx-auto grid w-[350px] gap-6">
           <div className="grid gap-2 text-center mb-4">
@@ -100,13 +100,16 @@ const LoginForm: React.FC = () => {
           <div className="grid gap-4">
             <div className="grid gap-2">
               <Input
-                placeholder="johndoe@email.com"
-                type="email"
+                id="email"
                 name="email"
-                value={registrationData.user.email ?? ""}
-                onChange={handleInputChange}
-                // disabled={isPending}
+                type="email"
+                placeholder="johndoe@email.com"
               />
+              {errors?.email && (
+                <p className="mt-1 text-sm text-red-500">
+                  {errors.email ?? ""}
+                </p>
+              )}
             </div>
             <div className="grid gap-2">
               <div className="flex items-center">
@@ -120,22 +123,29 @@ const LoginForm: React.FC = () => {
               </div>
 
               <Input
-                placeholder="**********"
-                type="password"
+                id="password"
                 name="password"
-                value={registrationData.user.password ?? ""}
-                onChange={handleInputChange}
-                // disabled={isPending}
+                type="password"
+                placeholder="**********"
               />
+              {errors?.password && (
+                <div>
+                  <p>Password must:</p>
+                  <ul>
+                    {errors.password.map((error) => (
+                      <li className="mt-1 text-sm text-red-500" key={error}>
+                        - {error}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
-            {registrationData.error ? (
-              <FormError message={registrationData.error} />
-            ) : null}
+            {error && <FormError message={error} />}
 
-            {/*{<FormSuccess message={success} /> : null}*/}
-
-            <Button className="w-full">Log in</Button>
-
+            <Button className="w-full" disabled={isPending}>
+              {isPending ? "Logging in..." : "Log in"}
+            </Button>
             <div className="flex items-center justify-center py-3 text-gray-500">
               <span className="border-b-2 border-border w-1/4"></span>
               <span className="text-center font-extralight uppercase text-sm px-4 m-0">
@@ -143,18 +153,6 @@ const LoginForm: React.FC = () => {
               </span>
               <span className="border-b-2 border-border w-1/4"></span>
             </div>
-            {/*{isPending ? (*/}
-            {/*  <Button variant="outline" className="w-full">*/}
-            {/*    {t("SigningIn")}*/}
-            {/*  </Button>*/}
-            {/*) : (*/}
-            {/*  <Button variant="outline" type={"button"} className="w-full">*/}
-            {/*    <span className="mr-2">*/}
-            {/*      <FaGoogle />*/}
-            {/*    </span>{" "}*/}
-            {/*    {t("Google")}*/}
-            {/*  </Button>*/}
-            {/*)}*/}
           </div>
           <div className="mt-4 text-center text-sm">
             Do Not Have Account?{" "}
