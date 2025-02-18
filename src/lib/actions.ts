@@ -107,7 +107,37 @@ export async function fetchProductsFromCategory(
 }
 
 // FETCH LIST OF FAVORITES PRODUCTS
-// ...
+export async function fetchFavoritesProducts() {
+  try {
+    await connectDB();
+
+    const user = await getUser();
+
+    if (!user) return null;
+
+    // Fetch the user's liked items (IDs of favorite products)
+    const userData = await User.findOne({ email: user.email }).select(
+      "likedItems",
+    );
+
+    const favoriteProducts: string[] = userData?.likedItems?.map(String) || []; // Ensure it's an array of strings
+
+    if (favoriteProducts.length === 0) return []; // User has no liked items
+
+    const allProducts = await fetchProducts();
+
+    if (!allProducts || allProducts.length === 0) return [];
+
+    const result = allProducts.filter((product) =>
+      favoriteProducts.includes(String(product._id)),
+    );
+
+    return result;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch the products for specific category.");
+  }
+}
 
 // SIGN UP ACTION
 export async function signupAction(state: FormState, formData: FormData) {

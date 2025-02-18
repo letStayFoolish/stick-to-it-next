@@ -34,11 +34,11 @@ const RegisterForm: React.FC = () => {
 
   return (
     <form
-      className="w-full h-screen flex justify-center flex-1 lg:grid lg:grid-cols-2 overflow-hidden"
+      className="w-full h-full flex items-center justify-center lg:grid lg:grid-cols-2"
       action={formAction}
     >
       <fieldset
-        className="flex items-center justify-center py-6 space-y-4 lg:overflow-auto"
+        className="flex items-center justify-center py-12 space-y-6"
         disabled={isPending}
       >
         <div className="mx-auto grid w-[350px] gap-4">
@@ -89,7 +89,7 @@ const RegisterForm: React.FC = () => {
                 name="password"
                 onInput={checkPassword}
               />
-              {!isPasswordValid.status && (
+              {!isPasswordValid.status && isPasswordValid.message && (
                 <p className="mt-1 text-sm text-red-500">
                   {isPasswordValid.message}
                 </p>
@@ -145,10 +145,12 @@ const RegisterForm: React.FC = () => {
           </div>
         </div>
       </fieldset>
-      <div className="hidden lg:flex justify-end flex-col px-3 py-6 border-l-2 border-border text-lg md:text-xl lg:text-2xl font-medium leading-relaxed text-gray-600">
-        <h2 className="mb-4">{`Welcome!`}</h2>
-        <p>{`Welcome aboard, we're excited to have you join our community!`}</p>
-        <p>{`Enter your name, email, password and let's move things forward, together.`}</p>
+      <div className="hidden h-full lg:flex flex-col justify-end items-start px-3 py-6 border-l-2 border-border text-lg md:text-xl lg:text-2xl font-medium leading-relaxed text-gray-600">
+        <div>
+          <h2 className="mb-4">{`Welcome!`}</h2>
+          <p>{`Welcome aboard, we're excited to have you join our community!`}</p>
+          <p>{`Enter your name, email, password and let's move things forward, together.`}</p>
+        </div>
         <blockquote className="italic border-l-4 border-primary pl-4 mt-6 text-base md:text-lg">
           <p>{`"Success is not the key to happiness. Happiness is the key to success. If you love what you are doing, you will be successful." - Albert Schweitzer`}</p>
         </blockquote>

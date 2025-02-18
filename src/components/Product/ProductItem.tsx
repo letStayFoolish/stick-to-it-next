@@ -53,12 +53,12 @@ const ProductItem: React.FC<Props> = ({ product }) => {
         {session ? (
           isLiked ? (
             <FaHeart
-              className="text-lg w-auto mr-1 cursor-pointer hover:opacity-80 hover:scale-125 transition"
+              className="text-lg w-auto cursor-pointer hover:opacity-80 hover:scale-125 transition"
               onClick={toggleLike}
             />
           ) : (
             <FaRegHeart
-              className="text-lg w-auto mr-1 cursor-pointer hover:opacity-80 hover:scale-125 transition"
+              className="text-lg w-auto cursor-pointer hover:opacity-80 hover:scale-125 transition"
               onClick={toggleLike}
             />
           )
