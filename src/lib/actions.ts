@@ -127,8 +127,6 @@ export async function signupAction(state: FormState, formData: FormData) {
 
     await connectDB();
 
-    const hashedPassword = await bcrypt.hash(validatedFields.data.password, 10);
-
     // Check if email already exists in db
     const isUserExists = await User.findOne({
       email: validatedFields.data.email,
@@ -138,28 +136,30 @@ export async function signupAction(state: FormState, formData: FormData) {
       return { error: "Email already in use" };
     }
 
-    const response = await User.create({
-      name: validatedFields.data.name,
-      email: validatedFields.data.email,
+    const { name, email, password } = validatedFields.data;
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const user = await User.create({
+      name: name,
+      email: email,
       password: hashedPassword,
       image: "",
       likedItems: [],
       listItems: [],
     });
 
-    console.log({ response }); // Todo: Check possible responses if something went wrong (do we need to check response.ok || response.status ??)
-
     // Return success or throw error to the calling client
-    if (response) {
-      await createSession(response._id.toString());
+    if (user) {
+      await createSession(user._id.toString());
 
       return { success: true };
     } else {
-      if (response.status === 409) {
+      if (user.status === 409) {
         return { error: "Email already in use" };
       }
 
-      return { error: "Registration failed." };
+      return { error: "An error occurred while creating your account." };
     }
   } catch (error: any) {
     console.error(error);

@@ -2,10 +2,13 @@ import React, { PropsWithChildren } from "react";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
+import { updateSession } from "@/lib/session";
 
 type Props = PropsWithChildren;
 
 const MainThemeLayout: React.FC<Props> = async ({ children }) => {
+  await updateSession();
+
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
       <Sidebar />

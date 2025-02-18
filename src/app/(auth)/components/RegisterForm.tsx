@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useActionState, useEffect } from "react";
+import React, { FormEvent, useActionState, useEffect, useState } from "react";
 import Link from "next/link";
 import { ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -21,6 +21,49 @@ const RegisterForm: React.FC = () => {
     signupAction,
     undefined,
   );
+
+  const [isPasswordValid, setIsPasswordValid] = useState<{
+    status: boolean;
+    message: string;
+  }>({ status: true, message: "" });
+
+  function checkPassword(event: FormEvent<HTMLInputElement>) {
+    const typedPassword = (event.target as HTMLInputElement).value;
+
+    if (typedPassword.length < 8) {
+      setIsPasswordValid({
+        status: false,
+        message: "Password must be at least 8 characters",
+      });
+      return;
+    }
+
+    if (!/[a-zA-Z]/.test(typedPassword)) {
+      setIsPasswordValid({
+        status: false,
+        message: "Password must contain at least one letter.",
+      });
+      return;
+    }
+
+    if (!/[0-9]/.test(typedPassword)) {
+      setIsPasswordValid({
+        status: false,
+        message: "Password must contain at least one number.",
+      });
+
+      return;
+    }
+    if (!/[@$!%*?&#]/.test(typedPassword)) {
+      setIsPasswordValid({
+        status: false,
+        message: "Password must contain at least one special character",
+      });
+      return;
+    }
+
+    setIsPasswordValid({ status: true, message: "" });
+  }
 
   useEffect(() => {
     if (state?.success) {
@@ -84,7 +127,14 @@ const RegisterForm: React.FC = () => {
                 type="password"
                 placeholder="**********"
                 name="password"
+                onInput={checkPassword}
               />
+              {!isPasswordValid.status && (
+                <p className="mt-1 text-sm text-red-500">
+                  {isPasswordValid.message}
+                </p>
+              )}
+
               {state?.errors?.password && (
                 <div>
                   <p>Password must:</p>
