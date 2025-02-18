@@ -31,7 +31,7 @@ const SidebarMobile: React.FC = async () => {
       </SheetTrigger>
       <SheetContent side="left" className="flex flex-col">
         <SheetHeader>
-          <SheetTitle>Navigation Menu</SheetTitle>
+          <SheetTitle>{``}</SheetTitle>
         </SheetHeader>
         {/* ================================================ */}
         {/* MOBILE SIDEBAR MENU*/}

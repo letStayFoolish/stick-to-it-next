@@ -4,7 +4,6 @@ import { getUser, verifySession } from "@/lib/dal";
 import Link from "next/link";
 import Image from "next/image";
 import GoToPage from "@/components/GoToPage";
-import profileDefault from "../../../../public/images/user-avatar.png";
 import NoData from "@/components/ui/NoData";
 import {
   Table,
@@ -19,6 +18,7 @@ import RemoveFromFavoritesBtn from "@/app/(private)/profile/components/RemoveFro
 import AddToCartBtn from "@/app/(private)/profile/components/AddToCartBtn";
 import { fetchFavoritesProducts } from "@/lib/actions";
 import { handleProductName } from "@/lib/utils";
+import { FaUserCircle } from "react-icons/fa";
 
 export const metadata: Metadata = {
   title: "Profile Page",
@@ -30,8 +30,7 @@ const Profile: React.FC = async () => {
 
   if (!session || !user) return null;
 
-  // const profileImage = user?.image;
-  const profileImage = user?.image || profileDefault;
+  const profileImage = user?.image;
 
   const likedProducts = await fetchFavoritesProducts();
 
@@ -40,13 +39,17 @@ const Profile: React.FC = async () => {
       <div className="container py-24">
         {/* Profile Section */}
         <header className="flex flex-col items-center text-center mb-12">
-          <Image
-            className="h-32 w-32 md:h-48 md:w-48 rounded-full object-cover mb-4"
-            src={profileImage}
-            width={200}
-            height={200}
-            alt="User Avatar"
-          />
+          {profileImage ? (
+            <Image
+              className="h-32 w-32 md:h-48 md:w-48 rounded-full object-cover mb-4"
+              src={profileImage}
+              width={200}
+              height={200}
+              alt="User Avatar"
+            />
+          ) : (
+            <FaUserCircle className="bg-primary-foreground text-opacity-90 h-32 w-32 md:h-48 md:w-48 border-0 outline-0 rounded-full object-fill mb-4" />
+          )}
           <h1 className="text-3xl font-bold mb-2">{user.name}</h1>
           <h2 className="text-lg text-neutral-500 mb-4">{user.email}</h2>
           <GoToPage
@@ -72,17 +75,19 @@ const Profile: React.FC = async () => {
                 </TableCaption>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>ID</TableHead>
+                    <TableHead className="hidden md:block">ID</TableHead>
                     <TableHead>Name</TableHead>
                     <TableHead>Category</TableHead>
-                    <TableHead>Actions</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {likedProducts &&
                     likedProducts.map((product) => (
                       <TableRow key={product._id.toString()}>
-                        <TableCell>{product._id.toString()}</TableCell>
+                        <TableCell className="hidden md:block">
+                          {product._id.toString()}
+                        </TableCell>
                         <TableCell>{product.product_name}</TableCell>
                         <TableCell>
                           <Link
@@ -92,8 +97,8 @@ const Profile: React.FC = async () => {
                             {handleProductName(product.category as string)}
                           </Link>
                         </TableCell>
-                        <TableCell>
-                          <div className="flex gap-4 justify-center">
+                        <TableCell className="text-right">
+                          <div className="flex gap-4 justify-end">
                             <RemoveFromFavoritesBtn
                               productId={product._id.toString()}
                             />

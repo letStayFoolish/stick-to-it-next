@@ -27,7 +27,7 @@ const LoginForm: React.FC = () => {
 
   return (
     <form
-      className="w-full h-full flex items-center justify-center lg:grid lg:grid-cols-2"
+      className="w-full h-full mt-auto flex items-center justify-center lg:grid lg:grid-cols-2"
       action={formAction}
     >
       <fieldset
