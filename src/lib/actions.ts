@@ -13,7 +13,6 @@ import mongoose from "mongoose";
 import { User } from "@/lib/models/User";
 import bcrypt from "bcryptjs";
 import { createSession, deleteSession } from "@/lib/session";
-import { redirect } from "next/navigation";
 import { getUser } from "@/lib/dal";
 
 // const BASE_URL = process.env.NEXT_PUBLIC_DOMAIN || "http://localhost:3000/";
@@ -167,8 +166,7 @@ export async function signupAction(state: FormState, formData: FormData) {
   }
 }
 export async function logout() {
-  deleteSession();
-  redirect("/");
+  await deleteSession();
 }
 
 export async function signinAction(state: FormState, formData: FormData) {

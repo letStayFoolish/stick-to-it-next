@@ -2,9 +2,9 @@ import React from "react";
 import { routes } from "@/lib/routes";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { verifySession } from "@/lib/dal";
 import { headers } from "next/headers";
 import LogOutBtn from "@/components/LogOutBtn";
+import { verifySession } from "@/lib/dal";
 
 const SidebarWeb: React.FC = async () => {
   const session = await verifySession();
