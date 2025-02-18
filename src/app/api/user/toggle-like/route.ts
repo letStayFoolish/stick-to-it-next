@@ -1,14 +1,17 @@
 import connectDB from "@/lib/database";
 import { User } from "@/lib/models/User";
 import { NextResponse } from "next/server";
+import { getUser } from "@/lib/dal";
 
 export async function POST(req: Request) {
   try {
-    const { productId, userEmail } = await req.json();
+    const { productId } = await req.json();
+
+    const userData = await getUser();
 
     await connectDB();
 
-    const user = await User.findOne({ email: userEmail });
+    const user = await User.findOne({ email: userData?.email });
 
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });

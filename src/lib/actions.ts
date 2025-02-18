@@ -2,9 +2,20 @@
 
 import connectDB from "@/lib/database";
 import { Product as ProductSchema } from "@/lib/models/Product";
-import type { Product as ProductType, ProductPlain } from "@/lib/types";
+import {
+  FormState,
+  Product as ProductType,
+  ProductPlain,
+  SigninFormSchema,
+  SignupFormSchema,
+} from "@/lib/types";
 import mongoose from "mongoose";
 import { User } from "@/lib/models/User";
+import bcrypt from "bcryptjs";
+import { createSession, deleteSession } from "@/lib/session";
+import { getUser } from "@/lib/dal";
+
+// const BASE_URL = process.env.NEXT_PUBLIC_DOMAIN || "http://localhost:3000/";
 
 // FETCH ALL PRODUCTS
 export async function fetchProducts() {
@@ -48,7 +59,6 @@ export async function fetchAllCategories(): Promise<string[]> {
 // FETCH ALL PRODUCT FOR CATEGORY
 export async function fetchProductsFromCategory(
   categoryName: string,
-  userEmail?: string,
 ): Promise<ProductPlain[]> {
   try {
     await connectDB();
@@ -60,6 +70,8 @@ export async function fetchProductsFromCategory(
     if (!products) {
       return [];
     }
+
+    const userEmail = (await getUser())?.email ?? null;
 
     let likedItems: string[] = [];
 
@@ -95,33 +107,106 @@ export async function fetchProductsFromCategory(
 }
 
 // FETCH LIST OF FAVORITES PRODUCTS
-// export async function fetchFavoritesProducts(
-//   userEmail: string | null | undefined,
-// ) {
-//   if (!userEmail) return;
-//
-//   try {
-//     const likedItems = await fetch(`/api/user/liked-items`, {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//       body: JSON.stringify({ email: userEmail }),
-//     });
-//
-//     console.log({ likedItems });
-//
-//     const allProducts = await fetchProducts();
-//
-//     if (!allProducts) {
-//       throw new Error("Products not found");
-//     }
-//
-//     // return allProducts?.filter((Product) =>
-//     //   productsFromFavoriteArray.includes(Product?._id.toString()),
-//     // );
-//   } catch (error) {
-//     console.error(error);
-//     throw error;
-//   }
-// }
+// ...
+
+// SIGN UP ACTION
+export async function signupAction(state: FormState, formData: FormData) {
+  try {
+    const validatedFields = SignupFormSchema.safeParse({
+      name: formData.get("name"),
+      email: formData.get("email"),
+      password: formData.get("password"),
+    });
+
+    // If any form fields are invalid, return early
+    if (!validatedFields.success) {
+      return {
+        errors: validatedFields.error.flatten().fieldErrors,
+      };
+    }
+
+    await connectDB();
+
+    const hashedPassword = await bcrypt.hash(validatedFields.data.password, 10);
+
+    // Check if email already exists in db
+    const isUserExists = await User.findOne({
+      email: validatedFields.data.email,
+    });
+
+    if (isUserExists) {
+      return { error: "Email already in use" };
+    }
+
+    const response = await User.create({
+      name: validatedFields.data.name,
+      email: validatedFields.data.email,
+      password: hashedPassword,
+      image: "",
+      likedItems: [],
+      listItems: [],
+    });
+
+    console.log({ response }); // Todo: Check possible responses if something went wrong (do we need to check response.ok || response.status ??)
+
+    // Return success or throw error to the calling client
+    if (response) {
+      await createSession(response._id.toString());
+
+      return { success: true };
+    } else {
+      if (response.status === 409) {
+        return { error: "Email already in use" };
+      }
+
+      return { error: "Registration failed." };
+    }
+  } catch (error: any) {
+    console.error(error);
+  }
+}
+export async function logout() {
+  await deleteSession();
+}
+
+export async function signinAction(state: FormState, formData: FormData) {
+  try {
+    const validatedFields = SigninFormSchema.safeParse({
+      email: formData.get("email"),
+      password: formData.get("password"),
+    });
+
+    // If any form fields are invalid, return early
+    if (!validatedFields.success) {
+      return {
+        errors: validatedFields.error.flatten().fieldErrors,
+      };
+    }
+
+    await connectDB();
+
+    const user = await User.findOne({
+      email: validatedFields.data.email,
+    });
+
+    const passwordMatches = await bcrypt.compare(
+      validatedFields.data.password,
+      user.password,
+    );
+
+    // Return success or throw error to the calling client
+    if (user && passwordMatches) {
+      await createSession(user._id.toString());
+
+      return { success: true };
+    } else {
+      if (!user || !passwordMatches) {
+        return { error: "Invalid credentials" };
+      }
+
+      return { error: "Login failed." };
+    }
+  } catch (error: any) {
+    console.error(error);
+  }
+}

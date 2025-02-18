@@ -4,19 +4,19 @@
 
 [x] Store favorite items on db (related to user)
 
-[] Add items to favorites
-
-[] Add items to list
+[x] Add items to favorites
 
 [] Secure the private pages
+
+[] Add items to list
 
 [] Store list on db related to current user
 
 [] Get shopping list from db
 
-[] Form actions?
+[x] Form actions?
 
-[] Form Validation (ZOD)
+[x] Form Validation (ZOD)
 
 ## Notes on 16.02.2025
 

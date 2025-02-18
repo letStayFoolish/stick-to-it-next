@@ -162,7 +162,7 @@ export const metadata: Metadata = {
 
 // export default ShoppingList;
 
-const ShoppingList: React.FC = () => {
+const ShoppingList: React.FC = async () => {
   return <main>ShoppingList</main>;
 };
 

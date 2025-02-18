@@ -1,5 +1,3 @@
-"use client";
-
 import React from "react";
 import SidebarMobile from "@/components/Sidebar/SidebarMobile";
 import {
@@ -13,10 +11,11 @@ import {
 import ModeToggle from "@/components/ModeToggle";
 import { Button } from "@/components/ui/button";
 import { CircleUser } from "lucide-react";
-import { usePathname } from "next/navigation";
+import { headers } from "next/headers";
 
-const Header: React.FC = () => {
-  const pathname = usePathname();
+const Header: React.FC = async () => {
+  // Get current pathname from headers (available in server context)
+  const pathname = (await headers()).get("x-invoke-path") || ""; // Adjust this to how you're setting it up
 
   const isAuthPage =
     pathname.startsWith("/login") || pathname.startsWith("/register");

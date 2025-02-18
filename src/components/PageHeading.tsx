@@ -1,21 +1,16 @@
-"use client";
-
 import React from "react";
-import { useSession } from "next-auth/react";
+import { getUser } from "@/lib/dal";
 
-const PageHeading: React.FC = () => {
-  const { data: session } = useSession();
+const PageHeading: React.FC = async () => {
+  const user = await getUser();
 
   return (
     <div className="mb-6 text-center">
       <>
-        {session ? (
+        {user ? (
           <h1 className="font-bold text-3xl md:text-4xl mb-2 drop-shadow-md">
             Hello,{" "}
-            <span className="text-primary">
-              {session.user?.name?.split(" "[0])}
-            </span>
-            !
+            <span className="text-primary">{user.name?.split(" ")[0]}</span>!
           </h1>
         ) : (
           <h1 className="font-bold text-3xl md:text-4xl mb-2">Welcome!</h1>
