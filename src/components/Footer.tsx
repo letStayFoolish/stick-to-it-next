@@ -3,9 +3,10 @@ import Link from "next/link";
 import { FaHome, FaList } from "react-icons/fa";
 import { FaCartShopping, FaUserLarge } from "react-icons/fa6";
 import { ShoppingCart } from "lucide-react";
+import { getUser } from "@/lib/dal";
 
-const Footer: React.FC = () => {
-  const session = { user: "Nemanja Karaklajic" };
+const Footer: React.FC = async () => {
+  const user = await getUser();
 
   const yearInFooter = () => {
     const thisYear = new Date().getFullYear();
@@ -22,7 +23,7 @@ const Footer: React.FC = () => {
         </div>
 
         <div className="flex w-full md:hidden flex-wrap items-center  md:justify-start mb-4 md:mb-0 ">
-          {session && (
+          {user && (
             <ul className="flex w-full justify-between text-2xl">
               <li className="hover:text-primary">
                 <Link href={"/"}>

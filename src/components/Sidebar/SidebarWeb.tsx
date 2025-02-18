@@ -1,18 +1,16 @@
-"use client";
-
 import React from "react";
-import { usePathname } from "next/navigation";
 import { routes } from "@/lib/routes";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { LogOut } from "lucide-react";
-import { signOut, useSession } from "next-auth/react";
+import { verifySession } from "@/lib/dal";
+import { headers } from "next/headers";
+import LogOutBtn from "@/components/LogOutBtn";
 
-const SidebarWeb: React.FC = () => {
-  const pathname = usePathname();
+const SidebarWeb: React.FC = async () => {
+  const session = await verifySession();
 
-  const { data: session } = useSession();
+  // Get current pathname from headers (available in server context)
+  const pathname = (await headers()).get("x-invoke-path") || ""; // Adjust this to how you're setting it up
 
   return (
     <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
@@ -40,12 +38,7 @@ const SidebarWeb: React.FC = () => {
 
       <div className="mb-6 text-center flex flex-col gap-2 justify-center">
         {session ? (
-          <Button
-            className="text-sm flex justify-start items-center gap-4 px-3 py-2"
-            onClick={() => signOut()}
-          >
-            <LogOut /> Sign Out
-          </Button>
+          <LogOutBtn />
         ) : (
           <Link
             href={"/login"}

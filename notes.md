@@ -6,9 +6,9 @@
 
 [x] Add items to favorites
 
-[] Add items to list
-
 [] Secure the private pages
+
+[] Add items to list
 
 [] Store list on db related to current user
 

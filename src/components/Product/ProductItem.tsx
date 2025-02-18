@@ -11,28 +11,22 @@ import { ShoppingBasket } from "lucide-react";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import { handleProductName } from "@/lib/utils";
 import { FaRegHeart } from "react-icons/fa";
-import { useSession } from "next-auth/react";
 
 type Props = {
   product: ProductPlain;
 };
 
 const ProductItem: React.FC<Props> = ({ product }) => {
-  const { data: session } = useSession();
-
   const [isLiked, setIsLiked] = useState<boolean>(product?.isLiked ?? false);
 
-  const userEmail = session?.user?.email;
+  const session = true; // Todo: somehow we have to read cookies on Client to check session
 
   const toggleLike = async () => {
-    if (!session) return; // Ensure the user is logged in
-
     try {
       const response = await fetch(`/api/user/toggle-like`, {
         method: "POST",
         body: JSON.stringify({
           productId: product._id,
-          userEmail,
         }),
         headers: {
           "Content-Type": "application/json",

@@ -1,79 +1,99 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useActionState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import FormError from "@/components/Form/FormError";
-import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { redirect } from "next/navigation";
+import { signinAction } from "@/lib/actions";
 
 const LoginForm: React.FC = () => {
-  const [formState, setFormState] = useState({
-    errors: {} as Record<string, string[] | undefined>,
-    isPending: false,
-    success: false,
-    error: "",
-  });
+  // const [formState, setFormState] = useState({
+  //   errors: {} as Record<string, string[] | undefined>,
+  //   isPending: false,
+  //   success: false,
+  //   error: "",
+  // });
 
-  const router = useRouter();
+  const [state, formAction, isPending] = useActionState(
+    signinAction,
+    undefined,
+  );
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    setFormState((prev) => ({
-      ...prev,
-      isPending: true,
-      errors: {},
-      error: "",
-    }));
-
-    // Extract form data
-    const formData = new FormData(e.currentTarget);
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
-
-    // Client-side validation (optional, in addition to Zod validation)
-    if (!email || !password) {
-      setFormState((prev) => ({
-        ...prev,
-        isPending: false,
-        errors: {
-          email: !email ? ["Email is required"] : undefined,
-          password: !password ? ["Password is required"] : undefined,
-        },
-      }));
-      return;
+  useEffect(() => {
+    if (state?.success) {
+      redirect("/profile");
     }
+    return;
+  }, [state]);
 
-    // Attempt to log in using NextAuth's signIn
-    const response = await signIn("credentials", {
-      redirect: false,
-      email,
-      password,
-    });
+  // const router = useRouter();
 
-    if (response && !response.error) {
-      setFormState((prev) => ({ ...prev, isPending: false, success: true }));
+  // const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  //   e.preventDefault();
+  //
+  //   setFormState((prev) => ({
+  //     ...prev,
+  //     isPending: true,
+  //     errors: {},
+  //     error: "",
+  //   }));
+  //
+  //   // Extract form data
+  //   const formData = new FormData(e.currentTarget);
+  //   const email = formData.get("email") as string;
+  //   const password = formData.get("password") as string;
+  //
+  //   // Client-side validation (optional, in addition to Zod validation)
+  //   if (!email || !password) {
+  //     setFormState((prev) => ({
+  //       ...prev,
+  //       isPending: false,
+  //       errors: {
+  //         email: !email ? ["Email is required"] : undefined,
+  //         password: !password ? ["Password is required"] : undefined,
+  //       },
+  //     }));
+  //     return;
+  //   }
+  //
+  //   // Attempt to log in using NextAuth's signIn
+  //   // const response = await signIn("credentials", {
+  //   //   redirect: false,
+  //   //   email,
+  //   //   password,
+  //   // });
+  //
+  //   const existingUser = await User.findOne({ email });
+  //
+  //   console.log({ existingUser });
+  //
+  //   const response = await createSession(existingUser._id.toString());
+  //
+  //   if (response) {
+  //     // if (response && !response.error) {
+  //     setFormState((prev) => ({ ...prev, isPending: false, success: true }));
+  //
+  //     // window.location.href = "/profile"; // Redirect to /profile on success
+  //     router.push("/profile");
+  //   } else {
+  //     setFormState((prev) => ({
+  //       ...prev,
+  //       isPending: false,
+  //       error: response?.error || "Login failed. Please try again.",
+  //     }));
+  //   }
+  // };
 
-      // window.location.href = "/profile"; // Redirect to /profile on success
-      router.push("/profile");
-    } else {
-      setFormState((prev) => ({
-        ...prev,
-        isPending: false,
-        error: response?.error || "Login failed. Please try again.",
-      }));
-    }
-  };
-
-  const { errors, isPending, error } = formState;
+  // const { errors, isPending, error } = formState;
 
   return (
     <form
       className="w-full h-screen flex justify-center flex-1 lg:grid lg:grid-cols-2"
-      onSubmit={handleSubmit}
+      action={formAction}
+      // onSubmit={handleSubmit}
     >
       <fieldset
         className="flex items-center justify-center py-12 space-y-6"
@@ -105,9 +125,9 @@ const LoginForm: React.FC = () => {
                 type="email"
                 placeholder="johndoe@email.com"
               />
-              {errors?.email && (
+              {state?.errors?.email && (
                 <p className="mt-1 text-sm text-red-500">
-                  {errors.email ?? ""}
+                  {state?.errors.email ?? ""}
                 </p>
               )}
             </div>
@@ -128,11 +148,11 @@ const LoginForm: React.FC = () => {
                 type="password"
                 placeholder="**********"
               />
-              {errors?.password && (
+              {state?.errors?.password && (
                 <div>
                   <p>Password must:</p>
                   <ul>
-                    {errors.password.map((error) => (
+                    {state?.errors.password.map((error) => (
                       <li className="mt-1 text-sm text-red-500" key={error}>
                         - {error}
                       </li>
@@ -141,7 +161,7 @@ const LoginForm: React.FC = () => {
                 </div>
               )}
             </div>
-            {error && <FormError message={error} />}
+            {state?.error && <FormError message={state.error} />}
 
             <Button className="w-full" disabled={isPending}>
               {isPending ? "Logging in..." : "Log in"}

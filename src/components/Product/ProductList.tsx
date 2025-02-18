@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import NoData from "@/components/ui/NoData";
 import ProductItem from "@/components/Product/ProductItem";
 import { fetchProductsFromCategory } from "@/lib/actions";
-import { useSession } from "next-auth/react";
 import { ProductPlain } from "@/lib/types";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
@@ -13,7 +12,6 @@ type Props = {
 };
 
 const ProductList: React.FC<Props> = ({ selectedCategory }) => {
-  const { data: session } = useSession();
   const [products, setProducts] = useState<ProductPlain[]>([]);
   const [loading, setLoading] = useState<boolean>(true); // Add loading state
 
@@ -24,16 +22,7 @@ const ProductList: React.FC<Props> = ({ selectedCategory }) => {
       setLoading(true);
 
       try {
-        if (session) {
-          const userEmail = session?.user?.email;
-
-          awaitedProducts = await fetchProductsFromCategory(
-            selectedCategory,
-            userEmail as string,
-          ); // await here or pass promise as props to a client component, and use them using React's `use` hook.
-        } else {
-          awaitedProducts = await fetchProductsFromCategory(selectedCategory);
-        }
+        awaitedProducts = await fetchProductsFromCategory(selectedCategory);
 
         if (!awaitedProducts) return;
 
@@ -44,7 +33,7 @@ const ProductList: React.FC<Props> = ({ selectedCategory }) => {
         setLoading(false);
       }
     })();
-  }, [session, selectedCategory]);
+  }, [selectedCategory]);
 
   if (loading) {
     return (

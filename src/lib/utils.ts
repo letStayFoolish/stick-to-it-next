@@ -2,8 +2,6 @@ import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { fetchAllCategories, fetchProducts } from "@/lib/actions";
 import type { Product as ProductType } from "@/lib/types";
-import { getSession } from "next-auth/react";
-import { redirect } from "next/navigation";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -93,12 +91,3 @@ export const handleProductName = (value: any) => {
 
   return value as string;
 };
-
-// Redirect to profile page if user already logged-in
-export async function redirectToProfilePage() {
-  const session = await getSession();
-
-  if (session) {
-    redirect("/profile");
-  }
-}

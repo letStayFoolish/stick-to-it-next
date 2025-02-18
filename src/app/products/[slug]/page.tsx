@@ -8,9 +8,7 @@ import { fetchProductsFromCategory } from "@/lib/actions";
 
 const Products: React.FC<ComponentPropsWithParams> = async ({ params }) => {
   const { slug } = await params;
-
   const products = await fetchProductsFromCategory(slug); // await here or pass promise as props to a client component, and use them using React's `use` hook.
-
   const heading: string = handleProductName(slug as CategoriesType);
 
   return (
@@ -50,11 +48,6 @@ const Products: React.FC<ComponentPropsWithParams> = async ({ params }) => {
           Shopping List
         </GoToPage>
       </div>
-      {/* Wrap client component i na Suspense boundary - the fallback will be shown while the promise is being resolved. */}
-      {/*<Suspense fallback={<LoadingSpinner />}>*/}
-      {/*  <ProductList selectedCategory={slug} />*/}
-      {/*</Suspense>*/}
-
       <ProductList selectedCategory={slug} />
     </div>
   );

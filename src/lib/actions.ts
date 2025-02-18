@@ -6,12 +6,17 @@ import {
   FormState,
   Product as ProductType,
   ProductPlain,
+  SigninFormSchema,
   SignupFormSchema,
 } from "@/lib/types";
 import mongoose from "mongoose";
 import { User } from "@/lib/models/User";
+import bcrypt from "bcryptjs";
+import { createSession, deleteSession } from "@/lib/session";
+import { redirect } from "next/navigation";
+import { getUser } from "@/lib/dal";
 
-const BASE_URL = process.env.NEXT_PUBLIC_DOMAIN || "http://localhost:3000/";
+// const BASE_URL = process.env.NEXT_PUBLIC_DOMAIN || "http://localhost:3000/";
 
 // FETCH ALL PRODUCTS
 export async function fetchProducts() {
@@ -55,7 +60,6 @@ export async function fetchAllCategories(): Promise<string[]> {
 // FETCH ALL PRODUCT FOR CATEGORY
 export async function fetchProductsFromCategory(
   categoryName: string,
-  userEmail?: string,
 ): Promise<ProductPlain[]> {
   try {
     await connectDB();
@@ -67,6 +71,8 @@ export async function fetchProductsFromCategory(
     if (!products) {
       return [];
     }
+
+    const userEmail = (await getUser())?.email ?? null;
 
     let likedItems: string[] = [];
 
@@ -102,8 +108,9 @@ export async function fetchProductsFromCategory(
 }
 
 // FETCH LIST OF FAVORITES PRODUCTS
+// ...
 
-// Signup action
+// SIGN UP ACTION
 export async function signupAction(state: FormState, formData: FormData) {
   try {
     const validatedFields = SignupFormSchema.safeParse({
@@ -119,16 +126,35 @@ export async function signupAction(state: FormState, formData: FormData) {
       };
     }
 
-    const response = await fetch(`${BASE_URL}api/register`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(validatedFields.data),
+    await connectDB();
+
+    const hashedPassword = await bcrypt.hash(validatedFields.data.password, 10);
+
+    // Check if email already exists in db
+    const isUserExists = await User.findOne({
+      email: validatedFields.data.email,
     });
 
+    if (isUserExists) {
+      return { error: "Email already in use" };
+    }
+
+    const response = await User.create({
+      name: validatedFields.data.name,
+      email: validatedFields.data.email,
+      password: hashedPassword,
+      image: "",
+      likedItems: [],
+      listItems: [],
+    });
+
+    console.log({ response }); // Todo: Check possible responses if something went wrong (do we need to check response.ok || response.status ??)
+
     // Return success or throw error to the calling client
-    if (response.ok) {
+    if (response) {
+      await createSession(response._id.toString());
+
+      // redirect user... redirect("/profile")
       return { success: true };
     } else {
       if (response.status === 409) {
@@ -136,6 +162,52 @@ export async function signupAction(state: FormState, formData: FormData) {
       }
 
       return { error: "Registration failed." };
+    }
+  } catch (error: any) {
+    console.error(error);
+  }
+}
+export async function logout() {
+  deleteSession();
+  redirect("/");
+}
+
+export async function signinAction(state: FormState, formData: FormData) {
+  try {
+    const validatedFields = SigninFormSchema.safeParse({
+      email: formData.get("email"),
+      password: formData.get("password"),
+    });
+
+    // If any form fields are invalid, return early
+    if (!validatedFields.success) {
+      return {
+        errors: validatedFields.error.flatten().fieldErrors,
+      };
+    }
+
+    await connectDB();
+
+    const user = await User.findOne({
+      email: validatedFields.data.email,
+    });
+
+    const passwordMatches = await bcrypt.compare(
+      validatedFields.data.password,
+      user.password,
+    );
+
+    // Return success or throw error to the calling client
+    if (user && passwordMatches) {
+      await createSession(user._id.toString());
+
+      return { success: true };
+    } else {
+      if (!user || !passwordMatches) {
+        return { error: "Invalid credentials" };
+      }
+
+      return { error: "Login failed." };
     }
   } catch (error: any) {
     console.error(error);
