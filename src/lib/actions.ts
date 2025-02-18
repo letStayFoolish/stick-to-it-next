@@ -154,7 +154,6 @@ export async function signupAction(state: FormState, formData: FormData) {
     if (response) {
       await createSession(response._id.toString());
 
-      // redirect user... redirect("/profile")
       return { success: true };
     } else {
       if (response.status === 409) {
