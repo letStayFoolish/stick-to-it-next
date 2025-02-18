@@ -8,19 +8,15 @@ import { Button } from "@/components/ui/button";
 import FormError from "@/components/Form/FormError";
 import { redirect } from "next/navigation";
 import { signinAction } from "@/lib/actions";
+import { usePasswordValidation } from "@/components/hooks/usePasswordValidation";
 
 const LoginForm: React.FC = () => {
-  // const [formState, setFormState] = useState({
-  //   errors: {} as Record<string, string[] | undefined>,
-  //   isPending: false,
-  //   success: false,
-  //   error: "",
-  // });
-
   const [state, formAction, isPending] = useActionState(
     signinAction,
     undefined,
   );
+
+  const { isPasswordValid, checkPassword } = usePasswordValidation();
 
   useEffect(() => {
     if (state?.success) {
@@ -29,71 +25,10 @@ const LoginForm: React.FC = () => {
     return;
   }, [state]);
 
-  // const router = useRouter();
-
-  // const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  //   e.preventDefault();
-  //
-  //   setFormState((prev) => ({
-  //     ...prev,
-  //     isPending: true,
-  //     errors: {},
-  //     error: "",
-  //   }));
-  //
-  //   // Extract form data
-  //   const formData = new FormData(e.currentTarget);
-  //   const email = formData.get("email") as string;
-  //   const password = formData.get("password") as string;
-  //
-  //   // Client-side validation (optional, in addition to Zod validation)
-  //   if (!email || !password) {
-  //     setFormState((prev) => ({
-  //       ...prev,
-  //       isPending: false,
-  //       errors: {
-  //         email: !email ? ["Email is required"] : undefined,
-  //         password: !password ? ["Password is required"] : undefined,
-  //       },
-  //     }));
-  //     return;
-  //   }
-  //
-  //   // Attempt to log in using NextAuth's signIn
-  //   // const response = await signIn("credentials", {
-  //   //   redirect: false,
-  //   //   email,
-  //   //   password,
-  //   // });
-  //
-  //   const existingUser = await User.findOne({ email });
-  //
-  //   console.log({ existingUser });
-  //
-  //   const response = await createSession(existingUser._id.toString());
-  //
-  //   if (response) {
-  //     // if (response && !response.error) {
-  //     setFormState((prev) => ({ ...prev, isPending: false, success: true }));
-  //
-  //     // window.location.href = "/profile"; // Redirect to /profile on success
-  //     router.push("/profile");
-  //   } else {
-  //     setFormState((prev) => ({
-  //       ...prev,
-  //       isPending: false,
-  //       error: response?.error || "Login failed. Please try again.",
-  //     }));
-  //   }
-  // };
-
-  // const { errors, isPending, error } = formState;
-
   return (
     <form
       className="w-full h-screen flex justify-center flex-1 lg:grid lg:grid-cols-2"
       action={formAction}
-      // onSubmit={handleSubmit}
     >
       <fieldset
         className="flex items-center justify-center py-12 space-y-6"
@@ -146,8 +81,14 @@ const LoginForm: React.FC = () => {
                 id="password"
                 name="password"
                 type="password"
-                placeholder="**********"
+                placeholder="********"
+                onInput={checkPassword}
               />
+              {!isPasswordValid.status && (
+                <p className="mt-1 text-sm text-red-500">
+                  {isPasswordValid.message}
+                </p>
+              )}
               {state?.errors?.password && (
                 <div>
                   <p>Password must:</p>
@@ -163,7 +104,10 @@ const LoginForm: React.FC = () => {
             </div>
             {state?.error && <FormError message={state.error} />}
 
-            <Button className="w-full" disabled={isPending}>
+            <Button
+              className="w-full"
+              disabled={isPending || !!isPasswordValid.message}
+            >
               {isPending ? "Logging in..." : "Log in"}
             </Button>
             <div className="flex items-center justify-center py-3 text-gray-500">

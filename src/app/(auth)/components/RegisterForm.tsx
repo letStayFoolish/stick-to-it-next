@@ -1,6 +1,6 @@
 "use client";
 
-import React, { FormEvent, useActionState, useEffect, useState } from "react";
+import React, { useActionState, useEffect } from "react";
 import Link from "next/link";
 import { ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { signupAction } from "@/lib/actions";
 import { redirect } from "next/navigation";
 import FormError from "@/components/Form/FormError";
+import { usePasswordValidation } from "@/components/hooks/usePasswordValidation";
 
 /**
  * Sign-up functionality
@@ -22,48 +23,7 @@ const RegisterForm: React.FC = () => {
     undefined,
   );
 
-  const [isPasswordValid, setIsPasswordValid] = useState<{
-    status: boolean;
-    message: string;
-  }>({ status: true, message: "" });
-
-  function checkPassword(event: FormEvent<HTMLInputElement>) {
-    const typedPassword = (event.target as HTMLInputElement).value;
-
-    if (typedPassword.length < 8) {
-      setIsPasswordValid({
-        status: false,
-        message: "Password must be at least 8 characters",
-      });
-      return;
-    }
-
-    if (!/[a-zA-Z]/.test(typedPassword)) {
-      setIsPasswordValid({
-        status: false,
-        message: "Password must contain at least one letter.",
-      });
-      return;
-    }
-
-    if (!/[0-9]/.test(typedPassword)) {
-      setIsPasswordValid({
-        status: false,
-        message: "Password must contain at least one number.",
-      });
-
-      return;
-    }
-    if (!/[@$!%*?&#]/.test(typedPassword)) {
-      setIsPasswordValid({
-        status: false,
-        message: "Password must contain at least one special character",
-      });
-      return;
-    }
-
-    setIsPasswordValid({ status: true, message: "" });
-  }
+  const { isPasswordValid, checkPassword } = usePasswordValidation();
 
   useEffect(() => {
     if (state?.success) {
@@ -149,7 +109,10 @@ const RegisterForm: React.FC = () => {
               )}
             </div>
             {state && state.error && <FormError message={state.error} />}
-            <Button className="w-full" disabled={isPending}>
+            <Button
+              className="w-full"
+              disabled={isPending || !!isPasswordValid.message}
+            >
               {isPending ? "Submitting..." : "Register"}
             </Button>
             <div className="flex items-center justify-center py-3 text-gray-500">
