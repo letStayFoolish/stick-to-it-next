@@ -1,12 +1,11 @@
 "use client";
 
-import React, { useActionState, useEffect } from "react";
+import React, { useActionState } from "react";
 import Link from "next/link";
 import { ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { signupAction } from "@/lib/actions";
-import { redirect } from "next/navigation";
 import FormError from "@/components/Form/FormError";
 
 /**
@@ -21,13 +20,6 @@ const RegisterForm: React.FC = () => {
     signupAction,
     undefined,
   );
-
-  useEffect(() => {
-    if (state?.success) {
-      redirect("/login");
-    }
-    return;
-  }, [state]);
 
   return (
     <form
