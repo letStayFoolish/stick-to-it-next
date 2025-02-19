@@ -6,7 +6,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { Menu, ShoppingCart } from "lucide-react";
+import { LogOut, Menu, ShoppingCart } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { routes } from "@/lib/routes";
@@ -64,7 +64,12 @@ const SidebarMobile: React.FC = async () => {
           </div>
           <div className="mb-6 text-center flex flex-col gap-2 justify-center">
             {session ? (
-              <LogOutBtn />
+              <LogOutBtn
+                btnVariant="default"
+                className="flex justify-center items-center"
+              >
+                <LogOut /> Sign Out
+              </LogOutBtn>
             ) : (
               <Link
                 href={"/login"}

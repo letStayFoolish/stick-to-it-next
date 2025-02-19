@@ -19,6 +19,8 @@ import AddToCartBtn from "@/app/(private)/profile/components/AddToCartBtn";
 import { fetchFavoritesProducts } from "@/lib/actions";
 import { handleProductName } from "@/lib/utils";
 import { FaUserCircle } from "react-icons/fa";
+import LogOutBtn from "@/components/LogOutBtn";
+import { LogOut } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Profile Page",
@@ -52,14 +54,18 @@ const Profile: React.FC = async () => {
           )}
           <h1 className="text-3xl font-bold mb-2">{user.name}</h1>
           <h2 className="text-lg text-neutral-500 mb-4">{user.email}</h2>
-          <GoToPage
-            href="/"
-            className="bg-secondary text-secondary-foreground px-4 py-2 rounded-md hover:opacity-75 transition-all"
-          >
-            Go to Home
-          </GoToPage>
+          <div className="flex flex-row gap-2">
+            <GoToPage
+              href="/"
+              className="bg-secondary text-secondary-foreground px-4 py-2 rounded-md hover:opacity-75 transition-all"
+            >
+              Go to Home
+            </GoToPage>
+            <LogOutBtn btnVariant="outline">
+              <LogOut /> Leave
+            </LogOutBtn>
+          </div>
         </header>
-
         {/* Favorite Products Table */}
         <section className="flex flex-col items-center">
           <div className="mb-6 px-3 py-4">

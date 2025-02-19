@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { headers } from "next/headers";
 import LogOutBtn from "@/components/LogOutBtn";
 import { verifySession } from "@/lib/dal";
+import { LogOut } from "lucide-react";
 
 const SidebarWeb: React.FC = async () => {
   const session = await verifySession();
@@ -38,7 +39,12 @@ const SidebarWeb: React.FC = async () => {
 
       <div className="mb-6 text-center flex flex-col gap-2 justify-center">
         {session ? (
-          <LogOutBtn />
+          <LogOutBtn
+            btnVariant="default"
+            className="flex justify-center items-center"
+          >
+            <LogOut /> Sign Out
+          </LogOutBtn>
         ) : (
           <Link
             href={"/login"}

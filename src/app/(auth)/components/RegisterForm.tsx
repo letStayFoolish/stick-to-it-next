@@ -125,7 +125,7 @@ const RegisterForm: React.FC = () => {
             </div>
             {state && state.error && <FormError message={state.error} />}
             <Button
-              className="w-full"
+              className="w-full mt-16"
               disabled={isPending || !!isPasswordValid.message}
             >
               {isPending ? "Submitting..." : "Register"}
