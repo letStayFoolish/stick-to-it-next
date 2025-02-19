@@ -1,18 +1,18 @@
 "use client";
 
 import React from "react";
-import { Button } from "@/components/ui/button";
+import { Button, ButtonProps } from "@/components/ui/button";
 import { ShoppingCart } from "lucide-react";
 import { ToastAction } from "@/components/ui/toast";
 import Link from "next/link";
-import { Product } from "@/lib/types";
+import type { ProductPlain } from "@/lib/types";
 import { useToast } from "@/hooks/use-toast";
 
-type Props = {
-  product: Product;
+type Props = ButtonProps & {
+  product: ProductPlain;
 };
 
-const AddToCartBtn: React.FC<Props> = ({ product }) => {
+const AddToCartBtn: React.FC<Props> = ({ product, ...props }) => {
   const { toast } = useToast();
 
   const handleAddToCart = async () => {
@@ -20,7 +20,7 @@ const AddToCartBtn: React.FC<Props> = ({ product }) => {
       const response = await fetch(`/api/user/shopping-list-add-items`, {
         method: "POST",
         body: JSON.stringify({
-          productId: product._id.toString(),
+          productId: product._id,
         }),
         headers: {
           "Content-Type": "application/json",
@@ -31,6 +31,7 @@ const AddToCartBtn: React.FC<Props> = ({ product }) => {
         throw new Error("Failed to add item to shopping list");
       }
 
+      console.log({ response });
       toast({
         title: "Shopping list updated!",
         description: `Added ${product.product_name} to shopping list.`,
@@ -40,8 +41,15 @@ const AddToCartBtn: React.FC<Props> = ({ product }) => {
           </ToastAction>
         ),
       });
+
+      return;
     } catch (error: any) {
       console.log(error);
+      toast({
+        variant: "destructive",
+        title: "Something vent wrong!",
+        description: error,
+      });
     }
   };
 
@@ -50,6 +58,7 @@ const AddToCartBtn: React.FC<Props> = ({ product }) => {
       variant="outline"
       onClick={handleAddToCart}
       className="text-accent-foreground hover:opacity-80"
+      {...props}
     >
       <ShoppingCart size={18} />
     </Button>

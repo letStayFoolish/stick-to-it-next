@@ -4,9 +4,10 @@ import React, { useCallback } from "react";
 import NoData from "@/components/ui/NoData";
 import type { ProductPlain } from "@/lib/types";
 import Image from "next/image";
-import { Checkbox } from "@/components/ui/checkbox";
 import { handleProductName } from "@/lib/utils";
-import RemoveFromListBtn from "@/app/(private)/shopping-list/components/RemoveFromListBtn";
+import ClearAllBtn from "@/app/(private)/shopping-list/components/ClearAllBtn";
+import Link from "next/link";
+import ShoppingListItem from "@/app/(private)/shopping-list/components/ShoppingListItem";
 
 type Props = {
   products: ProductPlain[];
@@ -32,52 +33,40 @@ export const ShoppingList: React.FC<Props> = ({ products }) => {
   const groupedItems = products ? groupByCategory(products) : {};
 
   return (
-    <section className="mt-6 w-full lg:w-2/3">
-      <div className="w-full divide-y divide-gray-200 dark:divide-gray-700">
+    <section className="">
+      <ul className="w-full flex flex-col items-start mt-2 md:mt-6 px-3 pt-4 pb-6 bg-muted dark:bg-background rounded-md shadow-sm">
         {Object.entries(groupedItems).map(([categoryName, products]) => (
-          <React.Fragment key={categoryName}>
-            {/* Category Row (Heading) */}
-            <div className="bg-gray-100 dark:bg-gray-800">
-              <div className="py-2 px-4 sm:px-6 font-semibold text-gray-800 dark:text-gray-100">
-                <div className="flex items-center gap-4">
-                  <Image
-                    src={`/images/categories/${products[0].category}.png`} // Assuming category image exists in the product
-                    alt={`${categoryName} Image`}
-                    className="w-12 h-12 rounded-md object-cover"
-                    width={48}
-                    height={48}
-                    priority
-                  />
-                  <span className="text-lg">
-                    {handleProductName(categoryName)}
-                  </span>
-                </div>
-              </div>
+          <li className="w-full" key={categoryName}>
+            <div className="flex gap-4 lg:gap-7 items-baseline border-b-2 border-border last:border-none py-2 lg:py-3">
+              <Link href={`/products/${categoryName}`}>
+                <Image
+                  src={`/images/categories/${categoryName}.png`} // Assuming category image exists in the product
+                  alt={`Image for the groceries from the category ${categoryName}`}
+                  width={50}
+                  height={50}
+                  priority={true}
+                  className="object-cover object-center lg:w-[80px]"
+                />
+              </Link>
+              <h3 className="uppercase text-lg md:text-xl font-medium lg:font-bold">
+                {handleProductName(categoryName)}
+              </h3>
             </div>
-
+            <ul className="w-full">
+              {products.map((product) => (
+                <li
+                  key={product._id.toString()}
+                  className="border-b last:border-none"
+                >
+                  <ShoppingListItem product={product} />
+                </li>
+              ))}
+            </ul>
             {/* Product Rows */}
-            {products.map((product) => (
-              <div
-                key={product._id.toString()}
-                className="px-4 flex items-center justify-between"
-              >
-                <div className="flex gap-6 space-x-2">
-                  <Checkbox id={`row-${product._id}`} className="peer" />
-                  <label
-                    htmlFor={`row-${product._id}`}
-                    className="text-sm font-light leading-none peer-checked:line-through peer-checked:text-gray-500"
-                  >
-                    {product.product_name}
-                  </label>
-                </div>
-                <div className="table-cell py-3 px-4 sm:px-6 text-right">
-                  <RemoveFromListBtn productId={product._id} />
-                </div>
-              </div>
-            ))}
-          </React.Fragment>
+          </li>
         ))}
-      </div>
+      </ul>
+      <ClearAllBtn />
     </section>
   );
 };

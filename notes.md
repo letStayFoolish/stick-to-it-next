@@ -6,7 +6,7 @@
 
 [x] Add items to favorites
 
-[] Secure the private pages
+[x] Secure the private pages
 
 [x] Add items to list
 
@@ -24,15 +24,17 @@
 
 ## Notes on 19.02.2025
 
-[] Add Toast notification (add/remove to/from cart)
+[x] Add Toast notification (add/remove to/from cart)
 
-[] Handle add/remove to/from cart from profile page
+[x] Handle add/remove to/from cart from profile page
 
-[] Style up Shopping list page
+[x] Style up Shopping list page
 
-[] Handle disabled for cart icon if item is already added to the cart
+[x] Handle disabled for cart icon if item is already added to the cart
 
 [] Handle list item(s) count (also add +/- buttons if item is added)
 
-[] check _**session**_ within **client components**
+[x] check _**session**_ within **client components**
+
+[] Refactor User schema/listItems to include: product, quantity and isChecked
 

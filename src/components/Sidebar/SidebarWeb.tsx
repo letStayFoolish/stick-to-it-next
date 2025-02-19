@@ -14,7 +14,7 @@ const SidebarWeb: React.FC = async () => {
   const pathname = (await headers()).get("x-invoke-path") || ""; // Adjust this to how you're setting it up
 
   return (
-    <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
+    <nav className="px-2 text-lg font-medium lg:px-4">
       <div className="mb-6">
         {routes.map((route) => {
           const LinkIcon = route.icon;
@@ -37,13 +37,10 @@ const SidebarWeb: React.FC = async () => {
         })}
       </div>
 
-      <div className="mb-6 text-center flex flex-col gap-2 justify-center">
+      <div className="mb-6 text-center flex flex-col gap-1 justify-center">
         {session ? (
-          <LogOutBtn
-            btnVariant="default"
-            className="flex justify-center items-center"
-          >
-            <LogOut /> Sign Out
+          <LogOutBtn btnVariant="outline" className="text-lg">
+            <LogOut /> Sign out
           </LogOutBtn>
         ) : (
           <Link
