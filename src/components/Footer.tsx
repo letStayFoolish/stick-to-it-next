@@ -46,7 +46,7 @@ const Footer: React.FC = async () => {
         </div>
 
         <div>
-          <p className="text-sm text-secondary-foreground mt-2 md:mt-0 text-center">
+          <p className="text-sm text-secondary-foreground md:mt-0 text-center">
             &copy; {yearInFooter()} by Nemanja Karaklajic
           </p>
         </div>

@@ -13,7 +13,7 @@ const Products: React.FC<ComponentPropsWithParams> = async ({ params }) => {
   const products = await fetchProductsFromCategory(slug);
 
   return (
-    <div className="flex flex-col items-center mt-6 p-4 ">
+    <div className="flex flex-col items-center mt-6 p-4 overflow-x-hidden">
       <div className="flex md:flex-col gap-4 items-center justify-between md:justify-center mx-auto w-full">
         <PageHeading>
           {handleProductName(slug as CategoriesType).toUpperCase()}
@@ -37,13 +37,13 @@ const Products: React.FC<ComponentPropsWithParams> = async ({ params }) => {
       <div className="flex justify-between w-full">
         <GoToPage
           href={"/products"}
-          className="self-end mt-4 mb-6 px-6 py-3 md:px-4 md:py-3 bg-secondary rounded-md hover:bg-primary hover:text-primary-foreground transition-opacity"
+          className="self-end mt-4 mb-6 px-4 py-3 md:py-3 bg-secondary rounded-md hover:bg-primary hover:text-primary-foreground transition-opacity"
         >
           Back To All Products
         </GoToPage>
         <GoToPage
           href={"/shopping-list"}
-          className="self-start mt-4 mb-6 px-6 py-3 md:px-4 md:py-3 bg-primary text-primary-foreground rounded-md hover:bg-secondary hover:text-secondary-foreground transition-opacity"
+          className="self-start mt-4 mb-4 px-6 py-3 md:py-3 bg-primary text-primary-foreground rounded-md hover:bg-secondary hover:text-secondary-foreground transition-opacity"
         >
           Shopping List
         </GoToPage>

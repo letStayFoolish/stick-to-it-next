@@ -19,7 +19,7 @@ const ProductList: React.FC<Props> = async ({ selectedCategory }) => {
       <ul className="mx-auto">
         {products?.map((product) => (
           <li
-            className="border-b border-border last:border-none mb-2 p-2"
+            className="border-b border-border last:border-none p-2 w-full"
             key={product._id}
           >
             <ProductItem product={product} />

@@ -30,7 +30,9 @@ export async function POST(req: Request) {
     }
 
     await user.save();
+
     revalidatePath("/shopping-list");
+    revalidatePath("/products/*");
     return NextResponse.json({ success: true, isAdded: !isInShoppingList });
   } catch (error: any) {
     console.log(error);

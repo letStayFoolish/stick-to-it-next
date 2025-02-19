@@ -22,7 +22,7 @@ const ClearAll: React.FC = () => {
     <Button
       disabled={isPending}
       onClick={handleClick}
-      variant={"secondary"}
+      variant={"destructive"}
       className="w-full mx-auto mt-6 mb-8 hover:opacity-80 hover:text-destructive transition-all"
     >
       {isPending ? `Clearing...` : `Clear All`}
