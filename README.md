@@ -39,15 +39,12 @@ This project is built using the following technologies:
 _To be added in the future..._
 
 
-[//]: # (![Home Page]&#40;/public/images/screens/stick-to-it_home.png&#41;)
-
-[//]: # (![Categories Page]&#40;/public/images/screens/stick-to-it_categories.png&#41;)
-
-[//]: # (![Category Page]&#40;/public/images/screens/stick-to-it_category.png&#41;)
-
-[//]: # (![Shopping List]&#40;/public/images/screens/stick-to-it_shopping-list.png&#41;)
-
-[//]: # (![Login Page]&#40;/public/images/screens/stick-to-it_login-screen.png&#41;)
+![Home Page](/public/images/screens/screen-01.png)
+![Categories page](/public/images/screens/screen-02.png)
+![Shopping list](/public/images/screens/screen-03.png)
+![Profile page](/public/images/screens/screen-04.png)
+![Login Page](/public/images/screens/screen-05.png)
+![Register Page](/public/images/screens/screen-06.png)
 
 ## User Flow
 
