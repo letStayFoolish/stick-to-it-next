@@ -45,7 +45,7 @@ const SidebarWeb: React.FC = async () => {
         ) : (
           <Link
             href={"/login"}
-            className="bg-stone-950 dark:bg-stone-700 text-accent dark:text-white rounded-md text-sm flex justify-start items-center gap-4 px-3 py-2"
+            className="bg-card-foreground text-primary-foreground rounded-md text-lg px-3 py-2"
           >
             Login
           </Link>

@@ -112,7 +112,7 @@ const LoginForm: React.FC = () => {
             {state?.error && <FormError message={state.error} />}
 
             <Button
-              className="w-full mt-16"
+              className="w-full mt-16 py-2 text-lg"
               disabled={isPending || !!isPasswordValid.message}
             >
               {isPending ? "Logging in..." : "Log in"}

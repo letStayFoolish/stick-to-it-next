@@ -15,8 +15,8 @@ const ProductList: React.FC<Props> = async ({ selectedCategory }) => {
   }
 
   return (
-    <div className="flex flex-col w-full md:w-1/2 my-4">
-      <ul className="mx-auto">
+    <div className="flex flex-col w-full lg:w-2/4 my-4">
+      <ul className="mx-auto w-full">
         {products?.map((product) => (
           <li
             className="border-b border-border last:border-none p-2 w-full"

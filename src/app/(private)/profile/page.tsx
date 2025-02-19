@@ -26,6 +26,8 @@ export const metadata: Metadata = {
 const Profile: React.FC = async () => {
   const user = await getUser();
 
+  if (!user) return null;
+
   const profileImage = user?.image;
 
   const likedProducts = await fetchFavoritesProducts();
