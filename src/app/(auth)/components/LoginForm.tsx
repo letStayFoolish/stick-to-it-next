@@ -9,6 +9,7 @@ import FormError from "@/components/Form/FormError";
 import { redirect } from "next/navigation";
 import { signinAction } from "@/lib/actions";
 import { usePasswordValidation } from "@/components/hooks/usePasswordValidation";
+import { Label } from "@/components/ui/label";
 
 const LoginForm: React.FC = () => {
   const [state, formAction, isPending] = useActionState(
@@ -54,12 +55,15 @@ const LoginForm: React.FC = () => {
           </div>
           <div className="grid gap-4">
             <div className="grid gap-2">
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                placeholder="johndoe@email.com"
-              />
+              <div className="flex flex-col mb-4 gap-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  placeholder="johndoe@email.com"
+                />
+              </div>
               {state?.errors?.email && (
                 <p className="mt-1 text-sm text-red-500">
                   {state?.errors.email ?? ""}
@@ -76,14 +80,17 @@ const LoginForm: React.FC = () => {
                 {/*  Forgot your password?*/}
                 {/*</Link>*/}
               </div>
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="password">Password</Label>
+                <Input
+                  id="password"
+                  name="password"
+                  type="password"
+                  placeholder="********"
+                  onInput={checkPassword}
+                />
+              </div>
 
-              <Input
-                id="password"
-                name="password"
-                type="password"
-                placeholder="********"
-                onInput={checkPassword}
-              />
               {!isPasswordValid.status && isPasswordValid.message && (
                 <p className="mt-1 text-sm text-red-500">
                   {isPasswordValid.message}
@@ -110,13 +117,13 @@ const LoginForm: React.FC = () => {
             >
               {isPending ? "Logging in..." : "Log in"}
             </Button>
-            <div className="flex items-center justify-center py-3 text-gray-500">
-              <span className="border-b-2 border-border w-1/4"></span>
-              <span className="text-center font-extralight uppercase text-sm px-4 m-0">
-                Or Continue With
-              </span>
-              <span className="border-b-2 border-border w-1/4"></span>
-            </div>
+            {/*<div className="flex items-center justify-center py-3 text-gray-500">*/}
+            {/*  <span className="border-b-2 border-border w-1/4"></span>*/}
+            {/*  <span className="text-center font-extralight uppercase text-sm px-4 m-0">*/}
+            {/*    Or Continue With*/}
+            {/*  </span>*/}
+            {/*  <span className="border-b-2 border-border w-1/4"></span>*/}
+            {/*</div>*/}
           </div>
           <div className="mt-4 text-center text-sm">
             Do Not Have Account?{" "}

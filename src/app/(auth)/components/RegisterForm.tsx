@@ -9,6 +9,7 @@ import { signupAction } from "@/lib/actions";
 import { redirect } from "next/navigation";
 import FormError from "@/components/Form/FormError";
 import { usePasswordValidation } from "@/components/hooks/usePasswordValidation";
+import { Label } from "@/components/ui/label";
 
 /**
  * Sign-up functionality
@@ -61,7 +62,15 @@ const RegisterForm: React.FC = () => {
           </div>
           <div className="grid gap-4">
             <div className="grid gap-2">
-              <Input id="name" type="name" placeholder="John Doe" name="name" />
+              <div className="flex flex-col mb-4 gap-2">
+                <Label htmlFor="name">Name</Label>
+                <Input
+                  id="name"
+                  type="name"
+                  placeholder="John Doe"
+                  name="name"
+                />
+              </div>
               {state?.errors?.name && (
                 <p className="mt-1 text-sm text-red-500">
                   {state.errors.name ?? ""}
@@ -69,12 +78,15 @@ const RegisterForm: React.FC = () => {
               )}
             </div>
             <div className="grid gap-2">
-              <Input
-                id="email"
-                type="email"
-                placeholder="m@example.com"
-                name="email"
-              />
+              <div className="flex flex-col mb-4 gap-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="m@example.com"
+                  name="email"
+                />
+              </div>
               {state?.errors?.email && (
                 <p className="mt-1 text-sm text-red-500">
                   {state.errors.email ?? ""}
@@ -82,13 +94,16 @@ const RegisterForm: React.FC = () => {
               )}
             </div>
             <div className="grid gap-2">
-              <Input
-                id="password"
-                type="password"
-                placeholder="**********"
-                name="password"
-                onInput={checkPassword}
-              />
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="password">Password</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="**********"
+                  name="password"
+                  onInput={checkPassword}
+                />
+              </div>
               {!isPasswordValid.status && isPasswordValid.message && (
                 <p className="mt-1 text-sm text-red-500">
                   {isPasswordValid.message}

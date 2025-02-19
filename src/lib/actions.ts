@@ -219,23 +219,27 @@ export async function signinAction(state: FormState, formData: FormData) {
       email: validatedFields.data.email,
     });
 
+    if (!user) {
+      return { error: "Invalid credentials" };
+    }
+
     const passwordMatches = await bcrypt.compare(
       validatedFields.data.password,
       user.password,
     );
+
+    if (!passwordMatches) {
+      return { error: "Invalid credentials" };
+    }
 
     // Return success or throw error to the calling client
     if (user && passwordMatches) {
       await createSession(user._id.toString());
 
       return { success: true };
-    } else {
-      if (!user || !passwordMatches) {
-        return { error: "Invalid credentials" };
-      }
-
-      return { error: "Login failed." };
     }
+
+    return { error: "Login failed." };
   } catch (error: any) {
     console.error(error);
   }

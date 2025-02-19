@@ -2,6 +2,7 @@ import connectDB from "@/lib/database";
 import { User } from "@/lib/models/User";
 import { NextResponse } from "next/server";
 import { getUser } from "@/lib/dal";
+import { revalidatePath } from "next/cache";
 
 export async function POST(req: Request) {
   try {
@@ -28,6 +29,7 @@ export async function POST(req: Request) {
       user.likedItems.push(productId);
     }
 
+    revalidatePath("/profile");
     await user.save();
     return NextResponse.json({ success: true, liked: !isLiked });
   } catch (error: any) {
