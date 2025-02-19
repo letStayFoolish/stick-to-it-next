@@ -32,7 +32,7 @@ export const ShoppingList: React.FC<Props> = ({ products }) => {
   const groupedItems = products ? groupByCategory(products) : {};
 
   return (
-    <section className="mt-6 p-4 w-full">
+    <section className="mt-6 w-full lg:w-2/3">
       <div className="w-full divide-y divide-gray-200 dark:divide-gray-700">
         {Object.entries(groupedItems).map(([categoryName, products]) => (
           <React.Fragment key={categoryName}>
@@ -59,7 +59,7 @@ export const ShoppingList: React.FC<Props> = ({ products }) => {
             {products.map((product) => (
               <div
                 key={product._id.toString()}
-                className="px-4 flex items-center justify-between even:bg-gray-50 dark:even:bg-gray-900"
+                className="px-4 flex items-center justify-between"
               >
                 <div className="flex gap-6 space-x-2">
                   <Checkbox id={`row-${product._id}`} className="peer" />

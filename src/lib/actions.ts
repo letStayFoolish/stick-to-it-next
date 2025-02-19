@@ -196,10 +196,13 @@ export async function signupAction(state: FormState, formData: FormData) {
     console.error(error);
   }
 }
+
+// LOGOUT ACTION
 export async function logout() {
   await deleteSession();
 }
 
+// SIGN IN ACTION
 export async function signinAction(state: FormState, formData: FormData) {
   try {
     const validatedFields = SigninFormSchema.safeParse({
@@ -355,6 +358,34 @@ export async function handleRemoveFromShoppingList(productId: string) {
 
     userData.save();
     revalidatePath("/shopping-list");
+  } catch (error: any) {
+    console.error(error);
+  }
+}
+
+// CHECK IF ITEM IS ALREADY ADDED TO SHOPPING LIST (BUTTON DISABLED)
+export async function checkIsItemAdded(productId: string) {
+  try {
+    await connectDB();
+
+    const user = await getUser();
+
+    if (!user) return null;
+
+    // Fetch the user's liked items (IDs of favorite products)
+    const userData = await User.findOne({ email: user.email }).select(
+      "listItems",
+    );
+
+    if (!userData) return null;
+
+    const shoppingListItems: string[] = userData?.listItems?.map(String) || []; // Ensure it's an array of strings
+
+    if (shoppingListItems.length === 0) return null; // User has no liked items
+
+    const result = shoppingListItems.indexOf(productId);
+
+    return result !== -1;
   } catch (error: any) {
     console.error(error);
   }

@@ -12,6 +12,9 @@ import { Tooltip as ReactTooltip } from "react-tooltip";
 import { handleProductName } from "@/lib/utils";
 import { FaRegHeart } from "react-icons/fa";
 import { useToggleLike } from "@/hooks/useToggleLike";
+import { useToast } from "@/hooks/use-toast";
+import { ToastAction } from "@/components/ui/toast";
+import Link from "next/link";
 
 type Props = {
   product: ProductPlain;
@@ -19,9 +22,9 @@ type Props = {
 
 const ProductItem: React.FC<Props> = ({ product }) => {
   const session = true; // Todo: somehow we have to read cookies on Client to check session
-  const isAdding = false;
-
   const { isLiked, toggleLike } = useToggleLike(product);
+  const isAdding = false;
+  const { toast } = useToast();
 
   const handleAddItem = async () => {
     try {
@@ -39,7 +42,15 @@ const ProductItem: React.FC<Props> = ({ product }) => {
         throw new Error("Failed to add item to shopping list");
       }
 
-      console.log({ response });
+      toast({
+        title: "Shopping list updated!",
+        description: `Added ${product.product_name} to shopping list.`,
+        action: (
+          <ToastAction altText="Go To Shopping List">
+            <Link href={"/shopping-list"}>Go to shopping list</Link>
+          </ToastAction>
+        ),
+      });
     } catch (error: any) {
       console.log(error);
     }
@@ -88,7 +99,7 @@ const ProductItem: React.FC<Props> = ({ product }) => {
         </span>
       </div>
       <div className="flex gap-6">
-        {!isAdding ? (
+        {session && !isAdding ? (
           <Button
             onClick={handleAddItem}
             className="px-3 py-2"

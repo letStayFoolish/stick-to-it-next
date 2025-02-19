@@ -18,19 +18,19 @@ const Products: React.FC<ComponentPropsWithParams> = async ({ params }) => {
           {heading}
         </h2>
         {products &&
-          products.slice(0, 1).map((product, _index) => (
-            <Image
-              key={_index}
-              src={`/images/categories/${product.category_image}.png`}
-              alt={`Image for groceries from category ${product.category}`}
-              width={140}
-              height={140}
-              // placeholder="blur" // Optional blur-up while loading
-              // blurDataURL={`/images/categories/${product.category_image}.png`}
-              priority
-              className="object-cover object-center"
-            />
-          ))}
+          products
+            .slice(0, 1)
+            .map((product, _index) => (
+              <Image
+                key={_index}
+                src={`/images/categories/${product.category_image}.png`}
+                alt={`Image for groceries from category ${product.category}`}
+                width={140}
+                height={140}
+                priority
+                className="object-cover object-center"
+              />
+            ))}
       </div>
 
       <div className="flex justify-between w-full">

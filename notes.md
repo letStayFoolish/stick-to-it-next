@@ -8,11 +8,11 @@
 
 [] Secure the private pages
 
-[] Add items to list
+[x] Add items to list
 
-[] Store list on db related to current user
+[x] Store list on db related to current user
 
-[] Get shopping list from db
+[x] Get shopping list from db
 
 [x] Form actions?
 
@@ -22,4 +22,17 @@
 
 [] Intl languages (english, serbian, russian)
 
-[] ...
+## Notes on 19.02.2025
+
+[] Add Toast notification (add/remove to/from cart)
+
+[] Handle add/remove to/from cart from profile page
+
+[] Style up Shopping list page
+
+[] Handle disabled for cart icon if item is already added to the cart
+
+[] Handle list item(s) count (also add +/- buttons if item is added)
+
+[] check _**session**_ within **client components**
+

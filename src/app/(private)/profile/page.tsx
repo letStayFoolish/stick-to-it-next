@@ -108,7 +108,7 @@ const Profile: React.FC = async () => {
                             <RemoveFromFavoritesBtn
                               productId={product._id.toString()}
                             />
-                            <AddToCartBtn productId={product._id.toString()} />
+                            <AddToCartBtn product={product} />
                           </div>
                         </TableCell>
                       </TableRow>
