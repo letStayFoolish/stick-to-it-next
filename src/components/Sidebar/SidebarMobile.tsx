@@ -8,18 +8,13 @@ import {
 } from "@/components/ui/sheet";
 import { LogOut, Menu, ShoppingCart } from "lucide-react";
 import Link from "next/link";
-import { cn } from "@/lib/utils";
-import { routes } from "@/lib/routes";
 import LogOutBtn from "@/components/LogOutBtn";
 import { verifySession } from "@/lib/dal";
-import { headers } from "next/headers";
 import { Button } from "@/components/ui/button";
+import NavLinks from "@/components/Sidebar/NavLinks";
 
 const SidebarMobile: React.FC = async () => {
   const session = await verifySession();
-
-  // Get current pathname from headers (available in server context)
-  const pathname = (await headers()).get("x-invoke-path") || ""; // Adjust this to how you're setting it up
 
   return (
     <Sheet>
@@ -45,25 +40,7 @@ const SidebarMobile: React.FC = async () => {
               <span className="sr-only">{"Stick To It"}</span>
             </Link>
             <div className="mb-16">
-              {routes.map((route) => {
-                const LinkIcon = route.icon;
-
-                return (
-                  <Link
-                    key={route.id}
-                    href={route.href}
-                    className={cn(
-                      "mx-[-0.65rem] mb-2 flex items-center bg-background text-muted-foreground gap-4 rounded-xl px-4 py-3 hover:text-foreground",
-                      {
-                        "bg-muted text-foreground": pathname === route.pathName,
-                      },
-                    )}
-                  >
-                    <LinkIcon />
-                    {route.pageName as string}
-                  </Link>
-                );
-              })}
+              <NavLinks />
             </div>
           </div>
           <div className="mb-6 text-center flex flex-col gap-2 justify-center">
