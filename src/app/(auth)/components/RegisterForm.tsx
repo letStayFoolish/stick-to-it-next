@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { signupAction } from "@/lib/actions";
 import { redirect } from "next/navigation";
 import FormError from "@/components/Form/FormError";
-import { usePasswordValidation } from "@/components/hooks/usePasswordValidation";
+import { usePasswordValidation } from "@/hooks/usePasswordValidation";
 import { Label } from "@/components/ui/label";
 
 /**

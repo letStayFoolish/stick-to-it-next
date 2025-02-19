@@ -1,7 +1,7 @@
 "use client";
 
 import type { ProductPlain } from "@/lib/types";
-import React, { useState } from "react";
+import React from "react";
 import { FaHeart, FaMinus, FaPlus } from "react-icons/fa6";
 import {
   Button,
@@ -11,20 +11,21 @@ import { ShoppingBasket } from "lucide-react";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import { handleProductName } from "@/lib/utils";
 import { FaRegHeart } from "react-icons/fa";
+import { useToggleLike } from "@/hooks/useToggleLike";
 
 type Props = {
   product: ProductPlain;
 };
 
 const ProductItem: React.FC<Props> = ({ product }) => {
-  const [isLiked, setIsLiked] = useState<boolean>(product?.isLiked ?? false);
-
   const session = true; // Todo: somehow we have to read cookies on Client to check session
   const isAdding = false;
 
-  const toggleLike = async () => {
+  const { isLiked, toggleLike } = useToggleLike(product);
+
+  const handleAddItem = async () => {
     try {
-      const response = await fetch(`/api/user/toggle-like`, {
+      const response = await fetch(`/api/user/shopping-list-add-items`, {
         method: "POST",
         body: JSON.stringify({
           productId: product._id,
@@ -34,18 +35,15 @@ const ProductItem: React.FC<Props> = ({ product }) => {
         },
       });
 
-      if (!response.ok) throw new Error("Failed to toggle like");
-
-      const data = await response.json();
-      if (data.success) {
-        setIsLiked((prevState) => !prevState);
+      if (!response || !response.ok) {
+        throw new Error("Failed to add item to shopping list");
       }
+
+      console.log({ response });
     } catch (error: any) {
       console.log(error);
     }
   };
-
-  const handleAddItem = () => {};
 
   const isDetailedAddingModeVisible = false;
   return (
@@ -59,7 +57,7 @@ const ProductItem: React.FC<Props> = ({ product }) => {
             disabled={!session}
             onClick={toggleLike}
           >
-            <FaHeart className="text-lg w-auto cursor-pointer hover:opacity-80 hover:scale-125 transition" />
+            <FaHeart className="cursor-pointer hover:opacity-80 hover:scale-125 transition text-lg w-[30px] h-[30px] sm:w-[35px] sm:h-[35px] md:w-[40px] md:h-[40px]" />
           </Button>
         ) : (
           <Button
@@ -69,7 +67,7 @@ const ProductItem: React.FC<Props> = ({ product }) => {
             disabled={!session}
             onClick={toggleLike}
           >
-            <FaRegHeart className="text-lg w-auto cursor-pointer hover:opacity-80 hover:scale-125 transition" />
+            <FaRegHeart className="cursor-pointer hover:opacity-80 hover:scale-125 transition text-lg w-[30px] h-[30px] sm:w-[35px] sm:h-[35px] md:w-[40px] md:h-[40px]" />
           </Button>
         )}
         <span

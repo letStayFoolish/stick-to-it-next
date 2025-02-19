@@ -279,3 +279,83 @@ export async function handleDislike(productId: string) {
     console.error(error);
   }
 }
+
+// ADD ITEMS TO SHOPPING LIST BY CLICKING ON CART
+export async function fetchShoppingListItems(): Promise<
+  ProductPlain[] | undefined
+> {
+  try {
+    await connectDB();
+
+    const user = await getUser();
+
+    if (!user) return;
+
+    // Fetch the user's liked items (IDs of favorite products)
+    const userData = await User.findOne({ email: user.email }).select(
+      "listItems",
+    );
+
+    const shoppingListItems: string[] = userData?.listItems?.map(String) || []; // Ensure it's an array of strings
+
+    if (shoppingListItems.length === 0) return []; // User has no liked items
+
+    const allProducts = await fetchProducts();
+
+    if (!allProducts || allProducts.length === 0) return [];
+
+    const result = allProducts.filter((product) =>
+      shoppingListItems.includes(String(product._id)),
+    );
+
+    const enrichedProducts = result.map((product) => ({
+      ...product,
+      _id: String(product._id),
+    }));
+
+    // return result;
+    if (!enrichedProducts) {
+      return [];
+    }
+
+    return enrichedProducts;
+  } catch (error: any) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch the shopping list products.");
+  }
+}
+
+// REMOVE ITEM(S) FROM SHOPPING LIST
+export async function handleRemoveFromShoppingList(productId: string) {
+  try {
+    await connectDB();
+
+    const user = await getUser();
+
+    if (!user) return null;
+
+    // Fetch the user's liked items (IDs of favorite products)
+    const userData = await User.findOne({ email: user.email }).select(
+      "listItems",
+    );
+
+    if (!userData) return null;
+
+    const shoppingListItems: string[] = userData?.listItems?.map(String) || []; // Ensure it's an array of strings
+
+    if (shoppingListItems.length === 0) return []; // User has no liked items
+
+    const updatedShoppingList = shoppingListItems.filter(
+      (id: string) => id !== productId,
+    );
+
+    if (updatedShoppingList) {
+      userData.listItems = updatedShoppingList;
+    }
+
+    userData.save();
+    revalidatePath("/shopping-list");
+  } catch (error: any) {
+    console.error(error);
+  }
+}

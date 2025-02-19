@@ -1,7 +1,7 @@
-import connectDB from "@/lib/database";
+import { getUser } from "@/lib/dal";
 import { User } from "@/lib/models/User";
 import { NextResponse } from "next/server";
-import { getUser } from "@/lib/dal";
+import connectDB from "@/lib/database";
 import { revalidatePath } from "next/cache";
 
 export async function POST(req: Request) {
@@ -18,22 +18,22 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    // Check if the Product is already liked
-    const isLiked = user.likedItems.includes(productId);
+    // Check if the Product is already added to shopping list
+    const isInShoppingList = await user.listItems.includes(productId);
 
-    if (isLiked && user.likedItems.length > 0) {
-      user.likedItems = (user.likedItems as string[]).filter(
-        (id) => id.toString() !== productId,
-      );
+    if (isInShoppingList) {
+      user.listItems = user.listItems.filter(
+        (id: string) => id !== productId,
+      ) as string[];
     } else {
-      user.likedItems.push(productId);
+      user.listItems.push(productId);
     }
 
     await user.save();
-    revalidatePath("/profile");
-    return NextResponse.json({ success: true, liked: !isLiked });
+    revalidatePath("/shopping-list");
+    return NextResponse.json({ success: true, isAdded: !isInShoppingList });
   } catch (error: any) {
-    console.error(error);
+    console.log(error);
     return NextResponse.json({ error: "An error occurred" }, { status: 500 });
   }
 }
