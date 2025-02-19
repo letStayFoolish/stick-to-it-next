@@ -14,6 +14,7 @@ import { User } from "@/lib/models/User";
 import bcrypt from "bcryptjs";
 import { createSession, deleteSession } from "@/lib/session";
 import { getUser } from "@/lib/dal";
+import { revalidatePath } from "next/cache";
 
 // const BASE_URL = process.env.NEXT_PUBLIC_DOMAIN || "http://localhost:3000/";
 
@@ -240,6 +241,40 @@ export async function signinAction(state: FormState, formData: FormData) {
     }
 
     return { error: "Login failed." };
+  } catch (error: any) {
+    console.error(error);
+  }
+}
+
+// REMOVE PRODUCT(S) FROM FAVORITES (ON PROFILE PAGE)
+export async function handleDislike(productId: string) {
+  try {
+    await connectDB();
+
+    const user = await getUser();
+
+    if (!user) return null;
+
+    // Fetch the user's liked items (IDs of favorite products)
+    const userData = await User.findOne({ email: user.email }).select(
+      "likedItems",
+    );
+
+    if (!userData) return null;
+
+    const favoriteProducts: string[] = userData?.likedItems?.map(String) || []; // Ensure it's an array of strings
+
+    const updatedFavoriteProducts: string[] = favoriteProducts.filter(
+      (id: string) => id !== productId,
+    );
+
+    if (updatedFavoriteProducts) {
+      userData.likedItems = updatedFavoriteProducts;
+    }
+
+    revalidatePath("/profile");
+
+    userData.save();
   } catch (error: any) {
     console.error(error);
   }

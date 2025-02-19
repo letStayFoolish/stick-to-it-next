@@ -66,7 +66,7 @@ const Profile: React.FC = async () => {
             <h3 className="text-lg font-semibold">Favorite Products</h3>
           </div>
           {likedProducts && likedProducts.length === 0 ? (
-            <NoData text="No products found" />
+            <NoData text={`Add some products to your\n favorites.`} />
           ) : (
             <section className="mt-4 mb-4 w-full">
               <Table className="w-full caption-bottom">

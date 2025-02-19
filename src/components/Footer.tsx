@@ -1,12 +1,12 @@
 import React from "react";
 import Link from "next/link";
-import { FaHome, FaList } from "react-icons/fa";
-import { FaCartShopping, FaUserLarge } from "react-icons/fa6";
 import { ShoppingCart } from "lucide-react";
-import { getUser } from "@/lib/dal";
+import { routes } from "@/lib/routes";
+import { cn } from "@/lib/utils";
+import { headers } from "next/headers";
 
 const Footer: React.FC = async () => {
-  const user = await getUser();
+  const pathname = (await headers()).get("x-invoke-path") || ""; // Adjust this to how you're setting it up
 
   const yearInFooter = () => {
     const thisYear = new Date().getFullYear();
@@ -23,30 +23,26 @@ const Footer: React.FC = async () => {
         </div>
 
         <div className="flex w-full md:hidden flex-wrap items-center  md:justify-start mb-4 md:mb-0 ">
-          {user && (
-            <ul className="flex w-full justify-between text-2xl">
-              <li className="hover:text-primary">
-                <Link href={"/"}>
-                  <FaHome />
+          <ul className="flex w-full justify-between text-2xl">
+            {routes.map((route) => {
+              const LinkIcon = route.icon;
+
+              return (
+                <Link
+                  key={route.id}
+                  href={route.href}
+                  className={cn(
+                    "flex items-center bg-transparent gap-3 rounded-lg  transition-all hover:text-primary cursor-pointer",
+                    {
+                      "bg-muted text-foreground": pathname === route.pathName,
+                    },
+                  )}
+                >
+                  <LinkIcon />
                 </Link>
-              </li>
-              <li className="hover:text-primary">
-                <Link href={"/products"}>
-                  <FaList />
-                </Link>
-              </li>
-              <li className="hover:text-primary">
-                <Link href={"/shopping-list"}>
-                  <FaCartShopping />
-                </Link>
-              </li>
-              <li className="hover:text-primary">
-                <Link href={"/profile"}>
-                  <FaUserLarge />
-                </Link>
-              </li>
-            </ul>
-          )}
+              );
+            })}
+          </ul>
         </div>
 
         <div>

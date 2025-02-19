@@ -130,13 +130,14 @@ const RegisterForm: React.FC = () => {
             >
               {isPending ? "Submitting..." : "Register"}
             </Button>
-            <div className="flex items-center justify-center py-3 text-gray-500">
-              <span className="border-b-2 border-border w-1/4"></span>
-              <span className="text-center font-extralight uppercase text-sm px-4 m-0">
-                Or Continue With
-              </span>
-              <span className="border-b-2 border-border w-1/4"></span>
-            </div>
+            {/*Todo: In near future I plan to add register/login using Google OAuth*/}
+            {/*<div className="flex items-center justify-center py-3 text-gray-500">*/}
+            {/*  <span className="border-b-2 border-border w-1/4"></span>*/}
+            {/*  <span className="text-center font-extralight uppercase text-sm px-4 m-0">*/}
+            {/*    Or Continue With*/}
+            {/*  </span>*/}
+            {/*  <span className="border-b-2 border-border w-1/4"></span>*/}
+            {/*</div>*/}
             {/*  <Button variant="outline" className="w-full">*/}
             {/*    {tr("SigningIn")}*/}
             {/*  </Button>*/}
@@ -148,6 +149,7 @@ const RegisterForm: React.FC = () => {
             {/*    {tr("Google")}*/}
             {/*  </Button>*/}
             {/*)}*/}
+            {/* ============================================================ */}
           </div>
           <div className="mt-4 text-center text-sm">
             Already Have Account?{" "}
