@@ -35,39 +35,40 @@ const SidebarMobile: React.FC = async () => {
         </SheetHeader>
         {/* ================================================ */}
         {/* MOBILE SIDEBAR MENU*/}
-        <nav className="grid gap-2 text-lg font-medium">
-          <Link
-            href="/"
-            className="flex items-center gap-4 text-lg font-semibold mb-8"
-          >
-            <ShoppingCart /> {"Stick To It"}
-            <span className="sr-only">{"Stick To It"}</span>
-          </Link>
-          <div className="mb-16">
-            {routes.map((route) => {
-              const LinkIcon = route.icon;
+        <nav className="h-full flex flex-col justify-between gap-2 text-lg font-medium">
+          <div>
+            <Link
+              href="/"
+              className="flex items-center gap-4 text-lg font-semibold mb-8"
+            >
+              <ShoppingCart /> {"Stick To It"}
+              <span className="sr-only">{"Stick To It"}</span>
+            </Link>
+            <div className="mb-16">
+              {routes.map((route) => {
+                const LinkIcon = route.icon;
 
-              return (
-                <Link
-                  key={route.id}
-                  href={route.href}
-                  className={cn(
-                    "mx-[-0.65rem] mb-2 flex items-center bg-background text-muted-foreground gap-4 rounded-xl px-4 py-3 hover:text-foreground",
-                    { "bg-muted text-foreground": pathname === route.pathName },
-                  )}
-                >
-                  <LinkIcon />
-                  {route.pageName as string}
-                </Link>
-              );
-            })}
+                return (
+                  <Link
+                    key={route.id}
+                    href={route.href}
+                    className={cn(
+                      "mx-[-0.65rem] mb-2 flex items-center bg-background text-muted-foreground gap-4 rounded-xl px-4 py-3 hover:text-foreground",
+                      {
+                        "bg-muted text-foreground": pathname === route.pathName,
+                      },
+                    )}
+                  >
+                    <LinkIcon />
+                    {route.pageName as string}
+                  </Link>
+                );
+              })}
+            </div>
           </div>
           <div className="mb-6 text-center flex flex-col gap-2 justify-center">
             {session ? (
-              <LogOutBtn
-                btnVariant="default"
-                className="flex justify-center items-center"
-              >
+              <LogOutBtn btnVariant="default" className="text-lg">
                 <LogOut /> Sign Out
               </LogOutBtn>
             ) : (

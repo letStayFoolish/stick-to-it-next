@@ -1,8 +1,8 @@
 import React from "react";
 import GoToPage from "@/components/GoToPage";
-import PageHeading from "@/components/PageHeading";
 import HomePageCategories from "@/app/(home)/components/HomePageCategories";
 import type { Metadata } from "next";
+import HomePageHeading from "@/app/(home)/components/HomePageHeading";
 
 export const metadata: Metadata = {
   title: "Home",
@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 const HomePage: React.FC = () => {
   return (
     <main className="flex flex-col items-center p-4">
-      <PageHeading />
+      <HomePageHeading />
       <HomePageCategories />
       <GoToPage
         href="/products"

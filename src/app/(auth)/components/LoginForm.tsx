@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import FormError from "@/components/Form/FormError";
 import { redirect } from "next/navigation";
 import { signinAction } from "@/lib/actions";
-import { usePasswordValidation } from "@/components/hooks/usePasswordValidation";
+import { usePasswordValidation } from "@/hooks/usePasswordValidation";
 import { Label } from "@/components/ui/label";
 
 const LoginForm: React.FC = () => {

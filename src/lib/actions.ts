@@ -129,11 +129,16 @@ export async function fetchFavoritesProducts() {
 
     if (!allProducts || allProducts.length === 0) return [];
 
-    const result = allProducts.filter((product) =>
+    const filteredProducts = allProducts.filter((product) =>
       favoriteProducts.includes(String(product._id)),
     );
 
-    return result;
+    const enrichedProducts = filteredProducts.map((product) => ({
+      ...product,
+      _id: String(product._id),
+    }));
+
+    return enrichedProducts;
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch the products for specific category.");
@@ -196,10 +201,13 @@ export async function signupAction(state: FormState, formData: FormData) {
     console.error(error);
   }
 }
+
+// LOGOUT ACTION
 export async function logout() {
   await deleteSession();
 }
 
+// SIGN IN ACTION
 export async function signinAction(state: FormState, formData: FormData) {
   try {
     const validatedFields = SigninFormSchema.safeParse({
@@ -275,6 +283,141 @@ export async function handleDislike(productId: string) {
     revalidatePath("/profile");
 
     userData.save();
+  } catch (error: any) {
+    console.error(error);
+  }
+}
+
+// ADD ITEMS TO THE SHOPPING LIST BY CLICKING ON CART
+export async function fetchShoppingListItems(): Promise<
+  ProductPlain[] | undefined
+> {
+  try {
+    await connectDB();
+
+    const user = await getUser();
+
+    if (!user) return;
+
+    // Fetch the user's liked items (IDs of favorite products)
+    const userData = await User.findOne({ email: user.email }).select(
+      "listItems",
+    );
+
+    const shoppingListItems: string[] = userData?.listItems?.map(String) || []; // Ensure it's an array of strings
+
+    if (shoppingListItems.length === 0) return []; // User has no liked items
+
+    const allProducts = await fetchProducts();
+
+    if (!allProducts || allProducts.length === 0) return [];
+
+    const result = allProducts.filter((product) =>
+      shoppingListItems.includes(String(product._id)),
+    );
+
+    const enrichedProducts = result.map((product) => ({
+      ...product,
+      _id: String(product._id),
+    }));
+
+    // return result;
+    if (!enrichedProducts) {
+      return [];
+    }
+
+    return enrichedProducts;
+  } catch (error: any) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch the shopping list products.");
+  }
+}
+
+// REMOVE ITEM(S) FROM SHOPPING LIST
+export async function handleRemoveFromShoppingList(productId: string) {
+  try {
+    await connectDB();
+
+    const user = await getUser();
+
+    if (!user) return null;
+
+    // Fetch the user's liked items (IDs of favorite products)
+    const userData = await User.findOne({ email: user.email }).select(
+      "listItems",
+    );
+
+    if (!userData) return null;
+
+    const shoppingListItems: string[] = userData?.listItems?.map(String) || []; // Ensure it's an array of strings
+
+    if (shoppingListItems.length === 0) return []; // User has no liked items
+
+    const updatedShoppingList = shoppingListItems.filter(
+      (id: string) => id !== productId,
+    );
+
+    if (updatedShoppingList) {
+      userData.listItems = updatedShoppingList;
+    }
+
+    userData.save();
+
+    revalidatePath("/shopping-list");
+  } catch (error: any) {
+    console.error(error);
+  }
+}
+
+// CHECK IF ITEM IS ALREADY ADDED TO SHOPPING LIST (BUTTON DISABLED)
+export async function checkIsItemAdded(productId: string) {
+  try {
+    await connectDB();
+
+    const user = await getUser();
+
+    if (!user) return null;
+
+    // Fetch the user's liked items (IDs of favorite products)
+    const userData = await User.findOne({ email: user.email }).select(
+      "listItems",
+    );
+
+    if (!userData) return null;
+
+    const shoppingListItems: string[] = userData?.listItems?.map(String) || []; // Ensure it's an array of strings
+
+    if (shoppingListItems.length === 0) return null; // User has no liked items
+
+    const result = shoppingListItems.indexOf(productId);
+
+    return result !== -1;
+  } catch (error: any) {
+    console.error(error);
+  }
+}
+
+// CLEAR ALL PRODUCTS FROM SHOPPING LIST
+export async function clearProductsAction() {
+  try {
+    await connectDB();
+
+    const user = await getUser();
+
+    if (!user) return null;
+
+    // Fetch the user's liked items (IDs of favorite products)
+    const userData = await User.findOne({ email: user.email }).select(
+      "listItems",
+    );
+
+    if (!userData) return null;
+
+    userData.listItems = [];
+
+    userData.save();
+
+    revalidatePath("/shopping-list");
   } catch (error: any) {
     console.error(error);
   }

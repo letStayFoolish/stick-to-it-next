@@ -86,7 +86,7 @@ export const handleSpacesInProductName = (value: any) => {
 
 export const handleProductName = (value: any) => {
   if (value.includes("-")) {
-    return value.split("-").join(" ");
+    return value.split("-").join(", ");
   }
 
   return value as string;
