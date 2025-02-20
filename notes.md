@@ -38,3 +38,10 @@
 
 [] Refactor User schema/listItems to include: product, quantity and isChecked
 
+
+## Notes on 20.02.2025
+
+[] Add shopping list items in URL so we can implement SHARE LIST
+
+[x] Add Notes (where to store them)
+

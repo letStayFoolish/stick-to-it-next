@@ -42,7 +42,8 @@ const ProductItem: React.FC<Props> = async ({ product }) => {
               <IncrementDecrementButton className="flex justify-center items-center min-w-[30px] px-3 py-0.5 m-0 border-r border-border text-primary bg-secondary hover:bg-popover transition rounded-tl-md rounded-bl-md focus:outline-none focus:ring ring-ring active:bg-secondary cursor-pointer">
                 <FaMinus />
               </IncrementDecrementButton>
-              <span className="text-lg">2</span>
+              <span className="text-lg">1</span>
+              <span className="text-lg hidden md:block">qty.</span>
               <IncrementDecrementButton
                 // onClick={() => {}}
                 className="flex justify-center items-center min-w-[30px] px-3 py-0.5 m-0 border-l border-border text-primary bg-secondary hover:bg-popover transition rounded-tr-md rounded-br-md focus:outline-none focus:ring ring-ring active:bg-secondary cursor-pointer"
