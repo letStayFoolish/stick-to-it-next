@@ -45,3 +45,5 @@
 
 [x] Add Notes (where to store them)
 
+[] Likes, Add to cart optimistic
+

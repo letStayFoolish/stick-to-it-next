@@ -33,7 +33,11 @@ export async function POST(req: Request) {
 
     revalidatePath("/shopping-list");
     revalidatePath("/products/*");
-    return NextResponse.json({ success: true, isAdded: !isInShoppingList });
+    return NextResponse.json({
+      success: true,
+      isAdded: !isInShoppingList,
+      updatedList: user.listItems,
+    });
   } catch (error: any) {
     console.log(error);
     return NextResponse.json({ error: "An error occurred" }, { status: 500 });

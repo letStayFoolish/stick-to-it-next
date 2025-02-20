@@ -16,6 +16,7 @@ const ClearAll: React.FC<Props> = ({ className, ...props }) => {
   );
 
   const [isPending, setIsPending] = useState(false);
+
   const handleClick = async () => {
     try {
       setIsPending(true);

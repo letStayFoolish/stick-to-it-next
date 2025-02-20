@@ -1,9 +1,6 @@
-import { useState } from "react";
 import type { ProductPlain } from "@/lib/types";
 
 export function useToggleLike(product: ProductPlain) {
-  const [isLiked, setIsLiked] = useState<boolean>(product?.isLiked ?? false);
-
   const productId = product._id;
 
   async function toggleLike() {
@@ -21,13 +18,16 @@ export function useToggleLike(product: ProductPlain) {
       if (!response.ok) throw new Error("Failed to toggle like");
 
       const data = await response.json();
-      if (data.success) {
-        setIsLiked((prevState) => !prevState);
+
+      if (!data.success) {
+        throw new Error("Server failed to update like status");
       }
+
+      console.log("Like toggled successfully:", data);
     } catch (error: any) {
       console.log(error);
     }
   }
 
-  return { isLiked, toggleLike };
+  return { toggleLike };
 }
