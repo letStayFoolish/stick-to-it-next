@@ -1,7 +1,6 @@
 import React from "react";
 import type { Metadata } from "next";
 import { getUser } from "@/lib/dal";
-import Image from "next/image";
 import GoToPage from "@/components/GoToPage";
 import NoData from "@/components/ui/NoData";
 import {
@@ -43,7 +42,9 @@ const Profile: React.FC = async () => {
           <Avatar className="h-32 w-32 md:h-48 md:w-48 mb-8">
             <AvatarImage src={profileImage} />
             <AvatarFallback className="text-7xl h-full w-full">
-              {userName[0][0].toUpperCase() + userName[1][0].toUpperCase()}
+              {userName.length > 1
+                ? userName[0][0].toUpperCase() + userName[1][0].toUpperCase()
+                : userName[0][0].toUpperCase()}
             </AvatarFallback>
           </Avatar>
           <PageHeading>{user.name}</PageHeading>

@@ -6,16 +6,17 @@ import type { ProductPlain } from "@/lib/types";
 
 type Props = {
   product: ProductPlain;
-  shouldDisplay: boolean | undefined;
+  quantity: number | undefined;
 };
-const CellBtn: React.FC<Props> = ({ shouldDisplay, product }) => {
-  const [isAdded, setIsAdded] = useState(shouldDisplay ?? false);
-
+const CellBtn: React.FC<Props> = ({ quantity, product }) => {
+  const [quantityLocalState, setQuantityLocalState] = useState<number>(
+    quantity ?? 0,
+  );
   return (
     <AddToCartBtn
       product={product}
-      disabled={isAdded}
-      handleIsAddedState={setIsAdded}
+      disabled={quantityLocalState !== 0}
+      handleIsAddedState={setQuantityLocalState}
     />
   );
 };

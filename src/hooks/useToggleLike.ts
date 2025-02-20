@@ -22,8 +22,6 @@ export function useToggleLike(product: ProductPlain) {
       if (!data.success) {
         throw new Error("Server failed to update like status");
       }
-
-      console.log("Like toggled successfully:", data);
     } catch (error: any) {
       console.log(error);
     }

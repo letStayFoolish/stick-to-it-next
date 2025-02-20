@@ -14,9 +14,10 @@ type Props = {
 export const ShoppingListTableRow: React.FC<Props> = async ({ product }) => {
   const shoppingListProducts = await fetchShoppingListItems();
 
-  const isAdded = shoppingListProducts?.some(
-    (addedItem) => addedItem._id === product._id,
-  );
+  // Find the product quantity in the fetched shopping list
+  const quantity = shoppingListProducts?.find(
+    (p) => p._id === product._id,
+  )?.quantity;
 
   return (
     <TableRow>
@@ -33,7 +34,7 @@ export const ShoppingListTableRow: React.FC<Props> = async ({ product }) => {
       <TableCell className="text-right">
         <div className="flex gap-4 justify-end">
           <RemoveFromFavoritesBtn productId={product._id} />
-          <CellBtn shouldDisplay={isAdded} product={product} />
+          <CellBtn quantity={quantity} product={product} />
         </div>
       </TableCell>
     </TableRow>

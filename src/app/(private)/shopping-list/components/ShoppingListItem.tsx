@@ -13,7 +13,6 @@ type Props = {
 
 const ShoppingListItem: React.FC<Props> = ({ product }) => {
   const [isChecked, setIsChecked] = useState(false);
-  const isEditActive = false;
 
   return (
     <>
@@ -36,9 +35,7 @@ const ShoppingListItem: React.FC<Props> = ({ product }) => {
             } flex justify-between mr-2 w-full`}
           >
             <span
-              className={`truncate lg:text-lg ${
-                isEditActive ? "w-[100px]" : "w-[200px]"
-              } lg:w-full`}
+              className={`truncate lg:text-lg w-[200px] lg:w-full`}
               data-tooltip-id="tooltip-productName"
               data-tooltip-content={handleProductName(product.product_name)}
             >
@@ -50,6 +47,7 @@ const ShoppingListItem: React.FC<Props> = ({ product }) => {
                 content={handleProductName(product.product_name)}
               />
             </span>
+            <span>{product.quantity}</span>
           </div>
         </div>
         <div className="py-2 sm:px-6 text-right">

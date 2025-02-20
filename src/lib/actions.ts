@@ -304,68 +304,33 @@ export async function fetchShoppingListItems(): Promise<
       "listItems",
     );
 
-    const shoppingListItems: string[] = userData?.listItems?.map(String) || []; // Ensure it's an array of strings
-
-    if (shoppingListItems.length === 0) return []; // User has no liked items
-
-    const allProducts = await fetchProducts();
-
-    if (!allProducts || allProducts.length === 0) return [];
-
-    const result = allProducts.filter((product) =>
-      shoppingListItems.includes(String(product._id)),
-    );
-
-    const enrichedProducts = result.map((product) => ({
-      ...product,
-      _id: String(product._id),
-    }));
-
-    // return result;
-    if (!enrichedProducts) {
+    if (!userData || userData.listItems.length === 0) {
+      console.log("User has no shopping list items");
       return [];
     }
+
+    // Extract the product IDs from the user's shopping list
+    const productIds = userData.listItems.map((item: any) => item.productId);
+
+    // Query the database for products matching these IDs
+    const products = await ProductSchema.find({ _id: { $in: productIds } });
+
+    // Enrich the products with quantities from the shopping list
+    const enrichedProducts = products.map((product) => {
+      const matchingItem = user.listItems.find(
+        (item: any) => item.productId.toString() === product._id.toString(),
+      );
+      return {
+        ...product.toObject(),
+        _id: product._id.toString(),
+        quantity: matchingItem?.quantity || 0,
+      };
+    });
 
     return enrichedProducts;
   } catch (error: any) {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch the shopping list products.");
-  }
-}
-
-// REMOVE ITEM(S) FROM SHOPPING LIST
-export async function handleRemoveFromShoppingList(productId: string) {
-  try {
-    await connectDB();
-
-    const user = await getUser();
-
-    if (!user) return null;
-
-    // Fetch the user's liked items (IDs of favorite products)
-    const userData = await User.findOne({ email: user.email }).select(
-      "listItems",
-    );
-
-    if (!userData) return null;
-
-    const shoppingListItems: string[] = userData?.listItems?.map(String) || []; // Ensure it's an array of strings
-
-    if (shoppingListItems.length === 0) return []; // User has no liked items
-
-    const updatedShoppingList = shoppingListItems.filter(
-      (id: string) => id !== productId,
-    );
-
-    if (updatedShoppingList) {
-      userData.listItems = updatedShoppingList;
-    }
-
-    userData.save();
-
-    revalidatePath("/shopping-list");
-  } catch (error: any) {
-    console.error(error);
   }
 }
 

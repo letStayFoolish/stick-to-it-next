@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { handleRemoveFromShoppingList } from "@/lib/actions";
 import { Button } from "@/components/ui/button";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { Trash2 } from "lucide-react";
@@ -17,13 +16,31 @@ const RemoveFromListBtn: React.FC<Props> = ({ productId }) => {
     try {
       setIsPending(true);
 
-      await handleRemoveFromShoppingList(productId);
+      const response = await fetch(`/api/user/shopping-list-remove-item`, {
+        method: "DELETE",
+        body: JSON.stringify({
+          productId,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || "Failed to remove item");
+      }
+
+      // Optionally handle the updated cart data returned by the API (if needed)
+      const data = await response.json();
+      console.log("Updated shopping list:", data.updatedList);
     } catch (error: any) {
-      console.log(error);
+      console.error("Error removing item:", error);
     } finally {
       setIsPending(false);
     }
   };
+
   return (
     <Button
       onClick={handleRemove}
