@@ -30,6 +30,8 @@ export async function POST(req: Request) {
     }
 
     await user.save();
+
+    revalidatePath("/products/*");
     revalidatePath("/profile");
     return NextResponse.json({ success: true, liked: !isLiked });
   } catch (error: any) {

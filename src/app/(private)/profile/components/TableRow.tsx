@@ -3,9 +3,9 @@ import { TableCell, TableRow } from "@/components/ui/table";
 import Link from "next/link";
 import { handleProductName } from "@/lib/utils";
 import RemoveFromFavoritesBtn from "@/app/(private)/profile/components/RemoveFromFavoritesBtn";
-import AddToCartBtn from "@/app/(private)/profile/components/AddToCartBtn";
 import { ProductPlain } from "@/lib/types";
 import { fetchShoppingListItems } from "@/lib/actions";
+import CellBtn from "@/app/(private)/profile/components/CellBtn";
 
 type Props = {
   product: ProductPlain;
@@ -33,7 +33,7 @@ export const ShoppingListTableRow: React.FC<Props> = async ({ product }) => {
       <TableCell className="text-right">
         <div className="flex gap-4 justify-end">
           <RemoveFromFavoritesBtn productId={product._id} />
-          <AddToCartBtn product={product} disabled={isAdded} />
+          <CellBtn shouldDisplay={isAdded} product={product} />
         </div>
       </TableCell>
     </TableRow>
