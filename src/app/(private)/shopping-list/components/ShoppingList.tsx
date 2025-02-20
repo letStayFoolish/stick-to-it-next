@@ -22,6 +22,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { formAction as action } from "@/app/(private)/shopping-list/formAction";
 import { Trash2 } from "lucide-react";
+import { FaShare } from "react-icons/fa6";
 
 type Props = {
   products: ProductPlain[];
@@ -63,19 +64,25 @@ export const ShoppingList: React.FC<Props> = ({ products }) => {
 
   return (
     <section className="">
-      <ul className="w-full flex flex-col items-start mt-2 md:mt-6 px-3 pt-4 pb-6 bg-muted dark:bg-background rounded-md shadow-sm">
+      <ul className="relative w-full flex flex-col items-start mt-2 md:mt-6 px-3 pt-4 pb-6 bg-muted dark:bg-background rounded-md shadow-sm">
+        <Button
+          variant="ghost"
+          disabled={false}
+          className="absolute top-1 right-1"
+        >
+          <FaShare /> Share List
+        </Button>
         {Object.entries(groupedItems).map(([categoryName, products]) => (
           <li className="w-full" key={categoryName}>
             <div className="flex gap-4 items-end border-b-2 border-border last:border-none py-2 lg:py-3">
               <Link href={`/products/${categoryName}`}>
                 <Image
-                  src={`/images/categories/${categoryName}.png`} // Assuming category image exists in the product
+                  src={`/images/categories/${categoryName}.png`}
                   alt={`Image for the groceries from the category ${categoryName}`}
                   width={35}
                   height={35}
                   priority={true}
                   className="object-cover"
-                  // className="object-cover object-center lg:w-[80px]"
                 />
               </Link>
               <h3 className="uppercase text-lg md:text-xl font-medium lg:font-bold">

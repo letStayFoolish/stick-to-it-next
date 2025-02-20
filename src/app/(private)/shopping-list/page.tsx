@@ -4,8 +4,9 @@ import { ShoppingList as List } from "./components/ShoppingList";
 import { fetchShoppingListItems } from "@/lib/actions";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import GoToPage from "@/components/GoToPage";
-import { FaCartShopping } from "react-icons/fa6";
+import { FaCartShopping, FaShare } from "react-icons/fa6";
 import PageHeading from "@/components/PageHeading";
+import { Button } from "@/components/ui/button";
 
 export const metadata: Metadata = {
   title: "Shopping List",
