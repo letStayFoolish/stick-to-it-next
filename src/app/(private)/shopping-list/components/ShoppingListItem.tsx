@@ -52,7 +52,7 @@ const ShoppingListItem: React.FC<Props> = ({ product }) => {
             </span>
           </div>
         </div>
-        <div className="table-cell py-3 px-4 sm:px-6 text-right">
+        <div className="py-2 sm:px-6 text-right">
           <RemoveFromListBtn productId={product._id} />
         </div>
       </div>

@@ -1,10 +1,20 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import React, { useState } from "react";
+import React, { ButtonHTMLAttributes, useState } from "react";
 import { clearProductsAction } from "@/lib/actions";
+import { cn } from "@/lib/utils";
 
-const ClearAll: React.FC = () => {
+type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
+  className?: string;
+};
+
+const ClearAll: React.FC<Props> = ({ className, ...props }) => {
+  const classes = cn(
+    "hover:opacity-80 hover:text-opacity-80 transition-all",
+    className,
+  );
+
   const [isPending, setIsPending] = useState(false);
   const handleClick = async () => {
     try {
@@ -23,9 +33,10 @@ const ClearAll: React.FC = () => {
       disabled={isPending}
       onClick={handleClick}
       variant={"destructive"}
-      className="w-full mx-auto mt-6 mb-8 hover:opacity-80 hover:text-destructive transition-all"
+      className={classes}
+      {...props}
     >
-      {isPending ? `Clearing...` : `Clear All`}
+      {isPending ? `Clearing...` : `Clear List`}
     </Button>
   );
 };

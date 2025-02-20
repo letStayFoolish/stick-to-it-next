@@ -30,7 +30,7 @@ const LogOutBtn: React.FC<Props> = ({
   const router = useRouter(); // Initialize useRouter
 
   const classes = cn(
-    "text-sm flex justify-start items-center gap-4 px-3 py-2",
+    "flex justify-start items-center gap-4 px-4 py-2 text-sm",
     className,
   );
 
