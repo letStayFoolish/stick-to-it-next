@@ -3,8 +3,8 @@ import React from "react";
 import { handleProductName } from "@/lib/utils";
 import LikeButtonsSet from "@/components/Product/LikeButtonsSet";
 import { verifySession } from "@/lib/dal";
-import { fetchShoppingListItems } from "@/lib/actions";
 import AddToCartSection from "@/components/Product/AddToCartSection";
+import { fetchShoppingListItems } from "@/lib/actions";
 
 type Props = {
   product: ProductPlain;
@@ -12,11 +12,13 @@ type Props = {
 
 const ProductItem: React.FC<Props> = async ({ product }) => {
   const session = await verifySession();
-  const shoppingListProducts = await fetchShoppingListItems();
 
-  const isAdded = shoppingListProducts?.some(
-    (addedItem) => addedItem._id === product._id,
-  );
+  const fetchedProducts = await fetchShoppingListItems();
+
+  // Find the product quantity in the fetched shopping list
+  const quantity = fetchedProducts?.find(
+    (p) => p._id === product._id,
+  )?.quantity;
 
   return (
     <div className="flex justify-between">
@@ -33,7 +35,7 @@ const ProductItem: React.FC<Props> = async ({ product }) => {
       <div className="flex gap-6">
         <div className="flex items-center gap-4">
           {session && (
-            <AddToCartSection product={product} shouldDisplay={isAdded} />
+            <AddToCartSection product={product} quantityFromServer={quantity} />
           )}
         </div>
       </div>

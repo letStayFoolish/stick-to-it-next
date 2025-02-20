@@ -36,7 +36,7 @@
 
 [x] check _**session**_ within **client components**
 
-[] Refactor User schema/listItems to include: product, quantity and isChecked
+[x] Refactor User schema/listItems to include: product, quantity and isChecked
 
 
 ## Notes on 20.02.2025
@@ -45,5 +45,5 @@
 
 [x] Add Notes (where to store them)
 
-[] Likes, Add to cart optimistic
+[x] Likes, Add to cart optimistic
 

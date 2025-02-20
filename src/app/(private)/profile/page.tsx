@@ -1,7 +1,6 @@
 import React from "react";
 import type { Metadata } from "next";
 import { getUser } from "@/lib/dal";
-import Image from "next/image";
 import GoToPage from "@/components/GoToPage";
 import NoData from "@/components/ui/NoData";
 import {
@@ -13,11 +12,11 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { fetchFavoritesProducts } from "@/lib/actions";
-import { FaUserCircle } from "react-icons/fa";
 import LogOutBtn from "@/components/LogOutBtn";
 import { LogOut } from "lucide-react";
 import PageHeading from "@/components/PageHeading";
 import { ShoppingListTableRow } from "./components/TableRow";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export const metadata: Metadata = {
   title: "Profile Page",
@@ -30,6 +29,8 @@ const Profile: React.FC = async () => {
 
   const profileImage = user?.image;
 
+  const userName = user.name.split(" ");
+
   const likedProducts = await fetchFavoritesProducts();
 
   return (
@@ -37,19 +38,16 @@ const Profile: React.FC = async () => {
       <div className="container py-24">
         {/* Profile Section */}
         <header className="flex flex-col items-center text-center mb-12">
-          {profileImage ? (
-            <Image
-              className="h-32 w-32 md:h-48 md:w-48 rounded-full object-cover mb-4"
-              src={profileImage}
-              width={200}
-              height={200}
-              alt="User Avatar"
-            />
-          ) : (
-            <FaUserCircle className="bg-primary-foreground text-opacity-90 h-32 w-32 md:h-48 md:w-48 border-0 outline-0 rounded-full object-fill mb-4" />
-          )}
+          {}
+          <Avatar className="h-32 w-32 md:h-48 md:w-48 mb-8">
+            <AvatarImage src={profileImage} />
+            <AvatarFallback className="text-7xl h-full w-full">
+              {userName.length > 1
+                ? userName[0][0].toUpperCase() + userName[1][0].toUpperCase()
+                : userName[0][0].toUpperCase()}
+            </AvatarFallback>
+          </Avatar>
           <PageHeading>{user.name}</PageHeading>
-          {/*<h1 className="text-3xl font-bold mb-2"></h1>*/}
           <h2 className="text-lg text-neutral-500 mb-4">{user.email}</h2>
           <div className="flex flex-row gap-2">
             <GoToPage

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Dispatch } from "react";
 import { Button, ButtonProps } from "@/components/ui/button";
 import { ShoppingCart } from "lucide-react";
 import { ToastAction } from "@/components/ui/toast";
@@ -10,7 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 
 type Props = ButtonProps & {
   product: ProductPlain;
-  handleIsAddedState: Dispatch<SetStateAction<boolean>>;
+  handleIsAddedState: Dispatch<React.SetStateAction<number>>;
 };
 
 const AddToCartBtn: React.FC<Props> = ({
@@ -21,8 +21,6 @@ const AddToCartBtn: React.FC<Props> = ({
   const { toast } = useToast();
 
   const handleAddToCart = async () => {
-    handleIsAddedState((prevState) => !prevState);
-
     try {
       const response = await fetch(`/api/user/shopping-list-add-items`, {
         method: "POST",
@@ -34,9 +32,12 @@ const AddToCartBtn: React.FC<Props> = ({
         },
       });
 
-      if (!response || !response.ok) {
-        throw new Error("Failed to add item to shopping list");
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || "Failed to add item to shopping list");
       }
+
+      const data = await response.json();
 
       toast({
         title: "Shopping list updated!",
@@ -48,13 +49,16 @@ const AddToCartBtn: React.FC<Props> = ({
         ),
       });
 
-      return;
+      handleIsAddedState((prevState) => prevState + 1);
+
+      return data;
     } catch (error: any) {
-      console.log(error);
+      console.error("Error adding item to shopping list:", error);
+
       toast({
         variant: "destructive",
-        title: "Something vent wrong!",
-        description: error,
+        title: "Something went wrong!",
+        description: error.message || "An unknown error occurred",
       });
     }
   };
