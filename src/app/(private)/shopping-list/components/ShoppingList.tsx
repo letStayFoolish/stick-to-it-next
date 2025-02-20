@@ -67,7 +67,7 @@ export const ShoppingList: React.FC<Props> = ({ products }) => {
       <ul className="relative w-full flex flex-col items-start mt-2 md:mt-6 px-3 pt-4 pb-6 bg-muted dark:bg-background rounded-md shadow-sm">
         <Button
           variant="ghost"
-          disabled={false}
+          disabled={true}
           className="absolute top-1 right-1"
         >
           <FaShare /> Share List

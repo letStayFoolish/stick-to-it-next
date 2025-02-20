@@ -35,7 +35,7 @@ const Profile: React.FC = async () => {
 
   return (
     <main className="flex justify-center flex-1 bg-background">
-      <div className="container py-24">
+      <div className="container py-24 px-4">
         {/* Profile Section */}
         <header className="flex flex-col items-center text-center mb-12">
           {}
@@ -49,7 +49,7 @@ const Profile: React.FC = async () => {
           </Avatar>
           <PageHeading>{user.name}</PageHeading>
           <h2 className="text-lg text-neutral-500 mb-4">{user.email}</h2>
-          <div className="flex flex-row gap-2">
+          <div className="w-full flex justify-between mx-auto">
             <GoToPage
               href="/shopping-list"
               className="bg-secondary text-secondary-foreground px-4 py-2 rounded-md hover:opacity-75 transition-all"

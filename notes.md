@@ -32,7 +32,7 @@
 
 [x] Handle disabled for cart icon if item is already added to the cart
 
-[] Handle list item(s) count (also add +/- buttons if item is added)
+[x] Handle list item(s) count (also add +/- buttons if item is added)
 
 [x] check _**session**_ within **client components**
 
