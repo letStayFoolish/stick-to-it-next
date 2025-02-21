@@ -36,9 +36,6 @@ This project is built using the following technologies:
 
 ## Screenshots
 
-_To be added in the future..._
-
-
 ![Home Page](/public/images/screens/screen-01.png)
 ![Categories page](/public/images/screens/screen-02.png)
 ![Shopping list](/public/images/screens/screen-03.png)
@@ -54,21 +51,21 @@ _To be added in the future..._
 
 2. **View Products:**
 
-    - By clicking on a category, users are redirected to `categories/:id` where they can see all products within that
+    - By clicking on a category, users are redirected to `categories/[slug]` where they can see all products within that
       category.
 
 3. **Add Products:**
 
-    - Users add products to their list by clicking the "Add" button next to each product.
-    - Upon clicking "Add", options for adjusting the quantity, the unit of measure (UOM), and an increase/decrease
-      button are displayed.
-    - After selecting the desired quantity and UOM, users confirm their choice by clicking the green check mark to add
-      items to their shopping list.
+    - Users add products to their list by clicking the "Cart" button next to each product.
+    - Upon clicking "Add", options for adjusting the quantity, and an increase/decrease button are displayed.
+    - After selecting the desired quantity.
+    - Users can add product(s) to list of favorites by clicking the like button (empty heart icon -> full-filled heart icon)
 
 4. **Manage Shopping List:**
 
-    - The List Page displays all items users have added. Here, users can modify quantities, change the UOM, mark items
+    - The List Page displays all items users have added. Here, users can modify quantities, mark items
       as checked, delete products, or clear the entire list.
+    - Also, users can write own notes (additional stuff)
 
 5. **User Registration and Login:**
     - To add or manage items in the shopping list, users must register or log in.
@@ -86,12 +83,10 @@ to [npm's official documentation](https://docs.npmjs.com/) for installation inst
 
 Copy the `env.example` file to `.env.local` and update it with your specific variables:
 
-- `NEXT_DOMAIN`
-- `NEXT_API_DOMAIN`
-- `NEXT_AUTH_SECRET`
-- `MONGODB_URI`
-- `GOOGLE_AUTH_CLIENTID`
-- `GOOGLE_AUTH_SECRET`
+- `NEXT_PUBLIC_DOMAIN={YOUR_DOMAIN}`
+- `NEXT_PUBLIC_API_DOMAIN={YOUR_DOMAIN/api}`
+- `MONGODB_URI={mongodb+srv://<name>:<password>@stick-to-it.oiewvws.mongodb.net/appdb?retryWrites=true&w=majority&appName=<app_name>}`
+- `SESSION_SECRET={your_secret_key (openssl rand -base64 32)}`
 
 ### Running the Application
 

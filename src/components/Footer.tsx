@@ -23,7 +23,7 @@ const Footer: React.FC = async () => {
         </div>
 
         <div className="flex w-full md:hidden flex-wrap items-center  md:justify-start mb-4 md:mb-0 ">
-          <ul className="flex w-full justify-between text-2xl">
+          <ul className="flex w-full justify-between text-2xl px-4 md:px-0">
             {routes.map((route) => {
               const LinkIcon = route.icon;
 
@@ -46,7 +46,7 @@ const Footer: React.FC = async () => {
         </div>
 
         <div>
-          <p className="text-sm text-secondary-foreground md:mt-0 text-center">
+          <p className="text-sm text-secondary-foreground mt-8 md:mt-0 text-center">
             &copy; {yearInFooter()} by Nemanja Karaklajic
           </p>
         </div>

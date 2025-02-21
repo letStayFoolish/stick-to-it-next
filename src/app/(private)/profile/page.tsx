@@ -49,7 +49,7 @@ const Profile: React.FC = async () => {
           </Avatar>
           <PageHeading>{user.name}</PageHeading>
           <h2 className="text-lg text-neutral-500 mb-4">{user.email}</h2>
-          <div className="w-full flex justify-between mx-auto">
+          <div className="w-full flex justify-between mx-auto mt-8">
             <GoToPage
               href="/shopping-list"
               className="bg-secondary text-secondary-foreground px-4 py-2 rounded-md hover:opacity-75 transition-all"
