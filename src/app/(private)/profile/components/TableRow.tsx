@@ -4,15 +4,15 @@ import Link from "next/link";
 import { handleProductName } from "@/lib/utils";
 import RemoveFromFavoritesBtn from "@/app/(private)/profile/components/RemoveFromFavoritesBtn";
 import { ProductPlain } from "@/lib/types";
-import { fetchShoppingListItems } from "@/lib/actions";
 import CellBtn from "@/app/(private)/profile/components/CellBtn";
+import { fetchShoppingListItems as fetchShoppingListItemsAction } from "@/lib/actions/fetchShoppingListItems";
 
 type Props = {
   product: ProductPlain;
 };
 
 export const ShoppingListTableRow: React.FC<Props> = async ({ product }) => {
-  const shoppingListProducts = await fetchShoppingListItems();
+  const shoppingListProducts = await fetchShoppingListItemsAction();
 
   // Find the product quantity in the fetched shopping list
   const quantity = shoppingListProducts?.find(

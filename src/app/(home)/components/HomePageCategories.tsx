@@ -13,7 +13,7 @@ const HomePageCategories: React.FC = async () => {
     <section className="grid grid-cols-2 m-auto md:grid-cols-3 lg:grid-cols-3 gap-4 lg:gap-8 mb-4 mt-16 lg:mb-12">
       {selectedProducts &&
         selectedProducts.map((product) => (
-          <ProductCard key={product._id.toString()} product={product} />
+          <ProductCard key={product._id} product={product} />
         ))}
     </section>
   );

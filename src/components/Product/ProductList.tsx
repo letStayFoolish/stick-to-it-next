@@ -1,14 +1,14 @@
 import React from "react";
 import NoData from "@/components/ui/NoData";
 import ProductItem from "@/components/Product/ProductItem";
-import { fetchProductsFromCategory } from "@/lib/actions";
+import { fetchProductsFromCategory as fetchProductsFromCategoryAction } from "@/lib/actions/fetchProductsFromCategory";
 
 type Props = {
   selectedCategory: string;
 };
 
 const ProductList: React.FC<Props> = async ({ selectedCategory }) => {
-  const products = await fetchProductsFromCategory(selectedCategory);
+  const products = await fetchProductsFromCategoryAction(selectedCategory);
 
   if (!products || products.length === 0) {
     return <NoData text={"No products found"} />;
