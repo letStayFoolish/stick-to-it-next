@@ -1,12 +1,12 @@
 import React from "react";
-import { Product } from "@/lib/types";
+import { ProductPlain } from "@/lib/types";
 import Link from "next/link";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import Image from "next/image";
 import { handleProductName } from "@/lib/utils";
 
 type Props = {
-  product: Product;
+  product: ProductPlain;
 };
 
 const ProductCard: React.FC<Props> = ({ product }) => {
@@ -16,7 +16,7 @@ const ProductCard: React.FC<Props> = ({ product }) => {
         <CardHeader
           className="text-primary text-lg text-center font-medium min-h-[60px] p-1 transition-all duration-300"
           style={{
-            width: "100%", // Ensures consistent width
+            width: "100%",
           }}
         >
           {handleProductName(product.category)}

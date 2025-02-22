@@ -4,13 +4,14 @@ import Image from "next/image";
 import GoToPage from "@/components/GoToPage";
 import { handleProductName } from "@/lib/utils";
 import ProductList from "@/components/Product/ProductList";
-import { fetchProductsFromCategory } from "@/lib/actions";
 import PageHeading from "@/components/PageHeading";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { fetchProductsFromCategory as fetchProductsFromCategoryAction } from "@/lib/actions/fetchProductsFromCategory";
 
 const Products: React.FC<ComponentPropsWithParams> = async ({ params }) => {
   const { slug } = await params;
-  const products = await fetchProductsFromCategory(slug);
+
+  const products = await fetchProductsFromCategoryAction(slug);
 
   return (
     <div className="flex flex-col items-center mt-6 p-4 overflow-x-hidden">

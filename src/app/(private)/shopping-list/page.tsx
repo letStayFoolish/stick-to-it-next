@@ -1,11 +1,11 @@
 import React, { Suspense } from "react";
 import type { Metadata } from "next";
 import { ShoppingList as List } from "./components/ShoppingList";
-import { fetchShoppingListItems } from "@/lib/actions";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import GoToPage from "@/components/GoToPage";
 import { FaCartShopping } from "react-icons/fa6";
 import PageHeading from "@/components/PageHeading";
+import { fetchShoppingListItems as fetchShoppingListItemsAction } from "@/lib/actions/fetchShoppingListItems";
 
 export const metadata: Metadata = {
   title: "Shopping List",
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 const ShoppingList: React.FC = async () => {
-  const fetchedProducts = await fetchShoppingListItems();
+  const fetchedProducts = await fetchShoppingListItemsAction();
 
   if (!fetchedProducts || fetchedProducts.length === 0) {
     return (

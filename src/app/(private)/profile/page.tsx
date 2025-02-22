@@ -11,12 +11,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { fetchFavoritesProducts } from "@/lib/actions";
 import LogOutBtn from "@/components/LogOutBtn";
 import { LogOut } from "lucide-react";
 import PageHeading from "@/components/PageHeading";
 import { ShoppingListTableRow } from "./components/TableRow";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { fetchFavoritesProducts as fetchFavoritesAction } from "@/lib/actions/fetchFavoritesProducts";
 
 export const metadata: Metadata = {
   title: "Profile Page",
@@ -31,14 +31,13 @@ const Profile: React.FC = async () => {
 
   const userName = user.name.split(" ");
 
-  const likedProducts = await fetchFavoritesProducts();
+  const likedProducts = await fetchFavoritesAction();
 
   return (
     <main className="flex justify-center flex-1 bg-background">
       <div className="container py-24 px-4">
         {/* Profile Section */}
         <header className="flex flex-col items-center text-center mb-12">
-          {}
           <Avatar className="h-32 w-32 md:h-48 md:w-48 mb-8">
             <AvatarImage src={profileImage} />
             <AvatarFallback className="text-7xl h-full w-full">

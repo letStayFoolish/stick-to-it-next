@@ -6,6 +6,7 @@ import { Button as IncrementDecrementButton } from "@/components/ui/button";
 import { FaMinus, FaPlus } from "react-icons/fa6";
 import { ProductPlain } from "@/lib/types";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { updateQuantityAction } from "@/components/Product/actions/updateQuantityAction";
 
 type Props = {
   product: ProductPlain;
@@ -14,9 +15,9 @@ type Props = {
 
 const AddToCartSection: React.FC<Props> = ({ product, quantityFromServer }) => {
   const [quantityLocalState, setQuantityLocalState] = useState<number>(
-    quantityFromServer ?? 0,
+    quantityFromServer as number,
   );
-  const [isPending, setIsPending] = useState(false);
+  const [isPending, setIsPending] = useState<boolean>(false);
 
   async function handleQuantityUpdate(
     productId: string,
@@ -31,33 +32,13 @@ const AddToCartSection: React.FC<Props> = ({ product, quantityFromServer }) => {
           action === "increase" ? prevState + 1 : Math.max(prevState - 1, 0), // Prevent negative state
       );
 
-      const response = await fetch(
-        `/api/user/shopping-list-${action === "increase" ? "increase" : "decrease"}-qty`,
-        {
-          method: "PATCH",
-          body: JSON.stringify({
-            productId: productId,
-          }),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        },
-      );
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || "Failed to update quantity");
-      }
-
-      const data = await response.json();
-
-      return data.updatedList; // Return updated list if necessary
+      await updateQuantityAction(productId, action);
     } catch (error: any) {
       console.error("Error updating quantity:", error);
 
       // Rollback optimistic UI state in case of error
       setQuantityLocalState((prevState) =>
-        action === "increase" ? prevState - 1 : prevState + 1,
+        action === "increase" ? Math.max(prevState - 1, 0) : prevState + 1,
       );
 
       throw error;

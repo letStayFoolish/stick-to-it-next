@@ -4,7 +4,7 @@ import { handleProductName } from "@/lib/utils";
 import LikeButtonsSet from "@/components/Product/LikeButtonsSet";
 import { verifySession } from "@/lib/dal";
 import AddToCartSection from "@/components/Product/AddToCartSection";
-import { fetchShoppingListItems } from "@/lib/actions";
+import { fetchShoppingListItems as fetchShoppingListItemsAction } from "@/lib/actions/fetchShoppingListItems";
 
 type Props = {
   product: ProductPlain;
@@ -13,7 +13,7 @@ type Props = {
 const ProductItem: React.FC<Props> = async ({ product }) => {
   const session = await verifySession();
 
-  const fetchedProducts = await fetchShoppingListItems();
+  const fetchedProducts = await fetchShoppingListItemsAction();
 
   // Find the product quantity in the fetched shopping list
   const quantity = fetchedProducts?.find(

@@ -3,8 +3,8 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
-import { handleDislike } from "@/lib/actions";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { handleDislike as handleDislikeAction } from "@/lib/actions/handleDislike";
 
 type Props = {
   productId: string;
@@ -16,7 +16,7 @@ const RemoveFromFavoritesBtn: React.FC<Props> = ({ productId }) => {
   const onClick = async () => {
     try {
       setIsPending(true);
-      await handleDislike(productId);
+      await handleDislikeAction(productId);
     } catch (error) {
       console.log(error);
     } finally {

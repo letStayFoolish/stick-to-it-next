@@ -2,8 +2,8 @@
 
 import { Button } from "@/components/ui/button";
 import React, { ButtonHTMLAttributes, useState } from "react";
-import { clearProductsAction } from "@/lib/actions";
 import { cn } from "@/lib/utils";
+import { clearProducts as clearProductsAction } from "@/lib/actions/clearProducts";
 
 type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
   className?: string;

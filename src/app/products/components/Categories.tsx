@@ -1,12 +1,13 @@
 import React from "react";
 import { getSortedProducts } from "@/lib/utils";
 import ProductCard from "@/components/Product/ProductCard";
+import NoData from "@/components/ui/NoData";
 
 const Categories: React.FC = async () => {
   const productsByCategory = await getSortedProducts();
 
   if (!productsByCategory || Object.keys(productsByCategory).length === 0) {
-    return <p>No Products</p>;
+    return <NoData text={"No products found"} />;
   }
 
   return (
