@@ -3,19 +3,17 @@
 import type { ProductPlain } from "@/lib/types";
 import { Product as ProductSchema } from "@/lib/models/Product";
 import { getUserData as getUserDataAction } from "@/lib/actions/getUserData";
-import { ObjectId } from "mongoose";
 
 export async function fetchShoppingListItems(): Promise<
   ProductPlain[] | undefined
 > {
   try {
-    const userData: {
-      listItems: { productId: string; quantity: number; _id: ObjectId }[];
-      _id: ObjectId;
-    } = await getUserDataAction("listItems");
+    const user = await getUserDataAction();
+
+    if (!user) return;
 
     // Extract the product IDs from the user's shopping list
-    const productIds = userData.listItems?.map((item: any) => item.productId);
+    const productIds = user.listItems?.map((item: any) => item.productId);
 
     // Query the database for products matching these IDs
     const products = await ProductSchema.find({
@@ -24,8 +22,8 @@ export async function fetchShoppingListItems(): Promise<
 
     // Enrich the products with quantities from the shopping list
     const enrichedProducts = products.map((product) => {
-      const matchingItem = userData.listItems.find(
-        (item) => item.productId.toString() === product._id.toString(),
+      const matchingItem = user.listItems.find(
+        (item: any) => item.productId.toString() === product._id.toString(),
       );
       return {
         ...product,

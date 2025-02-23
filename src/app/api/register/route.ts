@@ -5,8 +5,6 @@ import bcrypt from "bcryptjs";
 
 export async function POST(req: any) {
   try {
-    console.log({ req });
-
     const { name, email, password } = await req.json();
 
     await connectDB();
@@ -34,6 +32,7 @@ export async function POST(req: any) {
       image: "",
       likedItems: [],
       listItems: [],
+      notes: "",
     });
 
     return NextResponse.json({ message: "User created" }, { status: 201 });

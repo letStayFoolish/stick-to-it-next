@@ -4,26 +4,26 @@ import connectDB from "@/lib/database";
 import { getUser } from "@/lib/dal";
 import { User } from "@/lib/models/User";
 
-export async function getUserData(data: "listItems" | "likedItems" | "") {
-  await connectDB();
+export async function getUserData() {
+  try {
+    await connectDB();
 
-  let userData;
+    const user = await getUser();
 
-  const user = await getUser();
+    if (!user) {
+      throw new Error("User not authenticated");
+    }
 
-  if (!user) return null;
+    const userData = await User.findOne({ email: user.email });
+    // const userData = await User.findOne({ email: user.email }).lean();
 
-  // Fetch the user's liked items (IDs of favorite products)
-  if (data) {
-    userData = await User.findOne({ email: user.email }).select(data);
-  } else {
-    userData = await User.findOne({ email: user.email });
+    if (!userData) {
+      console.log("User record not found in database.");
+      return null;
+    }
+
+    return userData;
+  } catch (error) {
+    console.error("Database Error:", error);
   }
-
-  if (!userData || userData.listItems?.length === 0) {
-    console.log("User has no shopping list items");
-    userData = [];
-  }
-
-  return userData;
 }

@@ -1,12 +1,34 @@
 import React, { Suspense } from "react";
-import type { CategoriesType, ComponentPropsWithParams } from "@/lib/types";
+import type {
+  CategoriesType,
+  ComponentPropsWithParams,
+  ProductPlain,
+} from "@/lib/types";
 import Image from "next/image";
 import GoToPage from "@/components/GoToPage";
 import { handleProductName } from "@/lib/utils";
-import ProductList from "@/components/Product/ProductList";
 import PageHeading from "@/components/PageHeading";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { fetchProductsFromCategory as fetchProductsFromCategoryAction } from "@/lib/actions/fetchProductsFromCategory";
+import ProductItem from "@/components/Product/ProductItem";
+import NoData from "@/components/ui/NoData";
+
+const ProductList: React.FC<{ products: ProductPlain[] }> = ({ products }) => {
+  return (
+    <div className="flex flex-col w-full my-4 lg:w-2/3">
+      <ul className="mx-auto w-full">
+        {products?.map((product) => (
+          <li
+            className="border-b border-border last:border-none p-2 w-full"
+            key={product._id}
+          >
+            <ProductItem product={product} />
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
 
 const Products: React.FC<ComponentPropsWithParams> = async ({ params }) => {
   const { slug } = await params;
@@ -57,7 +79,11 @@ const Products: React.FC<ComponentPropsWithParams> = async ({ params }) => {
           </div>
         }
       >
-        <ProductList selectedCategory={slug} />
+        {products ? (
+          <ProductList products={products} />
+        ) : (
+          <NoData text={"No products found"} />
+        )}
       </Suspense>
     </div>
   );

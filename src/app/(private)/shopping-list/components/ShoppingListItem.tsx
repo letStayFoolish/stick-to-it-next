@@ -38,7 +38,7 @@ const ShoppingListItem: React.FC<Props> = ({ product }) => {
           </div>
         </div>
         <div className="py-2 sm:px-6 text-right">
-          <RemoveFromListBtn productId={product._id} />
+          <RemoveFromListBtn product={product} />
         </div>
       </div>
     </>

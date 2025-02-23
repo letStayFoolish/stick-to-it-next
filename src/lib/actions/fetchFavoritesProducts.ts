@@ -6,12 +6,9 @@ import { fetchProducts as fetchProductsAction } from "@/lib/actions/fetchProduct
 export async function fetchFavoritesProducts() {
   try {
     // Fetch the user's liked items (IDs of favorite products)
-    const userData: { likedItems: string[] } =
-      await getUserDataAction("likedItems");
+    const user = await getUserDataAction();
 
-    console.log({ userData });
-
-    const favoriteProducts: string[] = userData?.likedItems?.map(String) || []; // Ensure it's an array of strings
+    const favoriteProducts: string[] = user?.likedItems?.map(String) || []; // Ensure it's an array of strings
 
     if (favoriteProducts.length === 0) return []; // User has no liked items
 

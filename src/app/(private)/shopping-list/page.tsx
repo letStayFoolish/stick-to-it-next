@@ -6,6 +6,7 @@ import GoToPage from "@/components/GoToPage";
 import PageHeading from "@/components/PageHeading";
 import { fetchShoppingListItems as fetchShoppingListItemsAction } from "@/lib/actions/fetchShoppingListItems";
 import EmptyShoppingList from "@/app/(private)/shopping-list/components/EmptyShoppingList";
+import { getUserData } from "@/lib/actions/getUserData";
 
 export const metadata: Metadata = {
   title: "Shopping List",
@@ -17,6 +18,8 @@ const ShoppingList: React.FC = async () => {
   const fetchedProducts = await fetchShoppingListItemsAction();
 
   if (fetchedProducts?.length === 0) return <EmptyShoppingList />;
+
+  const user = await getUserData();
 
   return (
     <div className="flex flex-col p-4 w-full md:w-2/3 md:mx-auto">
@@ -45,7 +48,10 @@ const ShoppingList: React.FC = async () => {
           </>
         }
       >
-        <List products={fetchedProducts ?? []} />
+        <List
+          initialNotes={user?.notes ?? ""}
+          products={fetchedProducts ?? []}
+        />
       </Suspense>
     </div>
   );

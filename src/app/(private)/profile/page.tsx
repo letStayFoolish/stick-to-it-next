@@ -14,7 +14,7 @@ import {
 import LogOutBtn from "@/components/LogOutBtn";
 import { LogOut } from "lucide-react";
 import PageHeading from "@/components/PageHeading";
-import { ShoppingListTableRow } from "./components/TableRow";
+import { FavoritesListTableRow } from "./components/TableRow";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { fetchFavoritesProducts as fetchFavoritesAction } from "@/lib/actions/fetchFavoritesProducts";
 
@@ -65,34 +65,33 @@ const Profile: React.FC = async () => {
           <div className="mb-6 px-3 py-4">
             <h3 className="text-lg font-semibold">Favorite Products</h3>
           </div>
-          {likedProducts && likedProducts.length === 0 ? (
-            <NoData text={`Add some products to your\n favorites.`} />
-          ) : (
-            <section className="mt-4 mb-4 w-full">
-              <Table className="w-full caption-bottom">
-                <TableCaption>
-                  Shows the list of your liked products
-                </TableCaption>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="hidden md:block">ID</TableHead>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Category</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {likedProducts &&
-                    likedProducts.map((product) => (
-                      <ShoppingListTableRow
+          <section className="mt-4 mb-4 w-full">
+            <Table className="w-full caption-bottom">
+              <TableCaption>Shows the list of your liked products</TableCaption>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="hidden md:block">ID</TableHead>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Category</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {likedProducts ? (
+                  <>
+                    {likedProducts?.map((product) => (
+                      <FavoritesListTableRow
                         key={product._id}
                         product={product}
                       />
                     ))}
-                </TableBody>
-              </Table>
-            </section>
-          )}
+                  </>
+                ) : (
+                  <NoData text={`Add some products to your\n favorites.`} />
+                )}
+              </TableBody>
+            </Table>
+          </section>
         </section>
       </div>
     </main>

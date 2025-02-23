@@ -51,6 +51,7 @@ export async function signupAction(state: FormState, formData: FormData) {
       image: "",
       likedItems: [],
       listItems: [],
+      notes: "",
     });
 
     // Return success or throw error to the calling client

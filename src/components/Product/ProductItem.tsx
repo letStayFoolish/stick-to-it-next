@@ -23,7 +23,8 @@ const ProductItem: React.FC<Props> = async ({ product }) => {
   return (
     <div className="flex justify-between">
       <div className="flex gap-2 items-center w-full">
-        {session && <LikeButtonsSet product={product} />}
+        {/*{session && <LikeButtonsSet product={product} />}*/}
+        <LikeButtonsSet product={product} />
         <ProductName productName={product.product_name} />
       </div>
       <div className="flex gap-6">
