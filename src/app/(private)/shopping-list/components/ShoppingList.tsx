@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useActionState, useCallback, useEffect, useState } from "react";
-import NoData from "@/components/ui/NoData";
 import type { ProductPlain } from "@/lib/types";
 import Image from "next/image";
 import { handleProductName } from "@/lib/utils";
@@ -53,12 +52,6 @@ export const ShoppingList: React.FC<Props> = ({ products }) => {
     if (!notes) return;
     setUserNotes(notes);
   }, [state]);
-
-  if (products && products.length === 0) {
-    return (
-      <NoData text={"Add items to your shopping list to see them here!"} />
-    );
-  }
 
   const groupedItems = products ? groupByCategory(products) : {};
 

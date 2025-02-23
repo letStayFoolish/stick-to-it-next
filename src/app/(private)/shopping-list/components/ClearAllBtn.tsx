@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import React, { ButtonHTMLAttributes, useState } from "react";
 import { cn } from "@/lib/utils";
-import { clearProducts as clearProductsAction } from "@/lib/actions/clearProducts";
+import { clearProducts } from "@/lib/utils/clearProducts";
 
 type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
   className?: string;
@@ -21,7 +21,7 @@ const ClearAll: React.FC<Props> = ({ className, ...props }) => {
     try {
       setIsPending(true);
 
-      await clearProductsAction();
+      await clearProducts();
     } catch (error: any) {
       console.log(error);
     } finally {

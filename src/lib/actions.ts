@@ -6,7 +6,12 @@ import { User } from "@/lib/models/User";
 import bcrypt from "bcryptjs";
 import { createSession, deleteSession } from "@/lib/session";
 
-// const BASE_URL = process.env.NEXT_PUBLIC_DOMAIN || "http://localhost:3000/";
+// HANDLE BASE URL
+export async function getBaseURL() {
+  if (typeof window !== "undefined") return "";
+
+  return process.env.NEXT_PUBLIC_DOMAIN || "http://localhost:3000";
+}
 
 // SIGN UP ACTION
 export async function signupAction(state: FormState, formData: FormData) {

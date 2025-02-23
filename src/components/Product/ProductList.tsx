@@ -15,7 +15,7 @@ const ProductList: React.FC<Props> = async ({ selectedCategory }) => {
   }
 
   return (
-    <div className="flex flex-col w-full lg:w-2/4 my-4">
+    <div className="flex flex-col w-full my-4 lg:w-2/3">
       <ul className="mx-auto w-full">
         {products?.map((product) => (
           <li

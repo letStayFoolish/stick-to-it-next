@@ -6,7 +6,7 @@ import { Button as IncrementDecrementButton } from "@/components/ui/button";
 import { FaMinus, FaPlus } from "react-icons/fa6";
 import { ProductPlain } from "@/lib/types";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
-import { updateQuantityAction } from "@/components/Product/actions/updateQuantityAction";
+import { updateQuantity as updateQuantityAction } from "@/lib/utils/updateQuantity";
 
 type Props = {
   product: ProductPlain;
@@ -15,7 +15,7 @@ type Props = {
 
 const AddToCartSection: React.FC<Props> = ({ product, quantityFromServer }) => {
   const [quantityLocalState, setQuantityLocalState] = useState<number>(
-    quantityFromServer as number,
+    quantityFromServer || 0,
   );
   const [isPending, setIsPending] = useState<boolean>(false);
 
@@ -49,7 +49,7 @@ const AddToCartSection: React.FC<Props> = ({ product, quantityFromServer }) => {
 
   return (
     <>
-      {quantityLocalState === 0 ? (
+      {!quantityLocalState || quantityLocalState === 0 ? (
         <AddToCartBtn
           product={product}
           handleIsAddedState={setQuantityLocalState}

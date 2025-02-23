@@ -20,7 +20,7 @@ export async function getUserData(data: "listItems" | "likedItems" | "") {
     userData = await User.findOne({ email: user.email });
   }
 
-  if (!userData || userData.listItems.length === 0) {
+  if (!userData || userData.listItems?.length === 0) {
     console.log("User has no shopping list items");
     userData = [];
   }

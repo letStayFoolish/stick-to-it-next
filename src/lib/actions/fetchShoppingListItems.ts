@@ -1,21 +1,23 @@
 "use server";
 
-import { ProductPlain } from "@/lib/types";
+import type { ProductPlain } from "@/lib/types";
 import { Product as ProductSchema } from "@/lib/models/Product";
 import { getUserData as getUserDataAction } from "@/lib/actions/getUserData";
+import { ObjectId } from "mongoose";
 
 export async function fetchShoppingListItems(): Promise<
   ProductPlain[] | undefined
 > {
   try {
-    // Fetch the user's liked items (IDs of favorite products)
-    const userData: { listItems: { productId: string; quantity: number }[] } =
-      await getUserDataAction("listItems");
+    const userData: {
+      listItems: { productId: string; quantity: number; _id: ObjectId }[];
+      _id: ObjectId;
+    } = await getUserDataAction("listItems");
 
     // Extract the product IDs from the user's shopping list
-    const productIds = userData.listItems.map((item) => item.productId);
+    const productIds = userData.listItems?.map((item: any) => item.productId);
 
-    // Query the database for products matching these IDs with .lean() for plain object conversion
+    // Query the database for products matching these IDs
     const products = await ProductSchema.find({
       _id: { $in: productIds },
     }).lean<ProductPlain[]>();
@@ -23,9 +25,8 @@ export async function fetchShoppingListItems(): Promise<
     // Enrich the products with quantities from the shopping list
     const enrichedProducts = products.map((product) => {
       const matchingItem = userData.listItems.find(
-        (item: any) => item.productId.toString() === product._id.toString(),
+        (item) => item.productId.toString() === product._id.toString(),
       );
-
       return {
         ...product,
         _id: product._id.toString(),

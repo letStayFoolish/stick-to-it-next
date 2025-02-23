@@ -22,6 +22,8 @@ const AddToCartBtn: React.FC<Props> = ({
 
   const handleAddToCart = async () => {
     try {
+      handleIsAddedState((prevState) => prevState + 1);
+
       const response = await fetch(`/api/user/shopping-list-add-items`, {
         method: "POST",
         body: JSON.stringify({
@@ -48,8 +50,6 @@ const AddToCartBtn: React.FC<Props> = ({
           </ToastAction>
         ),
       });
-
-      handleIsAddedState((prevState) => prevState + 1);
 
       return data;
     } catch (error: any) {

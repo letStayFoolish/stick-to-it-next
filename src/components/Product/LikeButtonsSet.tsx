@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { FaHeart } from "react-icons/fa6";
 import { FaRegHeart } from "react-icons/fa";
 import { ProductPlain } from "@/lib/types";
-import { toggleLikeAction } from "@/components/Product/actions/toggleLikeAction";
+import { toggleLike as toggleLikeAction } from "@/lib/utils/toggleLike";
 
 type Props = {
   product: ProductPlain;
@@ -17,14 +17,16 @@ const LikeButtonsSet: React.FC<Props> = ({ product }) => {
   );
   const [isPending, setIsPending] = useState<boolean>(false);
 
-  const handleLike = async () => {
+  const handleLike = async (productId: string) => {
     try {
       setIsPending(true);
 
       // Optimistic UI update
       setIsLikedState((prevState) => !prevState);
 
-      await toggleLikeAction(product._id);
+      console.log("LIKE PRODUCT: ", productId);
+
+      await toggleLikeAction(productId);
     } catch (error: any) {
       console.log(error);
 
@@ -40,7 +42,7 @@ const LikeButtonsSet: React.FC<Props> = ({ product }) => {
       variant="ghost"
       type="button"
       className="text-primary p-0 m-0 hover:bg-transparent"
-      onClick={handleLike}
+      onClick={async () => handleLike(product._id)}
       disabled={isPending}
     >
       {isLikedState ? (

@@ -1,6 +1,5 @@
-"use server";
-
 import { revalidatePath } from "next/cache";
+import { getBaseURL } from "@/lib/actions";
 
 /**
  * `revalidatePath` allows you to purge cached data on-demand for a specific path.
@@ -16,31 +15,37 @@ import { revalidatePath } from "next/cache";
  * @param action
  */
 
-export async function updateQuantityAction(
+export async function updateQuantity(
   productId: string,
   action: "increase" | "decrease",
 ) {
-  const response = await fetch(
-    `/api/user/shopping-list-${action === "increase" ? "increase" : "decrease"}-qty`,
-    {
-      method: "PATCH",
-      body: JSON.stringify({
-        productId: productId,
-      }),
-      headers: {
-        "Content-Type": "application/json",
+  try {
+    const baseURL = await getBaseURL();
+
+    const response = await fetch(
+      `${baseURL}/api/user/shopping-list-${action === "increase" ? "increase" : "decrease"}-qty`,
+      {
+        method: "PATCH",
+        body: JSON.stringify({
+          productId,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
       },
-    },
-  );
+    );
 
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error || "Failed to update quantity");
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || "Failed to update quantity");
+    }
+
+    const data = await response.json();
+
+    revalidatePath("/products/[slug]");
+    revalidatePath("/shopping-list");
+    return data.updatedList; // Return updated list if necessary
+  } catch (error: any) {
+    console.log(error);
   }
-
-  const data = await response.json();
-
-  revalidatePath("/products/[slug]");
-  revalidatePath("/shopping-list");
-  return data.updatedList; // Return updated list if necessary
 }

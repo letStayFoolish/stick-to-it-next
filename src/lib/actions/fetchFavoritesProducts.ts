@@ -9,6 +9,8 @@ export async function fetchFavoritesProducts() {
     const userData: { likedItems: string[] } =
       await getUserDataAction("likedItems");
 
+    console.log({ userData });
+
     const favoriteProducts: string[] = userData?.likedItems?.map(String) || []; // Ensure it's an array of strings
 
     if (favoriteProducts.length === 0) return []; // User has no liked items
@@ -21,7 +23,7 @@ export async function fetchFavoritesProducts() {
       favoriteProducts.includes(String(product._id)),
     );
 
-    const enrichedProducts = filteredProducts.map((product) => ({
+    const enrichedProducts = filteredProducts?.map((product) => ({
       ...product,
       _id: String(product._id),
     }));
