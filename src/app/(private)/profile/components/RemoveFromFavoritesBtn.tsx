@@ -1,37 +1,37 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useActionState } from "react";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
-import { handleDislike } from "@/lib/actions";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { toggleLike as toggleLikeAction } from "@/lib/actions/toggleLike";
+import type { ProductPlain } from "@/lib/types";
 
 type Props = {
-  productId: string;
+  product: ProductPlain;
 };
 
-const RemoveFromFavoritesBtn: React.FC<Props> = ({ productId }) => {
-  const [isPending, setIsPending] = useState<boolean>(false);
-
-  const onClick = async () => {
-    try {
-      setIsPending(true);
-      await handleDislike(productId);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsPending(false);
-    }
-  };
+const RemoveFromFavoritesBtn: React.FC<Props> = ({ product }) => {
+  const [state, formAction, isPending] = useActionState(toggleLikeAction, {
+    message: "",
+    success: product.isLiked,
+  });
 
   return (
-    <Button
-      variant="ghost"
-      onClick={onClick}
-      className="text-red-500 hover:text-red-700"
-    >
-      {isPending ? <LoadingSpinner /> : <Trash2 size={18} />}
-    </Button>
+    <form action={formAction}>
+      <input type="hidden" name="product_id" value={product._id} />
+
+      <Button
+        variant="ghost"
+        className="text-red-500 hover:text-red-700"
+        disabled={isPending}
+      >
+        {isPending ? <LoadingSpinner /> : <Trash2 size={18} />}
+      </Button>
+      <p className="sr-only" aria-live="polite" role="status">
+        {state?.message}
+      </p>
+    </form>
   );
 };
 

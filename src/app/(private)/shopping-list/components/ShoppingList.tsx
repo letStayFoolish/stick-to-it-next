@@ -1,7 +1,6 @@
 "use client";
 
-import React, { useActionState, useCallback, useEffect, useState } from "react";
-import NoData from "@/components/ui/NoData";
+import React, { useActionState, useCallback, useState } from "react";
 import type { ProductPlain } from "@/lib/types";
 import Image from "next/image";
 import { handleProductName } from "@/lib/utils";
@@ -17,22 +16,21 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { FaEdit } from "react-icons/fa";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
-import { formAction as action } from "@/app/(private)/shopping-list/formAction";
-import { Trash2 } from "lucide-react";
 import { FaShare } from "react-icons/fa6";
+import { Trash2 } from "lucide-react";
+import { updateNotes as updateNotesAction } from "@/lib/actions/updateNotes";
 
 type Props = {
   products: ProductPlain[];
+  initialNotes: string;
 };
 
-export const ShoppingList: React.FC<Props> = ({ products }) => {
-  const [userNotes, setUserNotes] = useState("");
+export const ShoppingList: React.FC<Props> = ({ products, initialNotes }) => {
   const [dialogIsOpen, setDialogIsOpen] = useState(false); // New state for dialog
-  const [state, formAction, isPending] = useActionState(action, {
-    notes: "",
+  const [state, formAction, isPending] = useActionState(updateNotesAction, {
+    notes: initialNotes,
     error: "",
     message: "",
   });
@@ -47,18 +45,6 @@ export const ShoppingList: React.FC<Props> = ({ products }) => {
       return acc;
     }, {});
   }, []);
-
-  useEffect(() => {
-    const notes = localStorage.getItem("userNotes");
-    if (!notes) return;
-    setUserNotes(notes);
-  }, [state]);
-
-  if (products && products.length === 0) {
-    return (
-      <NoData text={"Add items to your shopping list to see them here!"} />
-    );
-  }
 
   const groupedItems = products ? groupByCategory(products) : {};
 
@@ -90,7 +76,7 @@ export const ShoppingList: React.FC<Props> = ({ products }) => {
               </h3>
             </div>
             <ul className="w-full">
-              {products.map((product) => (
+              {products?.map((product) => (
                 <li
                   key={product._id.toString()}
                   className="border-b last:border-none"
@@ -101,26 +87,43 @@ export const ShoppingList: React.FC<Props> = ({ products }) => {
             </ul>
           </li>
         ))}
-        {userNotes && (
+        {isPending && (
+          <>
+            Loading notes... <LoadingSpinner />
+          </>
+        )}
+        {state.notes && (
           <div className="w-full flex flex-col gap-4 mt-10 bg-secondary/20 dark:bg-secondary/10 border-t-2 py-4 border-border">
             <div className="flex items-center justify-between gap-2">
               <h2 className="text-xl font-semibold text-foreground">
                 My Notes
               </h2>
-              <Trash2
-                onClick={() => {
-                  setUserNotes("");
-                  localStorage.removeItem("userNotes");
-                }}
-                size={18}
-              />
+              <form action={formAction}>
+                <input type="hidden" name="action" value="remove-note" />
+                <Button
+                  variant="outline"
+                  className="flex flex-1 items-center gap-2"
+                  type="submit"
+                  disabled={isPending}
+                >
+                  <Trash2 size={18} />
+                </Button>
+
+                <p className="sr-only" aria-live="polite" role="status">
+                  {state?.message}
+                </p>
+              </form>
             </div>
 
             <p className="text-sm font-medium text-muted-foreground">
-              {userNotes.split("\n").map((note, index) => (
+              {state.notes?.split("\n").map((note: string, index: number) => (
                 <React.Fragment key={index}>
-                  - {note}
-                  <br />
+                  {note !== "" && (
+                    <>
+                      - {note}
+                      <br />
+                    </>
+                  )}
                 </React.Fragment>
               ))}
             </p>
@@ -130,6 +133,7 @@ export const ShoppingList: React.FC<Props> = ({ products }) => {
 
       <div className="w-full flex justify-between items-center gap-4 mt-12 mb-6">
         <ClearAllBtn className="flex-1" />
+
         {/*<NotesForm />*/}
         <Dialog open={dialogIsOpen} onOpenChange={setDialogIsOpen}>
           <DialogTrigger asChild>
@@ -137,7 +141,7 @@ export const ShoppingList: React.FC<Props> = ({ products }) => {
               variant="outline"
               className="flex flex-1 items-center gap-2"
             >
-              <FaEdit /> {userNotes ? "Update Notes" : "Add Notes"}
+              <FaEdit /> {state.notes ? "Update Notes" : "Add Notes"}
             </Button>
           </DialogTrigger>
           <DialogContent>
@@ -145,15 +149,15 @@ export const ShoppingList: React.FC<Props> = ({ products }) => {
               <DialogTitle>Write Your Notes</DialogTitle>
             </DialogHeader>
             <form action={formAction} className="flex flex-col gap-4">
-              <div>
-                <Label htmlFor="notes">Notes</Label>
+              <>
+                <input type="hidden" name="action" value="update-notes" />
                 <Textarea
                   id="notes"
                   name="notes"
                   placeholder="- Write your notes here"
-                  defaultValue={userNotes ?? ""}
+                  defaultValue={state.notes ?? ""}
                 />
-              </div>
+              </>
               <Button
                 disabled={isPending}
                 type="submit"
@@ -167,6 +171,10 @@ export const ShoppingList: React.FC<Props> = ({ products }) => {
                   "Save notes"
                 )}
               </Button>
+
+              <p className="sr-only" aria-live="polite" role="status">
+                {state?.message}
+              </p>
             </form>
             {state?.error && <DialogHeader>{state.error}</DialogHeader>}
           </DialogContent>

@@ -1,7 +1,8 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { fetchAllCategories, fetchProducts } from "@/lib/actions";
-import type { Product as ProductType } from "@/lib/types";
+import type { Product as ProductType, ProductPlain } from "@/lib/types";
+import { fetchProducts as fetchProductsAction } from "@/lib/actions/fetchProducts";
+import { fetchAllCategories as fetchAllCategoriesAction } from "@/lib/actions/fetchAllCategories";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -18,13 +19,13 @@ export const convertObjectIdToPlainValues = <T extends ProductType>(
 };
 
 export async function getLimitedNumberOfProducts(limit: number) {
-  const allProducts = await fetchProducts();
+  const allProducts = await fetchProductsAction();
 
   if (!allProducts) return;
 
   const categorySet = new Set<string>();
 
-  const selectedProducts: ProductType[] = [];
+  const selectedProducts: ProductPlain[] = [];
 
   try {
     /**
@@ -50,8 +51,8 @@ export async function getLimitedNumberOfProducts(limit: number) {
 export async function getSortedProducts() {
   try {
     const [allProducts, categories] = await Promise.all([
-      fetchProducts(),
-      fetchAllCategories(),
+      fetchProductsAction(),
+      fetchAllCategoriesAction(),
     ]);
 
     if (!allProducts || allProducts.length === 0) {
@@ -62,11 +63,11 @@ export async function getSortedProducts() {
       throw new Error("No categories found");
     }
 
-    const productsSortedByCategory: Record<string, ProductType[]> = {};
+    const productsSortedByCategory: Record<string, ProductPlain[]> = {};
 
     categories.forEach((category: string) => {
       productsSortedByCategory[category] = allProducts.filter(
-        (product: ProductType) => product.category === category,
+        (product) => product.category === category,
       );
     });
 
