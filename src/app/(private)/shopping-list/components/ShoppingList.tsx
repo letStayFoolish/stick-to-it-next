@@ -92,7 +92,7 @@ export const ShoppingList: React.FC<Props> = ({ products, initialNotes }) => {
             Loading notes... <LoadingSpinner />
           </>
         )}
-        {state.notes && (
+        {state.notes && !isPending && (
           <div className="w-full flex flex-col gap-4 mt-10 bg-secondary/20 dark:bg-secondary/10 border-t-2 py-4 border-border">
             <div className="flex items-center justify-between gap-2">
               <h2 className="text-xl font-semibold text-foreground">

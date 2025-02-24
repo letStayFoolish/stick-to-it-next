@@ -36,12 +36,29 @@ This project is built using the following technologies:
 
 ## Screenshots
 
+### Web application
+
 ![Home Page](/public/images/screens/screen-01.png)
 ![Categories page](/public/images/screens/screen-02.png)
 ![Shopping list](/public/images/screens/screen-03.png)
 ![Profile page](/public/images/screens/screen-04.png)
 ![Login Page](/public/images/screens/screen-05.png)
 ![Register Page](/public/images/screens/screen-06.png)
+
+### Mobile devices
+
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+
+  <img src="/public/images/screens/mobile-screen-01.JPG" alt="Home Page" style="width: 100%; height: auto;" />
+
+  <img src="/public/images/screens/mobile-screen-03.JPG" alt="Shopping list" style="width: 100%; height: auto;" />
+  <img src="/public/images/screens/mobile-screen-04.JPG" alt="Profile Page" style="width: 100%; height: auto;" />
+  <img src="/public/images/screens/mobile-screen-02.JPG" alt="Categories page" style="width: 100%; height: auto;" />
+  <img src="/public/images/screens/mobile-screen-05.PNG" alt="Login Page" style="width: 100%; height: auto;" />
+  <img src="/public/images/screens/mobile-screen-06.PNG" alt="Register Page" style="width: 100%; height: auto;" />
+
+</div>
+
 
 ## User Flow
 
