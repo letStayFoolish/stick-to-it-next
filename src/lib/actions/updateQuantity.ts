@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { getUserData } from "@/lib/actions/getUserData";
+import { getUser } from "@/lib/dal";
 
 /**
  * `revalidatePath` allows you to purge cached data on-demand for a specific path.
@@ -30,7 +30,7 @@ export async function updateQuantity(prevState: any, formData: FormData) {
       throw new Error("Invalid form data");
     }
 
-    const userData = await getUserData();
+    const userData = await getUser();
 
     const itemIndex = userData?.listItems?.findIndex(
       (item: any) => item.productId.toString() === productId,

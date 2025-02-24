@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { getUserData } from "@/lib/actions/getUserData";
+import { getUser } from "@/lib/dal";
 
 export async function toggleLike(
   prevState: { message: string; success: boolean | undefined },
@@ -14,7 +14,7 @@ export async function toggleLike(
       throw new Error("Invalid product ID");
     }
 
-    const userData = await getUserData();
+    const userData = await getUser();
 
     // Check if the Product is already liked
     const isLiked = userData.likedItems.includes(productId);

@@ -44,6 +44,10 @@ export const getUser = cache(async () => {
       "-password",
     );
 
+    if (!user) {
+      throw new Error("User not authenticated");
+    }
+
     return user;
   } catch (error: any) {
     console.log("Failed to fetch user", error);

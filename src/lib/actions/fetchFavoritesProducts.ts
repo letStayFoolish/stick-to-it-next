@@ -1,12 +1,12 @@
 "use server";
 
-import { getUserData as getUserDataAction } from "@/lib/actions/getUserData";
 import { fetchProducts as fetchProductsAction } from "@/lib/actions/fetchProducts";
+import { getUser } from "@/lib/dal";
 
 export async function fetchFavoritesProducts() {
   try {
     // Fetch the user's liked items (IDs of favorite products)
-    const user = await getUserDataAction();
+    const user = await getUser();
 
     const favoriteProducts: string[] = user?.likedItems?.map(String) || []; // Ensure it's an array of strings
 

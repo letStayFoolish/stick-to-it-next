@@ -2,13 +2,11 @@
 
 import type { ProductPlain } from "@/lib/types";
 import { Product as ProductSchema } from "@/lib/models/Product";
-import { getUserData as getUserDataAction } from "@/lib/actions/getUserData";
+import { getUser } from "@/lib/dal";
 
-export async function fetchShoppingListItems(): Promise<
-  ProductPlain[] | undefined
-> {
+export async function fetchShoppingListItems() {
   try {
-    const user = await getUserDataAction();
+    const user = await getUser();
 
     if (!user) return;
 

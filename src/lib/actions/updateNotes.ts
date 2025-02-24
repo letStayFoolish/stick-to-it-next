@@ -1,11 +1,11 @@
 "use server";
 
-import { getUserData } from "@/lib/actions/getUserData";
 import { revalidatePath } from "next/cache";
+import { getUser } from "@/lib/dal";
 
 export async function updateNotes(prevState: any, formData: FormData) {
   try {
-    const user = await getUserData();
+    const user = await getUser();
 
     const notesAction = formData.get("action") as
       | "update-notes"

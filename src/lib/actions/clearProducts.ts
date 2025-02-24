@@ -1,7 +1,7 @@
 "use server";
 
-import { getUserData } from "@/lib/actions/getUserData";
 import { revalidatePath } from "next/cache";
+import { getUser } from "@/lib/dal";
 
 export async function clearProducts(prevState: any, formData: FormData) {
   try {
@@ -14,7 +14,7 @@ export async function clearProducts(prevState: any, formData: FormData) {
       };
     }
 
-    const userData = await getUserData();
+    const userData = await getUser();
 
     if (!userData.listItems)
       return {
