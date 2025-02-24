@@ -13,14 +13,18 @@ const NavLinks: React.FC = () => {
       {routes.map((route) => {
         const LinkIcon = route.icon;
 
+        const isActive =
+          route.pathName === "/"
+            ? pathname === "/" // Special case for homepage
+            : pathname.startsWith(route.pathName); // Other routes
+
         return (
           <Link
             key={route.id}
             href={route.href}
             className={cn(
               "mx-[-0.65rem] flex items-center bg-transparent text-muted-foreground gap-4 px-4 py-2 mb-4 hover:text-foreground",
-              (pathname === route.pathName ||
-                route.pathName.startsWith("/products")) &&
+              isActive &&
                 "font-bold text-black hover:text-opacity-80 dark:text-white border-b-2 border-primary",
             )}
           >
