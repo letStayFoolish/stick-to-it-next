@@ -45,6 +45,11 @@ This project is built using the following technologies:
 ![Login Page](/public/images/screens/screen-05.png)
 ![Register Page](/public/images/screens/screen-06.png)
 
+### Google performance rating
+
+![Lighthouse_results](/public/images/screens/lighthouse-screen.png)
+
+
 ### Mobile devices
 
 ## App Screenshots
