@@ -33,10 +33,10 @@ const ShoppingList: React.FC = async () => {
       </div>
       <Suspense
         fallback={
-          <>
+          <div className="flex gap-4 items-center justify-center">
             Loading Shopping List Items...
             <LoadingSpinner />
-          </>
+          </div>
         }
       >
         <ListDynamicData />
