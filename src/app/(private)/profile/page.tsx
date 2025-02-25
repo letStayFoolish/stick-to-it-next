@@ -39,7 +39,7 @@ const Profile: React.FC = async () => {
         {/* Profile Section */}
         <header className="flex flex-col items-center text-center mb-12">
           <Avatar className="h-32 w-32 md:h-48 md:w-48 mb-8">
-            <AvatarImage src={profileImage} />
+            <AvatarImage src={profileImage} alt="Profile Image" />
             <AvatarFallback className="text-7xl h-full w-full">
               {userName.length > 1
                 ? userName[0][0].toUpperCase() + userName[1][0].toUpperCase()

@@ -23,6 +23,7 @@ export async function clearProducts(prevState: any, formData: FormData) {
       };
 
     userData.listItems = [];
+    userData.notes = "";
 
     userData.save();
 

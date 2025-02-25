@@ -1,22 +1,17 @@
 import React from "react";
-import { FaCartShopping } from "react-icons/fa6";
-import GoToPage from "@/components/GoToPage";
+
+import { ShoppingCart } from "lucide-react";
 
 const EmptyShoppingList: React.FC = () => {
   return (
-    <div className="flex flex-col items-center p-4">
-      <div className="mb-4 px-3 py-4 text-center">
-        <h2 className="font-extrabold text-start text-2xl md:text-3xl text-primary uppercase drop-shadow-md">
+    <div className="flex flex-col justify-center items-center p-4 h-full">
+      <div className="flex justify-between gap-4 mb-4 px-3 py-4 text-center">
+        <ShoppingCart className="text-primary text-4xl" />
+
+        <h2 className="font-medium text-start text-xl text-primary uppercase drop-shadow-md">
           Shopping List is Empty
         </h2>
       </div>
-      <FaCartShopping className="text-primary text-6xl mb-12" />
-      <GoToPage
-        className="bg-secondary px-4 py-3 mb-6 md:mb-2 rounded-md hover:opacity-80 transition-opacity flex items-center w-fit"
-        href={"/products"}
-      >
-        Browse Products
-      </GoToPage>
     </div>
   );
 };

@@ -29,7 +29,6 @@ export async function toggleLike(
 
     await userData.save();
 
-    revalidatePath("/products");
     revalidatePath("/profile");
 
     return { message: "Like status updated", success: !isLiked };

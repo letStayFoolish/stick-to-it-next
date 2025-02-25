@@ -59,7 +59,6 @@ export async function updateQuantity(prevState: any, formData: FormData) {
 
     // Revalidate affected pages after changes
     revalidatePath("/shopping-list");
-    revalidatePath("/products");
 
     return {
       message: `Quantity successfully ${action === "increase" ? "increased" : action === "add-to-list" ? "added to list" : "decreased"}`,
