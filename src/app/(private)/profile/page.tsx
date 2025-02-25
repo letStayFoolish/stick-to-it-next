@@ -1,12 +1,12 @@
-import React from "react";
+import React, { Suspense } from "react";
 import type { Metadata } from "next";
 import { getUser } from "@/lib/dal";
 import GoToPage from "@/components/GoToPage";
-import NoData from "@/components/ui/NoData";
 import {
   Table,
   TableBody,
   TableCaption,
+  TableCell,
   TableHead,
   TableHeader,
   TableRow,
@@ -14,12 +14,25 @@ import {
 import LogOutBtn from "@/components/LogOutBtn";
 import { LogOut } from "lucide-react";
 import PageHeading from "@/components/PageHeading";
-import { FavoritesListTableRow } from "./components/TableRow";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { fetchFavoritesProducts as fetchFavoritesAction } from "@/lib/actions/fetchFavoritesProducts";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { FavoritesList } from "@/app/(private)/profile/components/FavoritesList";
 
 export const metadata: Metadata = {
   title: "Profile Page",
+};
+
+const SuspenseFallback = () => {
+  return (
+    <TableRow>
+      <TableCell>
+        <div className="w-full flex gap-4 items-center py-4 mx-auto">
+          Loading Favorites...
+          <LoadingSpinner />
+        </div>
+      </TableCell>
+    </TableRow>
+  );
 };
 
 const Profile: React.FC = async () => {
@@ -30,8 +43,6 @@ const Profile: React.FC = async () => {
   const profileImage = user?.image;
 
   const userName = user.name.split(" ");
-
-  const likedProducts = await fetchFavoritesAction();
 
   return (
     <main className="flex justify-center flex-1 bg-background">
@@ -77,18 +88,9 @@ const Profile: React.FC = async () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {likedProducts ? (
-                  <>
-                    {likedProducts?.map((product) => (
-                      <FavoritesListTableRow
-                        key={product._id}
-                        product={product}
-                      />
-                    ))}
-                  </>
-                ) : (
-                  <NoData text={`Add some products to your\n favorites.`} />
-                )}
+                <Suspense fallback={<SuspenseFallback />}>
+                  <FavoritesList />
+                </Suspense>
               </TableBody>
             </Table>
           </section>
