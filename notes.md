@@ -41,9 +41,14 @@
 
 ## Notes on 20.02.2025
 
-[] Add shopping list items in URL so we can implement SHARE LIST
-
 [x] Add Notes (where to store them)
 
 [x] Likes, Add to cart optimistic
+
+## Notes on 26.02.2025
+
+[] Store state "isChecked" on db
+
+[] Add shopping list items in URL so we can implement SHARE LIST
+
 
