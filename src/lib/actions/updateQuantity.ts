@@ -26,7 +26,6 @@ export async function updateQuantity(prevState: any, formData: FormData) {
 
     // Validate form data
     if (!productId || !action) {
-      // || typeof productId !== "string"
       throw new Error("Invalid form data");
     }
 

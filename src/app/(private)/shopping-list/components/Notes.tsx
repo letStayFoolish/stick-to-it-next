@@ -96,6 +96,7 @@ const Notes: React.FC<Props> = ({ initialNotes }) => {
                   name="notes"
                   placeholder="- Write your notes here"
                   defaultValue={state.notes ?? ""}
+                  rows={14}
                 />
               </>
               <Button
