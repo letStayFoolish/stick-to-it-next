@@ -13,7 +13,7 @@ export function useHandleLike(product: ProductPlain) {
     try {
       setIsPending(true);
 
-      await toggleLikeAction(product._id);
+      void toggleLikeAction(product._id);
 
       toast({
         title: "Favorite list updated!",
