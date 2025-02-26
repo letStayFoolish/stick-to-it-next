@@ -47,12 +47,11 @@ This project is built using the following technologies:
 
 ### Google performance rating
 
-![Lighthouse_results](/public/images/screens/lighthouse-screen.png)
+![Lighthouse_results](/public/images/screens/lighthouse-screen-01.png)
+![Lighthouse_results](/public/images/screens/lighthouse-screen-02.png)
 
 
 ### Mobile devices
-
-## App Screenshots
 
 | Home Page | Shopping List | Profile Page |
 |-----------|--------------|-------------|
