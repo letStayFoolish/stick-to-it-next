@@ -3,8 +3,9 @@
 import type { ProductPlain } from "@/lib/types";
 import { Product as ProductSchema } from "@/lib/models/Product";
 import { getUser } from "@/lib/dal";
+import { cache } from "react";
 
-export async function fetchShoppingListItems() {
+export const fetchShoppingListItems = cache(async () => {
   try {
     const user = await getUser();
 
@@ -35,4 +36,4 @@ export async function fetchShoppingListItems() {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch the shopping list products.");
   }
-}
+});

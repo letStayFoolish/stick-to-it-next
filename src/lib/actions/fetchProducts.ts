@@ -3,8 +3,9 @@
 import connectDB from "@/lib/database";
 import { Product as ProductSchema } from "@/lib/models/Product";
 import { ProductPlain } from "@/lib/types";
+import { cache } from "react";
 
-export async function fetchProducts() {
+export const fetchProducts = cache(async () => {
   try {
     await connectDB();
 
@@ -18,4 +19,4 @@ export async function fetchProducts() {
   } catch (error) {
     console.log(error);
   }
-}
+});

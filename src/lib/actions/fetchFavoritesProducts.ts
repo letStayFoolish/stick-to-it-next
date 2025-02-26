@@ -2,8 +2,9 @@
 
 import { fetchProducts as fetchProductsAction } from "@/lib/actions/fetchProducts";
 import { getUser } from "@/lib/dal";
+import { cache } from "react";
 
-export async function fetchFavoritesProducts() {
+export const fetchFavoritesProducts = cache(async () => {
   try {
     // Fetch the user's liked items (IDs of favorite products)
     const user = await getUser();
@@ -30,4 +31,4 @@ export async function fetchFavoritesProducts() {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch the products for specific category.");
   }
-}
+});

@@ -2,8 +2,14 @@
 
 import connectDB from "@/lib/database";
 import { Product as ProductSchema } from "@/lib/models/Product";
+import { cache } from "react";
 
-export async function fetchAllCategories() {
+/**
+ * If you are not using fetch, and instead using an ORM or database directly,
+ * you can wrap your data fetch with the React cache function.
+ * This will de-duplicate and only make one query.
+ */
+export const fetchAllCategories = cache(async () => {
   try {
     await connectDB();
 
@@ -17,4 +23,4 @@ export async function fetchAllCategories() {
     if (error instanceof Error) console.error(error.message);
     throw error;
   }
-}
+});
