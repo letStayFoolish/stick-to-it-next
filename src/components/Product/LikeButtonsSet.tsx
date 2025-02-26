@@ -1,59 +1,18 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { Button } from "@/components/ui/button";
 import { FaHeart } from "react-icons/fa6";
 import { FaRegHeart } from "react-icons/fa";
 import { ProductPlain } from "@/lib/types";
-import { toggleLike as toggleLikeAction } from "@/lib/actions/toggleLike";
-import { useToast } from "@/hooks/use-toast";
-import { ToastAction } from "@/components/ui/toast";
-import Link from "next/link";
+import { useHandleLike } from "@/hooks/useHandleLike";
 
 type Props = {
   product: ProductPlain;
 };
 
 const LikeButtonsSet: React.FC<Props> = ({ product }) => {
-  const { toast } = useToast();
-  const [isLikedLocal, setIsLikedLocal] = useState(product.isLiked);
-  const [isPending, setIsPending] = useState(false);
-
-  const handleLike = async () => {
-    try {
-      setIsPending(true);
-
-      await toggleLikeAction(product._id);
-
-      toast({
-        title: "Favorite list updated!",
-        description: `${product.isLiked ? "removed" : "added"} ${product.product_name} ${product.isLiked ? "from" : "to"} your favorites list.`,
-        action: (
-          <ToastAction altText="Go To Profile Page">
-            <Link href={"/profile"}>Go to profile page</Link>
-          </ToastAction>
-        ),
-      });
-
-      setIsLikedLocal(!isLikedLocal);
-    } catch (error: any) {
-      console.log(error);
-      toast({
-        title: "Something went wrong!",
-        description: `Something went wrong while trying to ${product.isLiked ? "dislike" : "like"} ${product.product_name}`,
-        action: (
-          <ToastAction altText="Go To Profile Page">
-            <Link href={"/profile"}>Go to profile page</Link>
-          </ToastAction>
-        ),
-      });
-
-      setIsLikedLocal(!isLikedLocal);
-    } finally {
-      setIsPending(false);
-    }
-  };
-
+  const { isPending, isLikedLocal, handleLike } = useHandleLike(product);
   return (
     <Button
       variant="ghost"
