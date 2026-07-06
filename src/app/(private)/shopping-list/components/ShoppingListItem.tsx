@@ -5,13 +5,20 @@ import type { ProductPlain } from "@/lib/types";
 import { Checkbox } from "@/components/ui/checkbox";
 import RemoveFromListBtn from "@/app/(private)/shopping-list/components/RemoveFromListBtn";
 import ProductName from "@/components/Product/ProductName";
+import { setItemChecked as setItemCheckedAction } from "@/lib/actions/setItemChecked";
 
 type Props = {
   product: ProductPlain;
 };
 
 const ShoppingListItem: React.FC<Props> = ({ product }) => {
-  const [isChecked, setIsChecked] = useState(false);
+  const [isChecked, setIsChecked] = useState(product.checked ?? false);
+
+  const handleCheckedChange = () => {
+    const nextChecked = !isChecked;
+    setIsChecked(nextChecked);
+    void setItemCheckedAction(product._id, nextChecked);
+  };
 
   return (
     <>
@@ -19,7 +26,7 @@ const ShoppingListItem: React.FC<Props> = ({ product }) => {
         <div className="flex items-center me-2">
           <Checkbox
             checked={isChecked}
-            onCheckedChange={() => setIsChecked(!isChecked)}
+            onCheckedChange={handleCheckedChange}
             id={`row-${product._id}`}
             className="peer"
             aria-labelledby={`row-${product._id}`}

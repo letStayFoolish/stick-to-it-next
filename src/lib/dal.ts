@@ -9,40 +9,24 @@
  */
 import "server-only";
 
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
 import { cache } from "react";
-import { decrypt } from "@/lib/session";
+import { requireUser } from "@/lib/session";
 import { User } from "@/lib/models/User";
 import connectDB from "@/lib/database";
 
-export const verifySession = cache(async () => {
-  const cookie = (await cookies()).get("session")?.value;
-  if (!cookie) return null;
-
-  const session = await decrypt(cookie);
-
-  if (!session || !session?.userId) {
-    redirect("/login");
-  }
-
-  return { isAuth: true, userId: session.userId };
-});
 /**
  * For secure checks, you can check if the session is valid by comparing the session ID with your database.
  * Use React's cache function to avoid unnecessary duplicate requests to the database during a render pass.
  */
 export const getUser = cache(async () => {
-  const session = await verifySession();
+  const auth = await requireUser();
 
-  if (!session) return null;
+  if (!auth.authenticated) return null;
 
   try {
     await connectDB();
 
-    const user = await User.findOne({ _id: session.userId }).select(
-      "-password",
-    );
+    const user = await User.findOne({ _id: auth.userId }).select("-password");
 
     if (!user) {
       throw new Error("User not authenticated");

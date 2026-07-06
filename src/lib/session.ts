@@ -81,3 +81,28 @@ export async function deleteSession() {
   const cookieStore = await cookies();
   cookieStore.delete("session");
 }
+
+export type AuthResult =
+  | { authenticated: true; userId: string }
+  | { authenticated: false };
+
+/**
+ * The single seam for "is this request from an authenticated user, and if so, who."
+ * Middleware, server actions, and auth-gated components all derive auth state from
+ * this function rather than independently decoding the session cookie.
+ */
+export async function requireUser(): Promise<AuthResult> {
+  const cookie = (await cookies()).get("session")?.value;
+
+  if (!cookie) {
+    return { authenticated: false };
+  }
+
+  const session = await decrypt(cookie);
+
+  if (!session?.userId) {
+    return { authenticated: false };
+  }
+
+  return { authenticated: true, userId: session.userId as string };
+}

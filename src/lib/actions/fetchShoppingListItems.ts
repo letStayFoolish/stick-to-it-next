@@ -41,6 +41,7 @@ export const fetchShoppingListItems = cache(async () => {
         ...product,
         _id: product._id.toString(),
         quantity: matchingItem?.quantity || 0,
+        checked: matchingItem?.checked ?? false,
       };
     });
 

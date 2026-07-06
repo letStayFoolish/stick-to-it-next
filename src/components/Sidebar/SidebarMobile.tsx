@@ -9,12 +9,12 @@ import {
 import { LogOut, Menu, ShoppingCart } from "lucide-react";
 import Link from "next/link";
 import LogOutBtn from "@/components/LogOutBtn";
-import { verifySession } from "@/lib/dal";
+import { requireUser } from "@/lib/session";
 import { Button } from "@/components/ui/button";
 import NavLinks from "@/components/Sidebar/NavLinks";
 
 const SidebarMobile: React.FC = async () => {
-  const session = await verifySession();
+  const auth = await requireUser();
 
   return (
     <Sheet>
@@ -44,7 +44,7 @@ const SidebarMobile: React.FC = async () => {
             </div>
           </div>
           <div className="mb-6 text-center flex flex-col gap-2 justify-center">
-            {session ? (
+            {auth.authenticated ? (
               <LogOutBtn btnVariant="default" className="text-lg">
                 <LogOut /> Sign Out
               </LogOutBtn>

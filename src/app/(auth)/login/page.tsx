@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import LoginForm from "@/app/(auth)/components/LoginForm";
-import React from "react";
+import React, { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "Login",
@@ -9,7 +9,9 @@ export const metadata: Metadata = {
 const LoginPage: React.FC = () => {
   return (
     <main>
-      <LoginForm />
+      <Suspense>
+        <LoginForm />
+      </Suspense>
     </main>
   );
 };

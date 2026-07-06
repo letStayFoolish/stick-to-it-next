@@ -5,7 +5,7 @@ import { requireUser } from "@/lib/session";
 import connectDB from "@/lib/database";
 import * as shoppingListService from "@/lib/services/shoppingListService";
 
-export async function toggleLike(productId: string) {
+export async function setItemChecked(productId: string, checked: boolean) {
   try {
     if (!productId) {
       throw new Error("Invalid product ID");
@@ -19,9 +19,9 @@ export async function toggleLike(productId: string) {
 
     await connectDB();
 
-    await shoppingListService.toggleLiked(auth.userId, productId);
+    await shoppingListService.setChecked(auth.userId, productId, checked);
 
-    revalidatePath("/profile");
+    revalidatePath("/shopping-list");
   } catch (error: any) {
     console.log(error);
   }

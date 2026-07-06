@@ -1,7 +1,9 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { getUser } from "@/lib/dal";
+import { requireUser } from "@/lib/session";
+import connectDB from "@/lib/database";
+import * as shoppingListService from "@/lib/services/shoppingListService";
 
 export async function clearProducts(prevState: any, formData: FormData) {
   try {
@@ -14,18 +16,15 @@ export async function clearProducts(prevState: any, formData: FormData) {
       };
     }
 
-    const userData = await getUser();
+    const auth = await requireUser();
 
-    if (!userData.listItems)
-      return {
-        message: "No products to clear",
-        success: false,
-      };
+    if (!auth.authenticated) {
+      throw new Error("Not authenticated");
+    }
 
-    userData.listItems = [];
-    userData.notes = "";
+    await connectDB();
 
-    userData.save();
+    await shoppingListService.clearList(auth.userId);
 
     revalidatePath("/shopping-list");
 

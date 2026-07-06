@@ -6,10 +6,11 @@ import Link from "next/link";
 import { ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import FormError from "@/components/Form/FormError";
-import { redirect } from "next/navigation";
+import { redirect, useSearchParams } from "next/navigation";
 import { signinAction } from "@/lib/actions";
 import { usePasswordValidation } from "@/hooks/usePasswordValidation";
 import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast";
 
 const LoginForm: React.FC = () => {
   const [state, formAction, isPending] = useActionState(
@@ -18,12 +19,25 @@ const LoginForm: React.FC = () => {
   );
 
   const { isPasswordValid, checkPassword } = usePasswordValidation();
+  const { toast } = useToast();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    if (searchParams.get("reason") === "expired") {
+      toast({
+        title: "Session expired",
+        description: "Your session expired — please log back in.",
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (state?.success) {
-      redirect("/profile");
+      redirect(searchParams.get("from") || "/profile");
     }
     return;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state]);
 
   return (

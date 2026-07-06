@@ -1,7 +1,7 @@
 import type { ProductPlain } from "@/lib/types";
 import React from "react";
 import LikeButtonsSet from "@/components/Product/LikeButtonsSet";
-import { verifySession } from "@/lib/dal";
+import { requireUser } from "@/lib/session";
 import AddToCartSection from "@/components/Product/AddToCartSection";
 import { fetchShoppingListItems as fetchShoppingListItemsAction } from "@/lib/actions/fetchShoppingListItems";
 import ProductName from "@/components/Product/ProductName";
@@ -11,7 +11,7 @@ type Props = {
 };
 
 const ProductItem: React.FC<Props> = async ({ product }) => {
-  const session = await verifySession();
+  const auth = await requireUser();
 
   const fetchedProducts = await fetchShoppingListItemsAction();
 
@@ -23,13 +23,12 @@ const ProductItem: React.FC<Props> = async ({ product }) => {
   return (
     <div className="flex justify-between">
       <div className="flex gap-2 items-center w-full">
-        {/*{session && <LikeButtonsSet product={product} />}*/}
-        <LikeButtonsSet product={product} />
+        {auth.authenticated && <LikeButtonsSet product={product} />}
         <ProductName productName={product.product_name} />
       </div>
       <div className="flex gap-6">
         <div className="flex items-center gap-4">
-          {session && (
+          {auth.authenticated && (
             <AddToCartSection product={product} quantityFromServer={quantity} />
           )}
         </div>

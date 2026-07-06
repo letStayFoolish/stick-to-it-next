@@ -1,7 +1,10 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { requireUser } from "@/lib/session";
 import { getUser } from "@/lib/dal";
+import connectDB from "@/lib/database";
+import * as shoppingListService from "@/lib/services/shoppingListService";
 
 /**
  * `revalidatePath` allows you to purge cached data on-demand for a specific path.
@@ -29,32 +32,48 @@ export async function updateQuantity(prevState: any, formData: FormData) {
       throw new Error("Invalid form data");
     }
 
-    const userData = await getUser();
+    const auth = await requireUser();
 
-    const itemIndex = userData?.listItems?.findIndex(
-      (item: any) => item.productId.toString() === productId,
-    );
-
-    if (itemIndex > -1) {
-      // Item exists in cart, update quantity
-      userData.listItems[itemIndex].quantity =
-        action === "increase"
-          ? Math.min(100, userData.listItems[itemIndex].quantity + 1)
-          : action === "remove-from-list"
-            ? (userData.listItems[itemIndex].quantity = 0)
-            : Math.max(0, userData.listItems[itemIndex].quantity - 1);
-
-      if (userData.listItems[itemIndex].quantity === 0) {
-        userData.listItems.splice(itemIndex, 1);
-      }
-    } else if (action === "add-to-list") {
-      // Item does not exist, add it to the cart
-      userData.listItems.push({ productId, quantity: 1 });
-    } else {
-      throw new Error("Cannot decrease quantity for an item not in the cart");
+    if (!auth.authenticated) {
+      throw new Error("Not authenticated");
     }
 
-    await userData.save();
+    await connectDB();
+
+    let updatedShoppingList;
+
+    if (action === "add-to-list") {
+      updatedShoppingList = await shoppingListService.addItem(
+        auth.userId,
+        productId,
+      );
+    } else if (action === "remove-from-list") {
+      updatedShoppingList = await shoppingListService.setQuantity(
+        auth.userId,
+        productId,
+        0,
+      );
+    } else {
+      const userData = await getUser();
+      const currentItem = userData?.listItems?.find(
+        (item: any) => item.productId.toString() === productId,
+      );
+
+      if (!currentItem) {
+        throw new Error("Cannot decrease quantity for an item not in the cart");
+      }
+
+      const nextQuantity =
+        action === "increase"
+          ? Math.min(100, currentItem.quantity + 1)
+          : Math.max(0, currentItem.quantity - 1);
+
+      updatedShoppingList = await shoppingListService.setQuantity(
+        auth.userId,
+        productId,
+        nextQuantity,
+      );
+    }
 
     // Revalidate affected pages after changes
     revalidatePath("/shopping-list");
@@ -62,7 +81,7 @@ export async function updateQuantity(prevState: any, formData: FormData) {
     return {
       message: `Quantity successfully ${action === "increase" ? "increased" : action === "add-to-list" ? "added to list" : "decreased"}`,
       success: true,
-      updatedShoppingList: userData.cartItems, // Return if necessary for feedback
+      updatedShoppingList,
     };
   } catch (error: any) {
     console.log(error);

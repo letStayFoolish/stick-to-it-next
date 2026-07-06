@@ -1,12 +1,12 @@
 import React from "react";
 import Link from "next/link";
 import LogOutBtn from "@/components/LogOutBtn";
-import { verifySession } from "@/lib/dal";
+import { requireUser } from "@/lib/session";
 import { LogOut } from "lucide-react";
 import NavLinks from "@/components/Sidebar/NavLinks";
 
 const SidebarWeb: React.FC = async () => {
-  const session = await verifySession();
+  const auth = await requireUser();
 
   return (
     <nav className="px-2 text-lg font-medium lg:px-4">
@@ -15,7 +15,7 @@ const SidebarWeb: React.FC = async () => {
       </div>
 
       <div className="mb-6 text-center flex flex-col gap-1 justify-center">
-        {session ? (
+        {auth.authenticated ? (
           <LogOutBtn
             btnVariant="outline"
             className="text-lg py-6 flex items-center"

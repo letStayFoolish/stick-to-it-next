@@ -15,6 +15,7 @@ export interface Product {
 export interface ProductPlain extends Omit<Product, "_id"> {
   _id: string;
   quantity?: number;
+  checked?: boolean;
 }
 
 export type UserInfo = {

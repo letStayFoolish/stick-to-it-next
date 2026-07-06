@@ -19,6 +19,9 @@ const LikeButtonsSet: React.FC<Props> = ({ product }) => {
       className="text-primary p-0 m-0 hover:bg-transparent"
       disabled={isPending}
       onClick={handleLike}
+      aria-label={
+        isLikedLocal ? "Remove from favorites" : "Add to favorites"
+      }
     >
       {isLikedLocal ? (
         <FaHeart className="cursor-pointer hover:opacity-80 hover:scale-125 transition text-lg w-[30px] h-[30px] sm:w-[35px] sm:h-[35px] md:w-[40px] md:h-[40px]" />

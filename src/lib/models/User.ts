@@ -14,6 +14,7 @@ const UserSchema = new mongoose.Schema(
       {
         productId: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
         quantity: { type: Number, default: 1 },
+        checked: { type: Boolean, default: false },
       },
     ],
     image: { type: String },
