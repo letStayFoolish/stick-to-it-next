@@ -7,7 +7,7 @@ vi.mock("next/headers", () => ({
 }));
 
 import { cookies } from "next/headers";
-import { encrypt, requireUser } from "@/lib/session";
+import { createSession, encrypt, requireUser, updateSession } from "@/lib/session";
 
 async function signExpiredToken(payload: Record<string, unknown>) {
   const encodedKey = new TextEncoder().encode(process.env.SESSION_SECRET);
@@ -50,5 +50,37 @@ describe("requireUser", () => {
     const result = await requireUser();
 
     expect(result).toEqual({ authenticated: false });
+  });
+});
+
+describe("session cookie security flag", () => {
+  it("createSession does not mark the cookie Secure outside production, so it survives on http://localhost in dev", async () => {
+    const set = vi.fn();
+    vi.mocked(cookies).mockResolvedValue({ set } as any);
+
+    await createSession("user-123");
+
+    expect(set).toHaveBeenCalledWith(
+      "session",
+      expect.any(String),
+      expect.objectContaining({ secure: false }),
+    );
+  });
+
+  it("updateSession does not mark the cookie Secure outside production", async () => {
+    const token = await encrypt({ userId: "user-123" });
+    const set = vi.fn();
+    vi.mocked(cookies).mockResolvedValue({
+      get: () => ({ value: token }),
+      set,
+    } as any);
+
+    await updateSession();
+
+    expect(set).toHaveBeenCalledWith(
+      "session",
+      token,
+      expect.objectContaining({ secure: false }),
+    );
   });
 });
