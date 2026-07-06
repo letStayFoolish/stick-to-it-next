@@ -58,7 +58,11 @@ const AddToCartSection: React.FC<Props> = ({
             </IncrementDecrementButton>
           </form>
 
-          <span className="text-lg">{quantityFromServer}</span>
+          <span className="text-lg tabular-nums inline-flex justify-center min-w-[1.5ch] overflow-hidden">
+            <span key={quantityFromServer} className="qty-tick">
+              {quantityFromServer}
+            </span>
+          </span>
           <span className="text-lg hidden md:block">qty.</span>
 
           {/* Increment Button */}

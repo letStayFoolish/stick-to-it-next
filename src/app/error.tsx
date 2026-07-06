@@ -9,7 +9,7 @@ type ErrorProps = {
 
 const Error: NextPage<ErrorProps> = ({ statusCode }) => {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-muted text-center text-primary">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-muted text-center text-accent-ink">
       <h1 className="text-6xl font-bold mb-4">{statusCode || "Error"}</h1>
       <p className="text-lg mb-6">
         {statusCode
