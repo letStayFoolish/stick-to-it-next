@@ -27,4 +27,31 @@ describe("Product model", () => {
 
     expect(found?.product_name).toBe("apple");
   });
+
+  it("persists a seeded document with no owner", async () => {
+    const created = await Product.create({
+      category: "fruit",
+      product_name: "seeded apple",
+      product_image: "apple.png",
+    });
+
+    const found = await Product.findById(created._id);
+
+    expect(found?.owner).toBeUndefined();
+  });
+
+  it("persists a user-owned document with the owner id", async () => {
+    const ownerId = new mongoose.Types.ObjectId();
+
+    const created = await Product.create({
+      category: "fruit",
+      product_name: "my custom apple",
+      product_image: "apple.png",
+      owner: ownerId,
+    });
+
+    const found = await Product.findById(created._id);
+
+    expect(found?.owner?.toString()).toBe(ownerId.toString());
+  });
 });

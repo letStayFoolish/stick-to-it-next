@@ -10,6 +10,7 @@ export interface Product {
   category_image: string;
   category: string;
   isLiked?: boolean;
+  owner?: ObjectId | string | null;
 }
 
 export interface ProductPlain extends Omit<Product, "_id"> {

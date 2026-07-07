@@ -1,8 +1,7 @@
 "use server";
 
-import type { ProductPlain } from "@/lib/types";
-import { Product as ProductSchema } from "@/lib/models/Product";
 import { getUser } from "@/lib/dal";
+import * as productService from "@/lib/services/productService";
 import { cache } from "react";
 
 /**
@@ -25,12 +24,15 @@ export const fetchShoppingListItems = cache(async () => {
     if (!user) return;
 
     // Extract the product IDs from the user's shopping list
-    const productIds = user.listItems?.map((item: any) => item.productId);
+    const productIds = user.listItems?.map((item: any) =>
+      item.productId.toString(),
+    );
 
     // Query the database for products matching these IDs
-    const products = await ProductSchema.find({
-      _id: { $in: productIds },
-    }).lean<ProductPlain[]>();
+    const products = await productService.getVisibleProductsByIds(
+      user._id.toString(),
+      productIds,
+    );
 
     // Enrich the products with quantities from the shopping list
     const enrichedProducts = products.map((product) => {

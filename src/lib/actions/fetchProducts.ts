@@ -1,15 +1,18 @@
 "use server";
 
 import connectDB from "@/lib/database";
-import { Product as ProductSchema } from "@/lib/models/Product";
-import { ProductPlain } from "@/lib/types";
+import { requireUser } from "@/lib/session";
+import * as productService from "@/lib/services/productService";
 import { cache } from "react";
 
 export const fetchProducts = cache(async () => {
   try {
     await connectDB();
 
-    const products = await ProductSchema.find({}).lean<ProductPlain[]>();
+    const auth = await requireUser();
+    const userId = auth.authenticated ? auth.userId : null;
+
+    const products = await productService.getVisibleProducts(userId);
 
     if (!products || products.length === 0) {
       return [];

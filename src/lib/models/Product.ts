@@ -15,6 +15,12 @@ const ProductSchema = new Schema(
       required: [true, "Product image is required"],
     },
     isLiked: { type: Boolean, default: false },
+    owner: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: false,
+      index: true,
+    },
   },
   { timestamps: true },
 );
