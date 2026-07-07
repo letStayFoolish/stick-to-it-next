@@ -1,30 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { render } from "@testing-library/react";
-import type { CategoriesType } from "@/lib/types";
+import { CATEGORIES } from "@/lib/types";
 import CategoryIcon from "@/components/CategoryIcon";
 
-const allCategories: CategoriesType[] = [
-  "bakery",
-  "vegetables",
-  "fruits",
-  "meat",
-  "milk-eggs-cheese",
-  "water-juice",
-  "fish",
-  "drinks",
-  "chips-snacks",
-  "sweets",
-  "frozen",
-  "pasta-cereals-flour",
-  "oil-sauces-spices",
-  "tea-coffee-cocoa",
-  "cleaning",
-  "house-kitchen",
-  "canned-food",
-  "health-beauty",
-  "kids-parents",
-  "animals",
-];
+const allCategories = CATEGORIES;
 
 describe("CategoryIcon", () => {
   it("resolves every CategoriesType member to a distinct, non-fallback icon", () => {

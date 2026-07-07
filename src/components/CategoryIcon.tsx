@@ -3,6 +3,7 @@ import {
   Apple,
   Baby,
   Beef,
+  Boxes,
   Candy,
   Coffee,
   CupSoda,
@@ -47,6 +48,7 @@ const categoryIconMap: Record<CategoriesType, LucideIcon> = {
   "health-beauty": HeartPulse,
   "kids-parents": Baby,
   animals: PawPrint,
+  else: Boxes,
 };
 
 const sizeClasses = {

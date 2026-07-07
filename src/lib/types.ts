@@ -66,27 +66,31 @@ export type FormState =
     }
   | undefined;
 
-export type CategoriesType =
-  | "bakery"
-  | "vegetables"
-  | "fruits"
-  | "meat"
-  | "milk-eggs-cheese"
-  | "water-juice"
-  | "fish"
-  | "drinks"
-  | "chips-snacks"
-  | "sweets"
-  | "frozen"
-  | "pasta-cereals-flour"
-  | "oil-sauces-spices"
-  | "tea-coffee-cocoa"
-  | "cleaning"
-  | "house-kitchen"
-  | "canned-food"
-  | "health-beauty"
-  | "kids-parents"
-  | "animals";
+export const CATEGORIES = [
+  "bakery",
+  "vegetables",
+  "fruits",
+  "meat",
+  "milk-eggs-cheese",
+  "water-juice",
+  "fish",
+  "drinks",
+  "chips-snacks",
+  "sweets",
+  "frozen",
+  "pasta-cereals-flour",
+  "oil-sauces-spices",
+  "tea-coffee-cocoa",
+  "cleaning",
+  "house-kitchen",
+  "canned-food",
+  "health-beauty",
+  "kids-parents",
+  "animals",
+  "else",
+] as const;
+
+export type CategoriesType = (typeof CATEGORIES)[number];
 
 export type ComponentPropsWithParams = {
   params: Promise<{

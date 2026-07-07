@@ -63,6 +63,15 @@ describe("productService", () => {
 
       expect(visible.map((p) => p.product_name)).toEqual(["seeded item"]);
     });
+
+    it("does not expose the raw owner reference on an owned product", async () => {
+      const userA = new mongoose.Types.ObjectId().toString();
+      await createSeededProduct({ product_name: "user a's item", owner: userA });
+
+      const visible = await productService.getVisibleProducts(userA);
+
+      expect(visible[0].owner).toBeUndefined();
+    });
   });
 
   describe("getVisibleProductsByCategory", () => {
@@ -91,6 +100,128 @@ describe("productService", () => {
       );
 
       expect(visible.map((p) => p.product_name)).toEqual(["user a's apple"]);
+    });
+  });
+
+  describe("quickAddProduct", () => {
+    it("creates a new owned product with the trimmed name and given category", async () => {
+      const userId = new mongoose.Types.ObjectId().toString();
+
+      const result = await productService.quickAddProduct(
+        userId,
+        "  Batteries  ",
+        "house-kitchen",
+      );
+
+      expect(result.ok).toBe(true);
+      if (!result.ok) throw new Error("expected ok result");
+
+      const created = await Product.findById(result.productId);
+      expect(created?.product_name).toBe("Batteries");
+      expect(created?.category).toBe("house-kitchen");
+      expect(created?.owner?.toString()).toBe(userId);
+    });
+
+    it("rejects an empty or whitespace-only name without creating a product", async () => {
+      const userId = new mongoose.Types.ObjectId().toString();
+
+      const result = await productService.quickAddProduct(
+        userId,
+        "   ",
+        "house-kitchen",
+      );
+
+      expect(result.ok).toBe(false);
+      expect(await Product.countDocuments()).toBe(0);
+    });
+
+    it("rejects a name longer than 60 characters without creating a product", async () => {
+      const userId = new mongoose.Types.ObjectId().toString();
+      const tooLong = "a".repeat(61);
+
+      const result = await productService.quickAddProduct(
+        userId,
+        tooLong,
+        "house-kitchen",
+      );
+
+      expect(result.ok).toBe(false);
+      expect(await Product.countDocuments()).toBe(0);
+    });
+
+    it("rejects a category outside the closed category set without creating a product", async () => {
+      const userId = new mongoose.Types.ObjectId().toString();
+
+      const result = await productService.quickAddProduct(
+        userId,
+        "Batteries",
+        "not-a-real-category",
+      );
+
+      expect(result.ok).toBe(false);
+      expect(await Product.countDocuments()).toBe(0);
+    });
+
+    it("reuses an existing seeded product on a case-insensitive name+category match", async () => {
+      const userId = new mongoose.Types.ObjectId().toString();
+      const seeded = await createSeededProduct({
+        category: "milk-eggs-cheese",
+        product_name: "Milk",
+      });
+
+      const result = await productService.quickAddProduct(
+        userId,
+        "milk",
+        "milk-eggs-cheese",
+      );
+
+      expect(result.ok).toBe(true);
+      if (!result.ok) throw new Error("expected ok result");
+      expect(result.productId).toBe(seeded._id.toString());
+      expect(await Product.countDocuments()).toBe(1);
+    });
+
+    it("reuses the user's own existing product on a case-insensitive match instead of duplicating it", async () => {
+      const userId = new mongoose.Types.ObjectId().toString();
+      const first = await productService.quickAddProduct(
+        userId,
+        "Chips",
+        "chips-snacks",
+      );
+      if (!first.ok) throw new Error("expected ok result");
+
+      const second = await productService.quickAddProduct(
+        userId,
+        "CHIPS",
+        "chips-snacks",
+      );
+
+      expect(second.ok).toBe(true);
+      if (!second.ok) throw new Error("expected ok result");
+      expect(second.productId).toBe(first.productId);
+      expect(await Product.countDocuments()).toBe(1);
+    });
+
+    it("does not reuse another user's owned product with the same name and category", async () => {
+      const userA = new mongoose.Types.ObjectId().toString();
+      const userB = new mongoose.Types.ObjectId().toString();
+      const ownedByB = await productService.quickAddProduct(
+        userB,
+        "Soap",
+        "cleaning",
+      );
+      if (!ownedByB.ok) throw new Error("expected ok result");
+
+      const result = await productService.quickAddProduct(
+        userA,
+        "Soap",
+        "cleaning",
+      );
+
+      expect(result.ok).toBe(true);
+      if (!result.ok) throw new Error("expected ok result");
+      expect(result.productId).not.toBe(ownedByB.productId);
+      expect(await Product.countDocuments()).toBe(2);
     });
   });
 
