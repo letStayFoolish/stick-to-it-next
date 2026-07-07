@@ -1,0 +1,23 @@
+{
+  "Nav": {
+    "home": "Start",
+    "products": "Produkte",
+    "shoppingList": "Einkaufsliste",
+    "profile": "Mein Profil"
+  },
+  "ShoppingListPage": {
+    "heading": "Einkaufsliste",
+    "goHome": "Zur Startseite",
+    "browseProducts": "Produkte durchsuchen",
+    "empty": "Die Einkaufsliste ist leer",
+    "clearList": "Liste leeren",
+    "quickAddPlaceholder": "Artikel hinzufügen, der nicht im Katalog ist...",
+    "quickAddButton": "Hinzufügen",
+    "quickAddToast": "Zu deiner Liste hinzugefügt!",
+    "memoPlaceholder": "Füge eine Notiz für diesen Einkauf hinzu…",
+    "memoDone": "Fertig"
+  },
+  "Profile": {
+    "languageLabel": "Sprache"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "Nav": {
+    "home": "Главная",
+    "products": "Товары",
+    "shoppingList": "Список покупок",
+    "profile": "Профиль"
+  },
+  "ShoppingListPage": {
+    "heading": "Список покупок",
+    "goHome": "На главную",
+    "browseProducts": "Все товары",
+    "empty": "Список покупок пуст",
+    "clearList": "Очистить список",
+    "quickAddPlaceholder": "Добавить товар не из каталога...",
+    "quickAddButton": "Добавить",
+    "quickAddToast": "Добавлено в ваш список!",
+    "memoPlaceholder": "Добавьте заметку для этой поездки…",
+    "memoDone": "Готово"
+  },
+  "Profile": {
+    "languageLabel": "Язык"
+  }
+}

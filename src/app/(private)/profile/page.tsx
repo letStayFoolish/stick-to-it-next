@@ -1,6 +1,9 @@
 import React, { Suspense } from "react";
 import type { Metadata } from "next";
+import { getLocale } from "next-intl/server";
 import { getUser } from "@/lib/dal";
+import LanguagePicker from "@/app/(private)/profile/components/LanguagePicker";
+import type { Locale } from "@/lib/locale";
 import GoToPage from "@/components/GoToPage";
 import {
   Table,
@@ -38,6 +41,7 @@ const SuspenseFallback: React.FC<{ label: string }> = ({ label }) => {
 
 const Profile: React.FC = async () => {
   const user = await getUser();
+  const locale = (await getLocale()) as Locale;
 
   if (!user) return null;
 
@@ -70,6 +74,9 @@ const Profile: React.FC = async () => {
             <LogOutBtn btnVariant="default">
               <LogOut /> Leave
             </LogOutBtn>
+          </div>
+          <div className="mt-8">
+            <LanguagePicker currentLocale={locale} />
           </div>
         </header>
         {/* Favorite Products Table */}

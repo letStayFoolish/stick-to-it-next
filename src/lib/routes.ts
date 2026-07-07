@@ -5,29 +5,29 @@ export const routes = [
   {
     id: "1",
     href: "/",
-    pageName: "Home",
+    labelKey: "home",
     pathName: "/",
     icon: FaHome,
   },
   {
     id: "2",
     href: "/products",
-    pageName: "Products",
+    labelKey: "products",
     pathName: "/products",
     icon: FaList,
   },
   {
     id: "3",
     href: "/shopping-list",
-    pageName: "Shopping List",
+    labelKey: "shoppingList",
     pathName: "/shopping-list",
     icon: FaCartShopping,
   },
   {
     id: "4",
     href: "/profile",
-    pageName: "My Profile",
+    labelKey: "profile",
     pathName: "/profile",
     icon: FaUserLarge,
   },
-];
+] as const;

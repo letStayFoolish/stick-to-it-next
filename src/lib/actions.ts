@@ -5,6 +5,7 @@ import { FormState, SigninFormSchema, SignupFormSchema } from "@/lib/types";
 import { User } from "@/lib/models/User";
 import bcrypt from "bcryptjs";
 import { createSession, deleteSession } from "@/lib/session";
+import { syncLocaleCookieForUser } from "@/lib/localeCookie";
 
 // HANDLE BASE URL
 export async function getBaseURL() {
@@ -57,6 +58,7 @@ export async function signupAction(state: FormState, formData: FormData) {
     // Return success or throw error to the calling client
     if (user) {
       await createSession(user._id.toString());
+      await syncLocaleCookieForUser(user._id.toString(), user.language);
 
       return { success: true };
     } else {
@@ -113,6 +115,7 @@ export async function signinAction(state: FormState, formData: FormData) {
     // Return success or throw error to the calling client
     if (user && passwordMatches) {
       await createSession(user._id.toString());
+      await syncLocaleCookieForUser(user._id.toString(), user.language);
 
       return { success: true };
     }

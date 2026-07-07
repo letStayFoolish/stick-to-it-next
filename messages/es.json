@@ -1,0 +1,23 @@
+{
+  "Nav": {
+    "home": "Inicio",
+    "products": "Productos",
+    "shoppingList": "Lista de compras",
+    "profile": "Mi perfil"
+  },
+  "ShoppingListPage": {
+    "heading": "Lista de compras",
+    "goHome": "Ir al inicio",
+    "browseProducts": "Ver productos",
+    "empty": "La lista de compras está vacía",
+    "clearList": "Vaciar lista",
+    "quickAddPlaceholder": "Añade un artículo que no esté en el catálogo...",
+    "quickAddButton": "Añadir",
+    "quickAddToast": "¡Añadido a tu lista!",
+    "memoPlaceholder": "Añade una nota para este viaje…",
+    "memoDone": "Listo"
+  },
+  "Profile": {
+    "languageLabel": "Idioma"
+  }
+}

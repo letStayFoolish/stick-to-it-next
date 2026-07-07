@@ -3,12 +3,14 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { ShoppingCart } from "lucide-react";
 import { routes } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 
 const Footer: React.FC = () => {
   const pathname = usePathname();
+  const t = useTranslations("Nav");
 
   const activeIndex = routes.findIndex((route) =>
     route.pathName === "/"
@@ -51,7 +53,7 @@ const Footer: React.FC = () => {
                   <li key={route.id} className="flex flex-1 justify-center">
                     <Link
                       href={route.href}
-                      aria-label={route.pageName as string}
+                      aria-label={t(route.labelKey)}
                       aria-current={isActive ? "page" : undefined}
                       className={cn(
                         "flex items-center justify-center gap-3 rounded-xl py-2 px-3 transition-colors hover:text-foreground cursor-pointer",

@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import React, { ButtonHTMLAttributes, useActionState } from "react";
+import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { clearProducts as clearProductsAction } from "@/lib/actions/clearProducts";
 
@@ -10,6 +11,7 @@ type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
 };
 
 const ClearAll: React.FC<Props> = ({ className, ...props }) => {
+  const t = useTranslations("ShoppingListPage");
   const classes = cn(
     "hover:opacity-80 hover:text-opacity-80 transition-all",
     className,
@@ -30,7 +32,7 @@ const ClearAll: React.FC<Props> = ({ className, ...props }) => {
         className={classes}
         {...props}
       >
-        {isPending ? `Clearing...` : `Clear List`}
+        {isPending ? `Clearing...` : t("clearList")}
       </Button>
 
       <p className="sr-only" aria-live="polite" role="status">

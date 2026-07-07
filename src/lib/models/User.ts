@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { SUPPORTED_LOCALES } from "@/lib/locale";
 
 const UserSchema = new mongoose.Schema(
   {
@@ -19,6 +20,7 @@ const UserSchema = new mongoose.Schema(
     ],
     image: { type: String },
     notes: { type: String, default: "" },
+    language: { type: String, enum: SUPPORTED_LOCALES, required: false },
   },
   {
     timestamps: true,

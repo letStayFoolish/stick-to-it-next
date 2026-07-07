@@ -1,0 +1,23 @@
+{
+  "Nav": {
+    "home": "Početna",
+    "products": "Proizvodi",
+    "shoppingList": "Lista za kupovinu",
+    "profile": "Moj profil"
+  },
+  "ShoppingListPage": {
+    "heading": "Lista za kupovinu",
+    "goHome": "Početna",
+    "browseProducts": "Svi proizvodi",
+    "empty": "Lista za kupovinu je prazna",
+    "clearList": "Obriši listu",
+    "quickAddPlaceholder": "Dodaj artikal kojeg nema u katalogu...",
+    "quickAddButton": "Dodaj",
+    "quickAddToast": "Dodato na vašu listu!",
+    "memoPlaceholder": "Dodajte belešku za ovo putovanje…",
+    "memoDone": "Gotovo"
+  },
+  "Profile": {
+    "languageLabel": "Jezik"
+  }
+}

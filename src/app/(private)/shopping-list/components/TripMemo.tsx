@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { useActionState } from "react";
+import { useTranslations } from "next-intl";
 import { updateNotes as updateNotesAction } from "@/lib/actions/updateNotes";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -14,6 +15,7 @@ type Props = {
 };
 
 const TripMemo: React.FC<Props> = ({ initialNotes }) => {
+  const t = useTranslations("ShoppingListPage");
   const [isEditing, setIsEditing] = useState(false);
   const [savedNotes, setSavedNotes] = useState(initialNotes);
   const [draft, setDraft] = useState(initialNotes);
@@ -52,7 +54,7 @@ const TripMemo: React.FC<Props> = ({ initialNotes }) => {
           </p>
         ) : (
           <p className="text-sm text-muted-foreground">
-            Add a note for this trip…
+            {t("memoPlaceholder")}
           </p>
         )}
       </button>
@@ -74,14 +76,14 @@ const TripMemo: React.FC<Props> = ({ initialNotes }) => {
         name="notes"
         value={draft}
         onChange={(event) => setDraft(event.target.value)}
-        placeholder="Add a note for this trip…"
+        placeholder={t("memoPlaceholder")}
         rows={4}
         autoFocus
         disabled={isPending}
       />
 
       <Button type="submit" disabled={isPending}>
-        {isPending ? <LoadingSpinner /> : "Done"}
+        {isPending ? <LoadingSpinner /> : t("memoDone")}
       </Button>
 
       {!state.success && <FormError message={state.message} />}

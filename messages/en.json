@@ -1,0 +1,23 @@
+{
+  "Nav": {
+    "home": "Home",
+    "products": "Products",
+    "shoppingList": "Shopping List",
+    "profile": "My Profile"
+  },
+  "ShoppingListPage": {
+    "heading": "Shopping List",
+    "goHome": "Go Home",
+    "browseProducts": "Browse Products",
+    "empty": "Shopping List is Empty",
+    "clearList": "Clear List",
+    "quickAddPlaceholder": "Add an item not in the catalog...",
+    "quickAddButton": "Add",
+    "quickAddToast": "Added to your list!",
+    "memoPlaceholder": "Add a note for this trip…",
+    "memoDone": "Done"
+  },
+  "Profile": {
+    "languageLabel": "Language"
+  }
+}

@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { useActionState } from "react";
+import { useTranslations } from "next-intl";
 import { CATEGORIES } from "@/lib/types";
 import { handleProductName } from "@/lib/utils";
 import { quickAddItem as quickAddItemAction } from "@/lib/actions/quickAddItem";
@@ -16,6 +17,7 @@ import { cn } from "@/lib/utils";
 const DEFAULT_CATEGORY = "else";
 
 const QuickAddItem: React.FC = () => {
+  const t = useTranslations("ShoppingListPage");
   const [category, setCategory] = useState<string>(DEFAULT_CATEGORY);
   const [state, formAction, isPending] = useActionState(quickAddItemAction, {
     success: false,
@@ -27,7 +29,7 @@ const QuickAddItem: React.FC = () => {
     if (state.success) {
       formRef.current?.reset();
       setCategory(DEFAULT_CATEGORY);
-      toast({ title: "Added to your list!" });
+      toast({ title: t("quickAddToast") });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state]);
@@ -66,14 +68,14 @@ const QuickAddItem: React.FC = () => {
       <div className="flex gap-2">
         <Input
           name="name"
-          placeholder="Add an item not in the catalog..."
+          placeholder={t("quickAddPlaceholder")}
           maxLength={60}
           required
           disabled={isPending}
           aria-label="Item name"
         />
         <Button type="submit" disabled={isPending}>
-          {isPending ? <LoadingSpinner /> : "Add"}
+          {isPending ? <LoadingSpinner /> : t("quickAddButton")}
         </Button>
       </div>
 
