@@ -17,17 +17,18 @@ import PageHeading from "@/components/PageHeading";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { FavoritesList } from "@/app/(private)/profile/components/FavoritesList";
+import { MyItemsList } from "@/app/(private)/profile/components/MyItemsList";
 
 export const metadata: Metadata = {
   title: "Profile Page",
 };
 
-const SuspenseFallback = () => {
+const SuspenseFallback: React.FC<{ label: string }> = ({ label }) => {
   return (
     <TableRow>
       <TableCell>
         <div className="w-full flex gap-4 items-center py-4 mx-auto">
-          Loading Favorites...
+          {label}
           <LoadingSpinner />
         </div>
       </TableCell>
@@ -88,8 +89,34 @@ const Profile: React.FC = async () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                <Suspense fallback={<SuspenseFallback />}>
+                <Suspense fallback={<SuspenseFallback label="Loading Favorites..." />}>
                   <FavoritesList />
+                </Suspense>
+              </TableBody>
+            </Table>
+          </section>
+        </section>
+        {/* My Items Table */}
+        <section className="flex flex-col items-center mt-12">
+          <div className="mb-6 px-3 py-4">
+            <h3 className="text-lg font-semibold">My Items</h3>
+          </div>
+          <section className="mt-4 mb-4 w-full">
+            <Table className="w-full caption-bottom">
+              <TableCaption>
+                Groceries you&apos;ve added yourself — edit or remove them here
+              </TableCaption>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="hidden md:block">ID</TableHead>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Category</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                <Suspense fallback={<SuspenseFallback label="Loading My Items..." />}>
+                  <MyItemsList />
                 </Suspense>
               </TableBody>
             </Table>

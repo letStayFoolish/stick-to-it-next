@@ -2,12 +2,22 @@ import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 import mongoose from "mongoose";
 import { MongoMemoryServer } from "mongodb-memory-server";
 import { Product } from "@/lib/models/Product";
+import { User } from "@/lib/models/User";
 import * as productService from "@/lib/services/productService";
 
 function createSeededProduct(overrides: Record<string, unknown> = {}) {
   return Product.create({
     category: "fruits",
     product_name: "seeded apple",
+    ...overrides,
+  });
+}
+
+function createUser(overrides: Record<string, unknown> = {}) {
+  return User.create({
+    name: "Test User",
+    email: `${Math.random()}@example.com`,
+    password: "hashed-password",
     ...overrides,
   });
 }
@@ -22,6 +32,7 @@ describe("productService", () => {
 
   afterEach(async () => {
     await Product.deleteMany({});
+    await User.deleteMany({});
   });
 
   afterAll(async () => {
@@ -222,6 +233,157 @@ describe("productService", () => {
       if (!result.ok) throw new Error("expected ok result");
       expect(result.productId).not.toBe(ownedByB.productId);
       expect(await Product.countDocuments()).toBe(2);
+    });
+  });
+
+  describe("getOwnedProducts", () => {
+    it("returns _id as a plain string, not a raw ObjectId", async () => {
+      const userId = new mongoose.Types.ObjectId().toString();
+      const owned = await createSeededProduct({ owner: userId });
+
+      const [product] = await productService.getOwnedProducts(userId);
+
+      expect(typeof product._id).toBe("string");
+      expect(product._id).toBe(owned._id.toString());
+    });
+
+    it("returns only the given user's own products, excluding seeded and other users' items", async () => {
+      const userA = new mongoose.Types.ObjectId().toString();
+      const userB = new mongoose.Types.ObjectId().toString();
+
+      await createSeededProduct({ product_name: "seeded item" });
+      await createSeededProduct({ product_name: "user a's item", owner: userA });
+      await createSeededProduct({ product_name: "user b's item", owner: userB });
+
+      const owned = await productService.getOwnedProducts(userA);
+
+      expect(owned.map((p) => p.product_name)).toEqual(["user a's item"]);
+    });
+  });
+
+  describe("updateOwnedProduct", () => {
+    it("renames the item and persists the change", async () => {
+      const userId = new mongoose.Types.ObjectId().toString();
+      const owned = await createSeededProduct({
+        product_name: "Choco",
+        owner: userId,
+      });
+
+      const result = await productService.updateOwnedProduct(
+        userId,
+        owned._id.toString(),
+        { name: "Chocolate" },
+      );
+
+      expect(result.ok).toBe(true);
+      const persisted = await Product.findById(owned._id);
+      expect(persisted?.product_name).toBe("Chocolate");
+    });
+
+    it("recategorizes the item and persists the change", async () => {
+      const userId = new mongoose.Types.ObjectId().toString();
+      const owned = await createSeededProduct({
+        category: "sweets",
+        owner: userId,
+      });
+
+      const result = await productService.updateOwnedProduct(
+        userId,
+        owned._id.toString(),
+        { category: "chips-snacks" },
+      );
+
+      expect(result.ok).toBe(true);
+      const persisted = await Product.findById(owned._id);
+      expect(persisted?.category).toBe("chips-snacks");
+    });
+
+    it("rejects an unknown category without persisting the change", async () => {
+      const userId = new mongoose.Types.ObjectId().toString();
+      const owned = await createSeededProduct({
+        category: "sweets",
+        owner: userId,
+      });
+
+      const result = await productService.updateOwnedProduct(
+        userId,
+        owned._id.toString(),
+        { category: "not-a-real-category" },
+      );
+
+      expect(result.ok).toBe(false);
+      const persisted = await Product.findById(owned._id);
+      expect(persisted?.category).toBe("sweets");
+    });
+
+    it("refuses to edit another user's item", async () => {
+      const owner = new mongoose.Types.ObjectId().toString();
+      const attacker = new mongoose.Types.ObjectId().toString();
+      const owned = await createSeededProduct({
+        product_name: "Original",
+        owner,
+      });
+
+      const result = await productService.updateOwnedProduct(
+        attacker,
+        owned._id.toString(),
+        { name: "Hijacked" },
+      );
+
+      expect(result.ok).toBe(false);
+      const persisted = await Product.findById(owned._id);
+      expect(persisted?.product_name).toBe("Original");
+    });
+  });
+
+  describe("deleteOwnedProduct", () => {
+    it("removes the product from the catalog", async () => {
+      const userId = new mongoose.Types.ObjectId().toString();
+      const owned = await createSeededProduct({ owner: userId });
+
+      const result = await productService.deleteOwnedProduct(
+        userId,
+        owned._id.toString(),
+      );
+
+      expect(result.ok).toBe(true);
+      expect(await Product.findById(owned._id)).toBeNull();
+    });
+
+    it("cascades: removes the item from the owner's shopping list and likes", async () => {
+      const user = await createUser();
+      const owned = await createSeededProduct({ owner: user._id.toString() });
+
+      user.listItems.push({
+        productId: owned._id,
+        quantity: 2,
+        checked: false,
+      });
+      user.likedItems.push(owned._id);
+      await user.save();
+
+      await productService.deleteOwnedProduct(
+        user._id.toString(),
+        owned._id.toString(),
+      );
+
+      const persisted = await User.findById(user._id);
+      expect(persisted?.listItems).toHaveLength(0);
+      expect(persisted?.likedItems).toHaveLength(0);
+    });
+
+    it("refuses to delete another user's item, leaving it intact", async () => {
+      const owner = new mongoose.Types.ObjectId().toString();
+      const attacker = new mongoose.Types.ObjectId().toString();
+      const owned = await createSeededProduct({ owner });
+
+      const result = await productService.deleteOwnedProduct(
+        attacker,
+        owned._id.toString(),
+      );
+
+      expect(result.ok).toBe(false);
+      expect(await Product.findById(owned._id)).not.toBeNull();
     });
   });
 
