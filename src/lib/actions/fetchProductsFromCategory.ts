@@ -1,10 +1,11 @@
 "use server";
 
-import { Product as ProductType, ProductPlain } from "@/lib/types";
+import { ProductPlain } from "@/lib/types";
 import connectDB from "@/lib/database";
-import { Product as ProductSchema } from "@/lib/models/Product";
+import { getLocale } from "next-intl/server";
+import type { Locale } from "@/lib/locale";
 import { getUser } from "@/lib/dal";
-import { User } from "@/lib/models/User";
+import * as productService from "@/lib/services/productService";
 import { cache } from "react";
 
 export const fetchProductsFromCategory = cache(
@@ -12,27 +13,21 @@ export const fetchProductsFromCategory = cache(
     try {
       await connectDB();
 
-      const products = await ProductSchema.find({
-        category: categoryName as string,
-      }).lean<ProductType[]>();
+      const user = await getUser();
+      const userId = user?._id?.toString() ?? null;
+      const locale = (await getLocale()) as Locale;
+
+      const products = await productService.getVisibleProductsByCategory(
+        userId,
+        categoryName,
+        locale,
+      );
 
       if (!products) {
         return [];
       }
 
-      const userEmail = (await getUser())?.email ?? null;
-
-      let likedItems: string[] = [];
-
-      if (userEmail) {
-        const user = await User.findOne({ email: userEmail }).select(
-          "likedItems",
-        );
-
-        if (user && user.likedItems) {
-          likedItems = user.likedItems.map(String); // Convert ObjectId to string for easier comparison
-        }
-      }
+      const likedItems: string[] = user?.likedItems?.map(String) ?? [];
 
       // Add 'isLiked' flag to products based on likedItems
       const enrichedProducts = products.map((product) => ({

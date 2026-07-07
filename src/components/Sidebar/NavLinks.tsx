@@ -5,9 +5,11 @@ import { routes } from "@/lib/routes";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 const NavLinks: React.FC = () => {
   const pathname = usePathname();
+  const t = useTranslations("Nav");
   return (
     <>
       {routes.map((route) => {
@@ -29,7 +31,7 @@ const NavLinks: React.FC = () => {
             )}
           >
             <LinkIcon />
-            {route.pageName as string}
+            {t(route.labelKey)}
           </Link>
         );
       })}

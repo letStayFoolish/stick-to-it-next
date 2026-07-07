@@ -1,12 +1,22 @@
+"use client";
+
 import React from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { ShoppingCart } from "lucide-react";
 import { routes } from "@/lib/routes";
 import { cn } from "@/lib/utils";
-import { headers } from "next/headers";
 
-const Footer: React.FC = async () => {
-  const pathname = (await headers()).get("x-invoke-path") || ""; // Adjust this to how you're setting it up
+const Footer: React.FC = () => {
+  const pathname = usePathname();
+  const t = useTranslations("Nav");
+
+  const activeIndex = routes.findIndex((route) =>
+    route.pathName === "/"
+      ? pathname === "/"
+      : pathname.startsWith(route.pathName),
+  );
 
   const yearInFooter = () => {
     const thisYear = new Date().getFullYear();
@@ -22,33 +32,47 @@ const Footer: React.FC = async () => {
           <span className="sr-only">Stick To It</span>
         </div>
 
-        <div className="flex w-full md:hidden flex-wrap items-center  md:justify-start mb-4 md:mb-0 ">
-          <ul className="flex w-full justify-between text-2xl px-4 md:px-0">
-            {routes.map((route) => {
-              const LinkIcon = route.icon;
-
-              return (
-                <Link
-                  key={route.id}
-                  href={route.href}
-                  className={cn(
-                    "flex items-center bg-transparent gap-3 rounded-lg  transition-all hover:text-primary cursor-pointer",
-                    {
-                      "bg-muted text-foreground": pathname === route.pathName,
-                    },
-                  )}
-                >
-                  <LinkIcon />
-                </Link>
-              );
-            })}
-          </ul>
-        </div>
-
         <div>
-          <p className="text-sm text-secondary-foreground mt-8 md:mt-0 text-center">
+          <p className="text-sm text-secondary-foreground mb-6 md:mb-0 text-center">
             &copy; {yearInFooter()} by Nemanja Karaklajic
           </p>
+        </div>
+
+        <div className="w-full md:hidden rounded-2xl border border-border bg-card p-1.5 shadow-soft">
+          <div className="relative flex w-full">
+            {activeIndex >= 0 && (
+              <span
+                aria-hidden="true"
+                className="absolute inset-y-0 left-0 rounded-xl bg-accent/55 transition-transform duration-300 ease-out"
+                style={{
+                  width: `${100 / routes.length}%`,
+                  transform: `translateX(${activeIndex * 100}%)`,
+                }}
+              />
+            )}
+            <ul className="relative z-10 flex w-full text-2xl">
+              {routes.map((route) => {
+                const LinkIcon = route.icon;
+                const isActive = route.id === routes[activeIndex]?.id;
+
+                return (
+                  <li key={route.id} className="flex flex-1 justify-center">
+                    <Link
+                      href={route.href}
+                      aria-label={t(route.labelKey)}
+                      aria-current={isActive ? "page" : undefined}
+                      className={cn(
+                        "flex items-center justify-center gap-3 rounded-xl py-2 px-3 transition-colors hover:text-foreground cursor-pointer",
+                        isActive ? "text-foreground" : "text-muted-foreground",
+                      )}
+                    >
+                      <LinkIcon />
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
         </div>
       </div>
     </footer>

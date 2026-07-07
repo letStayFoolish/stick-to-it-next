@@ -1,4 +1,5 @@
 import React from "react";
+import { getTranslations } from "next-intl/server";
 import ProductCard from "@/components/Product/ProductCard";
 import NoData from "@/components/ui/NoData";
 import type { ProductPlain } from "@/lib/types";
@@ -6,9 +7,10 @@ import type { ProductPlain } from "@/lib/types";
 type Props = {
   categories: Record<string, ProductPlain[]> | undefined;
 };
-const Categories: React.FC<Props> = ({ categories }) => {
+const Categories: React.FC<Props> = async ({ categories }) => {
   if (!categories || Object.keys(categories).length === 0) {
-    return <NoData text={"No products found"} />;
+    const t = await getTranslations("Products");
+    return <NoData text={t("noProductsFound")} />;
   }
 
   return (

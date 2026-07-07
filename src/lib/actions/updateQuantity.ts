@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { getTranslations } from "next-intl/server";
 import { requireUser } from "@/lib/session";
 import { getUser } from "@/lib/dal";
 import connectDB from "@/lib/database";
@@ -86,8 +87,10 @@ export async function updateQuantity(prevState: any, formData: FormData) {
   } catch (error: any) {
     console.log(error);
 
+    const t = await getTranslations("Errors");
+
     return {
-      message: "Failed to update quantity",
+      message: t("updateQuantityFailed"),
       success: prevState?.success || false, // Preserve UI state where possible
     };
   }

@@ -70,6 +70,19 @@ export async function setQuantity(
   return user.listItems.map(toDto);
 }
 
+export async function setNotes(
+  userId: string,
+  notes: string,
+): Promise<{ notes: string }> {
+  const user = await loadUser(userId);
+
+  user.notes = notes;
+
+  await user.save();
+
+  return { notes: user.notes };
+}
+
 export async function clearList(
   userId: string,
 ): Promise<{ listItems: ShoppingListItemDto[]; notes: string }> {

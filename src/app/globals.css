@@ -4,26 +4,33 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
+    /* In-App Purchases palette — Lynx White / Toxic Essence / Light Weathered Hide /
+       Arbor Vitae / Chicago / Black Metal. Do not substitute these hex/HSL values. */
+    --background: 20 20% 97%;
+    --foreground: 60 11% 2%;
     --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
+    --card-foreground: 60 11% 2%;
     --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-    --primary: 240 5.9% 10%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
+    --popover-foreground: 60 11% 2%;
+    --primary: 97 50% 83%;
+    --primary-foreground: 100 28% 24%;
+    --secondary: 21 22% 85%;
+    --secondary-foreground: 60 11% 2%;
+    --muted: 21 22% 85%;
+    --muted-foreground: 80 3% 36%;
+    --accent: 83 17% 73%;
+    --accent-foreground: 60 11% 2%;
+    /* Derived darker/saturated mint — for text/icon-fill on mint or raised surfaces,
+       since raw --primary fails contrast for that role. */
+    --accent-ink: 100 28% 24%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 240 5.9% 10%;
-    --radius: 0.5rem;
+    --border: 21 22% 85%;
+    --input: 21 22% 85%;
+    --ring: 100 28% 24%;
+    --radius: 1.125rem;
+    --shadow-soft: 0 1px 2px hsl(var(--foreground) / 0.04), 0 8px 24px -12px hsl(var(--foreground) / 0.18);
+    --shadow-lift: 0 2px 4px hsl(var(--foreground) / 0.06), 0 16px 40px -16px hsl(var(--foreground) / 0.28);
     --chart-1: 12 76% 61%;
     --chart-2: 173 58% 39%;
     --chart-3: 197 37% 24%;
@@ -40,25 +47,31 @@
   }
 
   .dark {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 240 10% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 240 10% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 240 5.9% 10%;
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 240 3.7% 15.9%;
-    --accent-foreground: 0 0% 98%;
+    --background: 60 8% 7%;
+    --foreground: 40 20% 96%;
+    --card: 80 4% 12%;
+    --card-foreground: 40 20% 96%;
+    --popover: 80 4% 12%;
+    --popover-foreground: 40 20% 96%;
+    --primary: 97 45% 72%;
+    /* Deliberately NOT --accent-ink here: accent-ink (92% L) is tuned for icon/border/
+       fill legibility against dark raised surfaces, but primary-foreground sits directly
+       on --primary (72% L) — reusing accent-ink there reads as near-invisible light-on-light. */
+    --primary-foreground: 97 40% 12%;
+    --secondary: 21 14% 22%;
+    --secondary-foreground: 40 20% 96%;
+    --muted: 21 14% 22%;
+    --muted-foreground: 60 4% 68%;
+    --accent: 83 10% 30%;
+    --accent-foreground: 40 20% 96%;
+    --accent-ink: 97 45% 92%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 240 4.9% 83.9%;
+    --border: 21 14% 22%;
+    --input: 21 14% 22%;
+    --ring: 97 45% 92%;
+    --shadow-soft: 0 1px 2px hsl(0 0% 0% / 0.3), 0 8px 24px -12px hsl(0 0% 0% / 0.5);
+    --shadow-lift: 0 2px 4px hsl(0 0% 0% / 0.4), 0 20px 48px -16px hsl(0 0% 0% / 0.6);
     --chart-1: 220 70% 50%;
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
@@ -87,5 +100,74 @@
 
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+/* ---- Touchpoint: like/favorite button ---- */
+@keyframes like-pop {
+  0% { transform: scale(0.5); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.like-icon-pop {
+  animation: like-pop 340ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes like-burst-dot {
+  0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  100% { opacity: 0; transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(0); }
+}
+.like-burst-dot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  border-radius: 9999px;
+  background: hsl(var(--accent-ink));
+  opacity: 0;
+  animation: like-burst-dot 480ms ease-out forwards;
+}
+
+/* ---- Touchpoint: shopping-list checkbox check-off ---- */
+.check-draw {
+  stroke-dasharray: 24;
+  stroke-dashoffset: 24;
+  transition: stroke-dashoffset 260ms ease 60ms;
+}
+[data-state="checked"] .check-draw {
+  stroke-dashoffset: 0;
+}
+
+/* ---- Touchpoint: quantity stepper tick ---- */
+@keyframes qty-tick {
+  0% { transform: translateY(40%); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+.qty-tick {
+  display: inline-block;
+  animation: qty-tick 220ms ease;
+}
+
+/* ---- Touchpoint: toast entrance/exit ---- */
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(10px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes toast-out {
+  from { opacity: 1; transform: translateY(0) scale(1); }
+  to { opacity: 0; transform: translateY(10px) scale(0.98); }
+}
+.toast-pop[data-state="open"] {
+  animation: toast-in 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.toast-pop[data-state="closed"] {
+  animation: toast-out 200ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
   }
 }

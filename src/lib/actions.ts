@@ -1,10 +1,16 @@
 "use server";
 
 import connectDB from "@/lib/database";
-import { FormState, SigninFormSchema, SignupFormSchema } from "@/lib/types";
+import {
+  createSigninFormSchema,
+  createSignupFormSchema,
+  FormState,
+} from "@/lib/types";
 import { User } from "@/lib/models/User";
 import bcrypt from "bcryptjs";
+import { getTranslations } from "next-intl/server";
 import { createSession, deleteSession } from "@/lib/session";
+import { syncLocaleCookieForUser } from "@/lib/localeCookie";
 
 // HANDLE BASE URL
 export async function getBaseURL() {
@@ -16,7 +22,12 @@ export async function getBaseURL() {
 // SIGN UP ACTION
 export async function signupAction(state: FormState, formData: FormData) {
   try {
-    const validatedFields = SignupFormSchema.safeParse({
+    const [tValidation, tAuth] = await Promise.all([
+      getTranslations("Validation"),
+      getTranslations("Auth"),
+    ]);
+
+    const validatedFields = createSignupFormSchema(tValidation).safeParse({
       name: formData.get("name"),
       email: formData.get("email"),
       password: formData.get("password"),
@@ -37,7 +48,7 @@ export async function signupAction(state: FormState, formData: FormData) {
     });
 
     if (isUserExists) {
-      return { error: "Email already in use" };
+      return { error: tAuth("emailInUse") };
     }
 
     const { name, email, password } = validatedFields.data;
@@ -57,14 +68,15 @@ export async function signupAction(state: FormState, formData: FormData) {
     // Return success or throw error to the calling client
     if (user) {
       await createSession(user._id.toString());
+      await syncLocaleCookieForUser(user._id.toString(), user.language);
 
       return { success: true };
     } else {
       if (user.status === 409) {
-        return { error: "Email already in use" };
+        return { error: tAuth("emailInUse") };
       }
 
-      return { error: "An error occurred while creating your account." };
+      return { error: tAuth("signupError") };
     }
   } catch (error: any) {
     console.error(error);
@@ -79,7 +91,12 @@ export async function logout() {
 // SIGN IN ACTION
 export async function signinAction(state: FormState, formData: FormData) {
   try {
-    const validatedFields = SigninFormSchema.safeParse({
+    const [tValidation, tAuth] = await Promise.all([
+      getTranslations("Validation"),
+      getTranslations("Auth"),
+    ]);
+
+    const validatedFields = createSigninFormSchema(tValidation).safeParse({
       email: formData.get("email"),
       password: formData.get("password"),
     });
@@ -98,7 +115,7 @@ export async function signinAction(state: FormState, formData: FormData) {
     });
 
     if (!user) {
-      return { error: "Invalid credentials" };
+      return { error: tAuth("invalidCredentials") };
     }
 
     const passwordMatches = await bcrypt.compare(
@@ -107,17 +124,18 @@ export async function signinAction(state: FormState, formData: FormData) {
     );
 
     if (!passwordMatches) {
-      return { error: "Invalid credentials" };
+      return { error: tAuth("invalidCredentials") };
     }
 
     // Return success or throw error to the calling client
     if (user && passwordMatches) {
       await createSession(user._id.toString());
+      await syncLocaleCookieForUser(user._id.toString(), user.language);
 
       return { success: true };
     }
 
-    return { error: "Login failed." };
+    return { error: tAuth("loginFailed") };
   } catch (error: any) {
     console.error(error);
   }

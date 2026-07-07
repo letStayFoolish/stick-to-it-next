@@ -1,10 +1,12 @@
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { toggleLike as toggleLikeAction } from "@/lib/actions/toggleLike";
 import type { ProductPlain } from "@/lib/types";
 import { useToast } from "@/hooks/use-toast";
 
 export function useDislike(product: ProductPlain) {
   const { toast } = useToast();
+  const t = useTranslations("Favorites");
 
   const [isPending, setIsPending] = useState(false);
 
@@ -15,14 +17,14 @@ export function useDislike(product: ProductPlain) {
       void toggleLikeAction(product._id);
 
       toast({
-        title: "Favorite list updated!",
-        description: `Removed ${product.product_name} from your favorites list.`,
+        title: t("updatedTitle"),
+        description: t("removed", { name: product.product_name }),
       });
     } catch (error: any) {
       console.log(error);
       toast({
-        title: "Something went wrong!",
-        description: `Something went wrong while trying to dislike ${product.product_name}`,
+        title: t("errorTitle"),
+        description: t("errorDislike", { name: product.product_name }),
       });
     } finally {
       setIsPending(false);

@@ -1,17 +1,20 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { getTranslations } from "next-intl/server";
 import { requireUser } from "@/lib/session";
 import connectDB from "@/lib/database";
 import * as shoppingListService from "@/lib/services/shoppingListService";
 
 export async function clearProducts(prevState: any, formData: FormData) {
+  const t = await getTranslations("Errors");
+
   try {
     const isClearAllActive = formData.get("action");
 
     if (isClearAllActive !== "clear-all") {
       return {
-        message: "Invalid action",
+        message: t("clearListInvalidAction"),
         success: false,
       };
     }
@@ -29,14 +32,14 @@ export async function clearProducts(prevState: any, formData: FormData) {
     revalidatePath("/shopping-list");
 
     return {
-      message: "Products cleared",
+      message: t("clearListSuccess"),
       success: true,
     };
   } catch (error: any) {
     console.log(error);
 
     return {
-      message: "Failed to clear products",
+      message: t("clearListFailed"),
       success: prevState?.success || false,
     };
   }

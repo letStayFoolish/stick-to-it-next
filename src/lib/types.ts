@@ -6,10 +6,9 @@ export type ObjectKeys<T> = keyof T;
 export interface Product {
   _id: ObjectId;
   product_name: string;
-  product_image?: string;
-  category_image: string;
   category: string;
   isLiked?: boolean;
+  owner?: ObjectId | string | null;
 }
 
 export interface ProductPlain extends Omit<Product, "_id"> {
@@ -26,35 +25,34 @@ export type UserInfo = {
   listItems?: string[];
 };
 
-export const SignupFormSchema = z.object({
-  name: z
-    .string()
-    .min(2, { message: "Name must be at least 2 characters long." })
-    .trim(),
-  email: z.string().email({ message: "Please enter a valid email." }).trim(),
-  password: z
-    .string()
-    .min(8, { message: "Be at least 8 characters long" })
-    .regex(/[a-zA-Z]/, { message: "Contain at least one letter." })
-    .regex(/[0-9]/, { message: "Contain at least one number." })
-    .regex(/[^a-zA-Z0-9]/, {
-      message: "Contain at least one special character.",
-    })
-    .trim(),
-});
+type Translate = (key: string) => string;
 
-export const SigninFormSchema = z.object({
-  email: z.string().email({ message: "Please enter a valid email." }).trim(),
-  password: z
-    .string()
-    .min(8, { message: "Be at least 8 characters long" })
-    .regex(/[a-zA-Z]/, { message: "Contain at least one letter." })
-    .regex(/[0-9]/, { message: "Contain at least one number." })
-    .regex(/[^a-zA-Z0-9]/, {
-      message: "Contain at least one special character.",
-    })
-    .trim(),
-});
+export function createSignupFormSchema(t: Translate) {
+  return z.object({
+    name: z.string().min(2, { message: t("nameMin") }).trim(),
+    email: z.string().email({ message: t("emailInvalid") }).trim(),
+    password: z
+      .string()
+      .min(8, { message: t("passwordMin") })
+      .regex(/[a-zA-Z]/, { message: t("passwordLetter") })
+      .regex(/[0-9]/, { message: t("passwordNumber") })
+      .regex(/[^a-zA-Z0-9]/, { message: t("passwordSpecial") })
+      .trim(),
+  });
+}
+
+export function createSigninFormSchema(t: Translate) {
+  return z.object({
+    email: z.string().email({ message: t("emailInvalid") }).trim(),
+    password: z
+      .string()
+      .min(8, { message: t("passwordMin") })
+      .regex(/[a-zA-Z]/, { message: t("passwordLetter") })
+      .regex(/[0-9]/, { message: t("passwordNumber") })
+      .regex(/[^a-zA-Z0-9]/, { message: t("passwordSpecial") })
+      .trim(),
+  });
+}
 
 export type FormState =
   | {
@@ -67,27 +65,31 @@ export type FormState =
     }
   | undefined;
 
-export type CategoriesType =
-  | "bakery"
-  | "vegetables"
-  | "fruits"
-  | "meat"
-  | "milk-eggs-cheese"
-  | "water-juice"
-  | "fish"
-  | "drinks"
-  | "chips-snacks"
-  | "sweets"
-  | "frozen"
-  | "pasta-cereals-flour"
-  | "oil-sauces-spices"
-  | "tea-coffee-cocoa"
-  | "cleaning"
-  | "house-kitchen"
-  | "canned-food"
-  | "health-beauty"
-  | "kids-parents"
-  | "animals";
+export const CATEGORIES = [
+  "bakery",
+  "vegetables",
+  "fruits",
+  "meat",
+  "milk-eggs-cheese",
+  "water-juice",
+  "fish",
+  "drinks",
+  "chips-snacks",
+  "sweets",
+  "frozen",
+  "pasta-cereals-flour",
+  "oil-sauces-spices",
+  "tea-coffee-cocoa",
+  "cleaning",
+  "house-kitchen",
+  "canned-food",
+  "health-beauty",
+  "kids-parents",
+  "animals",
+  "else",
+] as const;
+
+export type CategoriesType = (typeof CATEGORIES)[number];
 
 export type ComponentPropsWithParams = {
   params: Promise<{

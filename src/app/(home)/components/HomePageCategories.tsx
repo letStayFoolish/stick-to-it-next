@@ -1,12 +1,16 @@
 import React from "react";
+import { getTranslations } from "next-intl/server";
 import { getLimitedNumberOfProducts } from "@/lib/utils";
 import ProductCard from "@/components/Product/ProductCard";
 
 const HomePageCategories: React.FC = async () => {
-  const selectedProducts = await getLimitedNumberOfProducts(6);
+  const [selectedProducts, t] = await Promise.all([
+    getLimitedNumberOfProducts(6),
+    getTranslations("Home"),
+  ]);
 
   if (!selectedProducts?.length) {
-    return <p>No products to be shown!</p>;
+    return <p>{t("noProducts")}</p>;
   }
 
   return (

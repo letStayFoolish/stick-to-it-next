@@ -1,7 +1,7 @@
 import React from "react";
+import { getTranslations } from "next-intl/server";
 import { TableCell, TableRow } from "@/components/ui/table";
 import Link from "next/link";
-import { handleProductName } from "@/lib/utils";
 import CellBtn from "@/app/(private)/profile/components/CellBtn";
 import { fetchShoppingListItems as fetchShoppingListItemsAction } from "@/lib/actions/fetchShoppingListItems";
 import RemoveFromFavoritesBtn from "@/app/(private)/profile/components/RemoveFromFavoritesBtn";
@@ -9,14 +9,19 @@ import { fetchFavoritesProducts as fetchFavoritesAction } from "@/lib/actions/fe
 import NoData from "@/components/ui/NoData";
 
 export const FavoritesList: React.FC = async () => {
-  const shoppingListProducts = await fetchShoppingListItemsAction();
-  const likedProducts = await fetchFavoritesAction();
+  const [shoppingListProducts, likedProducts, t, tCategories] =
+    await Promise.all([
+      fetchShoppingListItemsAction(),
+      fetchFavoritesAction(),
+      getTranslations("Profile"),
+      getTranslations("Categories"),
+    ]);
 
   if (!likedProducts) {
     return (
       <TableRow>
         <TableCell>
-          <NoData text={`Add some products to your\n favorites.`} />
+          <NoData text={t("favoritesEmpty")} />
         </TableCell>
       </TableRow>
     );
@@ -39,7 +44,7 @@ export const FavoritesList: React.FC = async () => {
                 href={`/products/${product.category}`}
                 className="text-accent-foreground font-bold hover:underline"
               >
-                {handleProductName(product.category)}
+                {tCategories(product.category)}
               </Link>
             </TableCell>
             <TableCell className="text-right">

@@ -2,7 +2,7 @@
 id: 13
 title: "Reliable notes-save dialog"
 type: AFK
-status: ready
+status: done-by-supersession
 blocked_by: [1]
 blocks: []
 parent: null
@@ -24,4 +24,4 @@ Fix the dialog to only close once the save has been confirmed successful. On fai
 
 ## Agent notes
 
-<!-- Leave blank initially. Agents append findings, decisions, and blockers here as they work. -->
+- Superseded by #19 ("Replace notes dialog with an inline trip memo with reliable save"), which folds in all of this issue's acceptance criteria as part of a larger UX rework that removes the notes dialog entirely. See #19's agent notes for the fix details.
