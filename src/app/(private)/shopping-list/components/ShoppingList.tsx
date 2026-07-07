@@ -2,7 +2,7 @@
 
 import React, { useCallback } from "react";
 import type { ProductPlain } from "@/lib/types";
-import Image from "next/image";
+import CategoryIcon from "@/components/CategoryIcon";
 import { handleProductName } from "@/lib/utils";
 import Link from "next/link";
 import ShoppingListItem from "@/app/(private)/shopping-list/components/ShoppingListItem";
@@ -41,14 +41,7 @@ export const ShoppingList: React.FC<Props> = ({ products }) => {
           <li className="w-full" key={categoryName}>
             <div className="flex gap-4 items-end border-b-2 border-border last:border-none py-2 lg:py-3">
               <Link href={`/products/${categoryName}`}>
-                <Image
-                  src={`/images/categories/${categoryName}.png`}
-                  alt={`Image for the groceries from the category ${categoryName}`}
-                  width={35}
-                  height={35}
-                  priority={true}
-                  className="object-cover"
-                />
+                <CategoryIcon category={categoryName} size="sm" />
               </Link>
               <h3 className="uppercase text-lg md:text-xl font-medium lg:font-bold">
                 {handleProductName(categoryName)}

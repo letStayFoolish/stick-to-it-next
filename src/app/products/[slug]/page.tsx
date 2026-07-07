@@ -4,7 +4,7 @@ import type {
   ComponentPropsWithParams,
   ProductPlain,
 } from "@/lib/types";
-import Image from "next/image";
+import CategoryIcon from "@/components/CategoryIcon";
 import GoToPage from "@/components/GoToPage";
 import { handleProductName } from "@/lib/utils";
 import PageHeading from "@/components/PageHeading";
@@ -41,20 +41,7 @@ const Products: React.FC<ComponentPropsWithParams> = async ({ params }) => {
         <PageHeading>
           {handleProductName(slug as CategoriesType).toUpperCase()}
         </PageHeading>
-        {products &&
-          products
-            .slice(0, 1)
-            .map((product) => (
-              <Image
-                key={product._id}
-                src={`/images/categories/${product.category_image}.png`}
-                alt={`Image for groceries from category ${product.category}`}
-                width={140}
-                height={140}
-                priority
-                className="object-cover object-center"
-              />
-            ))}
+        <CategoryIcon category={slug} size="lg" />
       </div>
 
       <div className="flex justify-between w-full">

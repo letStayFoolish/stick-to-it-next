@@ -2,7 +2,7 @@ import React from "react";
 import { ProductPlain } from "@/lib/types";
 import Link from "next/link";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import Image from "next/image";
+import CategoryIcon from "@/components/CategoryIcon";
 import { handleProductName } from "@/lib/utils";
 
 type Props = {
@@ -22,13 +22,10 @@ const ProductCard: React.FC<Props> = ({ product }) => {
           {handleProductName(product.category)}
         </CardHeader>
         <CardContent className="p-2 transition-transform duration-500">
-          <Image
-            src={`/images/categories/${product?.category}.png`}
-            alt={product?.category}
-            height={160}
-            width={160}
-            className="object-center object-cover max-h-[80px] max-w-[80px] lg:max-h-[160px] lg:max-w-[160px] transition-transform duration-500 hover:scale-110 hover:rotate-3"
-            priority
+          <CategoryIcon
+            category={product?.category}
+            size="lg"
+            className="transition-transform duration-500 hover:scale-110 hover:rotate-3"
           />
         </CardContent>
       </Card>
