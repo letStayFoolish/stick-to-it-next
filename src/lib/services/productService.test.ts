@@ -8,7 +8,6 @@ function createSeededProduct(overrides: Record<string, unknown> = {}) {
   return Product.create({
     category: "fruits",
     product_name: "seeded apple",
-    product_image: "apple.png",
     ...overrides,
   });
 }

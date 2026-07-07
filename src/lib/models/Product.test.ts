@@ -20,7 +20,6 @@ describe("Product model", () => {
     const created = await Product.create({
       category: "fruit",
       product_name: "apple",
-      product_image: "apple.png",
     });
 
     const found = await Product.findById(created._id);
@@ -32,7 +31,6 @@ describe("Product model", () => {
     const created = await Product.create({
       category: "fruit",
       product_name: "seeded apple",
-      product_image: "apple.png",
     });
 
     const found = await Product.findById(created._id);
@@ -46,12 +44,22 @@ describe("Product model", () => {
     const created = await Product.create({
       category: "fruit",
       product_name: "my custom apple",
-      product_image: "apple.png",
       owner: ownerId,
     });
 
     const found = await Product.findById(created._id);
 
     expect(found?.owner?.toString()).toBe(ownerId.toString());
+  });
+
+  it("persists a document with no image field", async () => {
+    const created = await Product.create({
+      category: "fruit",
+      product_name: "batteries",
+    });
+
+    const found = await Product.findById(created._id);
+
+    expect(found?.product_name).toBe("batteries");
   });
 });

@@ -10,10 +10,6 @@ const ProductSchema = new Schema(
       type: String,
       required: [true, "Product name is required"],
     },
-    product_image: {
-      type: String,
-      required: [true, "Product image is required"],
-    },
     isLiked: { type: Boolean, default: false },
     owner: {
       type: Schema.Types.ObjectId,

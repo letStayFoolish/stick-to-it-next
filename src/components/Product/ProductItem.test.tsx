@@ -18,7 +18,6 @@ const product: ProductPlain = {
   _id: "product-1",
   product_name: "Apple",
   category: "fruit",
-  category_image: "fruit.png",
   isLiked: false,
 };
 
