@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { handleProductName } from "@/lib/utils";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import { cn } from "@/lib/utils";
 
@@ -11,8 +10,6 @@ type Props = {
 };
 
 const ProductName: React.FC<Props> = ({ productName, checked = false }) => {
-  const name = handleProductName(productName);
-
   return (
     <>
       <span
@@ -23,15 +20,15 @@ const ProductName: React.FC<Props> = ({ productName, checked = false }) => {
             : "text-foreground decoration-transparent",
         )}
         data-tooltip-id="tooltip-productName"
-        data-tooltip-content={name}
+        data-tooltip-content={productName}
       >
-        {name}
+        {productName}
       </span>
       <ReactTooltip
         id="tooltip-productName"
         className="block sm:hidden"
         variant="dark"
-        content={name}
+        content={productName}
         openOnClick
       />
     </>

@@ -2,6 +2,28 @@ import { Product as ProductSchema } from "@/lib/models/Product";
 import { User as UserSchema } from "@/lib/models/User";
 import { CATEGORIES } from "@/lib/types";
 import type { ProductPlain } from "@/lib/types";
+import { SUPPORTED_LOCALES, type Locale } from "@/lib/locale";
+
+export type LocalizedName = Partial<Record<Locale, string>>;
+
+/**
+ * Seeded products store either a plain string (not-yet-migrated) or a
+ * locale-keyed object (migrated). User-created items are always a plain
+ * string and display exactly as typed in every locale. This is the single
+ * place that turns either shape into one display string.
+ */
+export function resolveProductName(
+  rawName: string | LocalizedName,
+  locale: Locale,
+): string {
+  if (typeof rawName === "string") {
+    return rawName;
+  }
+
+  return (
+    rawName[locale] ?? rawName.en ?? Object.values(rawName)[0] ?? ""
+  );
+}
 
 export type ProductErrorCode =
   | "NAME_REQUIRED"
@@ -25,25 +47,31 @@ function visibilityFilter(userId: string | null) {
   return { owner: { $in: [null, userId] } };
 }
 
-function withStringId<T extends { _id: unknown }>(docs: T[]): ProductPlain[] {
+function toDto(docs: Record<string, unknown>[], locale: Locale): ProductPlain[] {
   return docs.map((doc) => ({
     ...doc,
     _id: String(doc._id),
+    product_name: resolveProductName(
+      doc.product_name as string | LocalizedName,
+      locale,
+    ),
   })) as unknown as ProductPlain[];
 }
 
 export async function getVisibleProducts(
   userId: string | null,
+  locale: Locale,
 ): Promise<ProductPlain[]> {
   const docs = await ProductSchema.find(visibilityFilter(userId))
     .select("-owner")
     .lean();
-  return withStringId(docs);
+  return toDto(docs, locale);
 }
 
 export async function getVisibleProductsByCategory(
   userId: string | null,
   category: string,
+  locale: Locale,
 ): Promise<ProductPlain[]> {
   const docs = await ProductSchema.find({
     category,
@@ -51,7 +79,7 @@ export async function getVisibleProductsByCategory(
   })
     .select("-owner")
     .lean();
-  return withStringId(docs);
+  return toDto(docs, locale);
 }
 
 export async function quickAddProduct(
@@ -74,11 +102,20 @@ export async function quickAddProduct(
   }
 
   const escapedName = name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const nameRegex = new RegExp(`^${escapedName}$`, "i");
 
+  // A migrated seeded product stores its name as a locale-keyed object, not
+  // a plain string, so a case-insensitive match must check the plain-string
+  // shape (own items, not-yet-migrated seeded items) OR any locale sub-field.
   const existing = await ProductSchema.findOne({
     category,
-    product_name: new RegExp(`^${escapedName}$`, "i"),
     ...visibilityFilter(userId),
+    $or: [
+      { product_name: nameRegex },
+      ...SUPPORTED_LOCALES.map((loc) => ({
+        [`product_name.${loc}`]: nameRegex,
+      })),
+    ],
   });
 
   if (existing) {
@@ -94,11 +131,14 @@ export async function quickAddProduct(
   return { ok: true, productId: created._id.toString() };
 }
 
-export async function getOwnedProducts(userId: string): Promise<ProductPlain[]> {
+export async function getOwnedProducts(
+  userId: string,
+  locale: Locale,
+): Promise<ProductPlain[]> {
   const docs = await ProductSchema.find({ owner: userId })
     .select("-owner")
     .lean();
-  return withStringId(docs);
+  return toDto(docs, locale);
 }
 
 export type MutationResult =
@@ -170,6 +210,7 @@ export async function deleteOwnedProduct(
 export async function getVisibleProductsByIds(
   userId: string | null,
   ids: string[],
+  locale: Locale,
 ): Promise<ProductPlain[]> {
   const docs = await ProductSchema.find({
     _id: { $in: ids },
@@ -177,5 +218,5 @@ export async function getVisibleProductsByIds(
   })
     .select("-owner")
     .lean();
-  return withStringId(docs);
+  return toDto(docs, locale);
 }

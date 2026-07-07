@@ -2,6 +2,8 @@
 
 import { ProductPlain } from "@/lib/types";
 import connectDB from "@/lib/database";
+import { getLocale } from "next-intl/server";
+import type { Locale } from "@/lib/locale";
 import { getUser } from "@/lib/dal";
 import * as productService from "@/lib/services/productService";
 import { cache } from "react";
@@ -13,10 +15,12 @@ export const fetchProductsFromCategory = cache(
 
       const user = await getUser();
       const userId = user?._id?.toString() ?? null;
+      const locale = (await getLocale()) as Locale;
 
       const products = await productService.getVisibleProductsByCategory(
         userId,
         categoryName,
+        locale,
       );
 
       if (!products) {

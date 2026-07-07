@@ -7,7 +7,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import RemoveFromListBtn from "@/app/(private)/shopping-list/components/RemoveFromListBtn";
 import ProductName from "@/components/Product/ProductName";
 import { setItemChecked as setItemCheckedAction } from "@/lib/actions/setItemChecked";
-import { handleProductName, cn } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 
 type Props = {
   product: ProductPlain;
@@ -23,14 +23,12 @@ const ShoppingListItem: React.FC<Props> = ({ product }) => {
     void setItemCheckedAction(product._id, nextChecked);
   };
 
-  const productDisplayName = handleProductName(product.product_name);
-
   return (
     <div
       role="checkbox"
       aria-checked={isChecked}
       aria-label={t(isChecked ? "markNotPickedUp" : "markPickedUp", {
-        name: productDisplayName,
+        name: product.product_name,
       })}
       tabIndex={0}
       onClick={handleCheckedChange}

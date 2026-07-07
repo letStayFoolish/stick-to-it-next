@@ -1,5 +1,7 @@
 "use server";
 
+import { getLocale } from "next-intl/server";
+import type { Locale } from "@/lib/locale";
 import { getUser } from "@/lib/dal";
 import * as productService from "@/lib/services/productService";
 import { cache } from "react";
@@ -28,10 +30,13 @@ export const fetchShoppingListItems = cache(async () => {
       item.productId.toString(),
     );
 
+    const locale = (await getLocale()) as Locale;
+
     // Query the database for products matching these IDs
     const products = await productService.getVisibleProductsByIds(
       user._id.toString(),
       productIds,
+      locale,
     );
 
     // Enrich the products with quantities from the shopping list

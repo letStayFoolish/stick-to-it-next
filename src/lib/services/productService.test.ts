@@ -22,6 +22,29 @@ function createUser(overrides: Record<string, unknown> = {}) {
   });
 }
 
+describe("resolveProductName", () => {
+  it("returns a plain string name as-is regardless of locale", () => {
+    expect(productService.resolveProductName("Batteries", "de")).toBe(
+      "Batteries",
+    );
+  });
+
+  it("resolves a locale-keyed name to the requested locale", () => {
+    const name = { en: "Milk", de: "Milch", ru: "Молоко" };
+    expect(productService.resolveProductName(name, "de")).toBe("Milch");
+  });
+
+  it("falls back to en when the requested locale is missing", () => {
+    const name = { en: "Milk", de: "Milch" };
+    expect(productService.resolveProductName(name, "es")).toBe("Milk");
+  });
+
+  it("falls back to any available value when en is also missing", () => {
+    const name = { de: "Milch" };
+    expect(productService.resolveProductName(name, "es")).toBe("Milch");
+  });
+});
+
 describe("productService", () => {
   let mongoServer: MongoMemoryServer;
 
@@ -45,7 +68,7 @@ describe("productService", () => {
       await createSeededProduct();
       const userId = new mongoose.Types.ObjectId().toString();
 
-      const visible = await productService.getVisibleProducts(userId);
+      const visible = await productService.getVisibleProducts(userId, "en");
 
       expect(visible).toHaveLength(1);
       expect(visible[0].product_name).toBe("seeded apple");
@@ -58,8 +81,8 @@ describe("productService", () => {
       await createSeededProduct({ product_name: "user a's item", owner: userA });
       await createSeededProduct({ product_name: "user b's item", owner: userB });
 
-      const visibleToA = await productService.getVisibleProducts(userA);
-      const visibleToB = await productService.getVisibleProducts(userB);
+      const visibleToA = await productService.getVisibleProducts(userA, "en");
+      const visibleToB = await productService.getVisibleProducts(userB, "en");
 
       expect(visibleToA.map((p) => p.product_name)).toEqual(["user a's item"]);
       expect(visibleToB.map((p) => p.product_name)).toEqual(["user b's item"]);
@@ -70,7 +93,7 @@ describe("productService", () => {
       await createSeededProduct({ product_name: "user a's item", owner: userA });
       await createSeededProduct({ product_name: "seeded item" });
 
-      const visible = await productService.getVisibleProducts(null);
+      const visible = await productService.getVisibleProducts(null, "en");
 
       expect(visible.map((p) => p.product_name)).toEqual(["seeded item"]);
     });
@@ -79,7 +102,7 @@ describe("productService", () => {
       const userA = new mongoose.Types.ObjectId().toString();
       await createSeededProduct({ product_name: "user a's item", owner: userA });
 
-      const visible = await productService.getVisibleProducts(userA);
+      const visible = await productService.getVisibleProducts(userA, "en");
 
       expect(visible[0].owner).toBeUndefined();
     });
@@ -108,6 +131,7 @@ describe("productService", () => {
       const visible = await productService.getVisibleProductsByCategory(
         userA,
         "fruits",
+        "en",
       );
 
       expect(visible.map((p) => p.product_name)).toEqual(["user a's apple"]);
@@ -192,6 +216,25 @@ describe("productService", () => {
       expect(await Product.countDocuments()).toBe(1);
     });
 
+    it("reuses an existing migrated (locale-keyed) seeded product on a case-insensitive match against any locale", async () => {
+      const userId = new mongoose.Types.ObjectId().toString();
+      const seeded = await createSeededProduct({
+        category: "milk-eggs-cheese",
+        product_name: { en: "Milk", de: "Milch", ru: "Молоко" },
+      });
+
+      const result = await productService.quickAddProduct(
+        userId,
+        "milch",
+        "milk-eggs-cheese",
+      );
+
+      expect(result.ok).toBe(true);
+      if (!result.ok) throw new Error("expected ok result");
+      expect(result.productId).toBe(seeded._id.toString());
+      expect(await Product.countDocuments()).toBe(1);
+    });
+
     it("reuses the user's own existing product on a case-insensitive match instead of duplicating it", async () => {
       const userId = new mongoose.Types.ObjectId().toString();
       const first = await productService.quickAddProduct(
@@ -236,12 +279,57 @@ describe("productService", () => {
     });
   });
 
+  describe("getVisibleProducts locale resolution", () => {
+    it("resolves a migrated seeded product's name to the requested locale", async () => {
+      await createSeededProduct({
+        product_name: { en: "Milk", de: "Milch", ru: "Молоко" },
+      });
+      const userId = new mongoose.Types.ObjectId().toString();
+
+      const visible = await productService.getVisibleProducts(userId, "de");
+
+      expect(visible[0].product_name).toBe("Milch");
+    });
+
+    it("falls back to en when the migrated product has no entry for the requested locale", async () => {
+      await createSeededProduct({
+        product_name: { en: "Milk", de: "Milch" },
+      });
+      const userId = new mongoose.Types.ObjectId().toString();
+
+      const visible = await productService.getVisibleProducts(userId, "es");
+
+      expect(visible[0].product_name).toBe("Milk");
+    });
+
+    it("displays a not-yet-migrated (plain string) seeded product unchanged regardless of locale", async () => {
+      await createSeededProduct({ product_name: "Eggs" });
+      const userId = new mongoose.Types.ObjectId().toString();
+
+      const visible = await productService.getVisibleProducts(userId, "ru");
+
+      expect(visible[0].product_name).toBe("Eggs");
+    });
+
+    it("displays a user-created item's name exactly as typed regardless of locale", async () => {
+      const userId = new mongoose.Types.ObjectId().toString();
+      await createSeededProduct({
+        product_name: "Moje batérie",
+        owner: userId,
+      });
+
+      const visible = await productService.getVisibleProducts(userId, "ru");
+
+      expect(visible[0].product_name).toBe("Moje batérie");
+    });
+  });
+
   describe("getOwnedProducts", () => {
     it("returns _id as a plain string, not a raw ObjectId", async () => {
       const userId = new mongoose.Types.ObjectId().toString();
       const owned = await createSeededProduct({ owner: userId });
 
-      const [product] = await productService.getOwnedProducts(userId);
+      const [product] = await productService.getOwnedProducts(userId, "en");
 
       expect(typeof product._id).toBe("string");
       expect(product._id).toBe(owned._id.toString());
@@ -255,7 +343,7 @@ describe("productService", () => {
       await createSeededProduct({ product_name: "user a's item", owner: userA });
       await createSeededProduct({ product_name: "user b's item", owner: userB });
 
-      const owned = await productService.getOwnedProducts(userA);
+      const owned = await productService.getOwnedProducts(userA, "en");
 
       expect(owned.map((p) => p.product_name)).toEqual(["user a's item"]);
     });
@@ -398,10 +486,11 @@ describe("productService", () => {
         owner: userB,
       });
 
-      const visible = await productService.getVisibleProductsByIds(userA, [
-        seeded._id.toString(),
-        ownedByB._id.toString(),
-      ]);
+      const visible = await productService.getVisibleProductsByIds(
+        userA,
+        [seeded._id.toString(), ownedByB._id.toString()],
+        "en",
+      );
 
       expect(visible.map((p) => p.product_name)).toEqual(["seeded item"]);
     });
