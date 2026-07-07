@@ -13,6 +13,10 @@ project aims to provide a straightforward and efficient shopping experience.
 - Users can create accounts to manage their shopping lists.
 - Products are organized by categories for easy browsing.
 - Interactive list management including quantity and unit of measure adjustments.
+- Quick-add custom grocery items directly from the shopping list, or manage them anytime from the profile page.
+- Mark products as favorites for quick access from the profile page.
+- Add a quick note for the current shopping trip.
+- Multi-language support — English, Russian, Serbian, Spanish, and German.
 - Theme—choose between light/dark theme or set it to "system" so it matches the current system theme status.
 
 ## Technology Stack
@@ -24,6 +28,7 @@ This project is built using the following technologies:
 - **Tailwind CSS:** A utility-first CSS framework for rapidly building custom designs.
 - **TypeScript** For type safety
 - **MongoDB:** A NoSQL database used to store application data.
+- **next-intl:** For multi-language support (English, Russian, Serbian, Spanish, German).
 
 - **Authentication:**
 
@@ -85,9 +90,16 @@ This project is built using the following technologies:
 
     - The List Page displays all items users have added. Here, users can modify quantities, mark items
       as checked, delete products, or clear the entire list.
-    - Also, users can write own notes (additional stuff)
+    - Users can quick-add a custom grocery item that isn't in the catalog directly from this page.
+    - A short note can be added for the current shopping trip.
 
-5. **User Registration and Login:**
+5. **Manage Profile:**
+
+    - The Profile Page shows the user's favorited products and lets them manage their own custom items
+      (rename, recategorize, or delete).
+    - Users can switch the app's language from here.
+
+6. **User Registration and Login:**
     - To add or manage items in the shopping list, users must register or log in.
     - Without an account, browsing categories and products is possible, but adding products and list manipulation are
       restricted.
@@ -101,7 +113,7 @@ to [npm's official documentation](https://docs.npmjs.com/) for installation inst
 
 ### Environment Setup
 
-Copy the `env.example` file to `.env.local` and update it with your specific variables:
+Copy the `.env.local.example` file to `.env.local` and update it with your specific variables:
 
 - `NEXT_PUBLIC_DOMAIN={YOUR_DOMAIN}`
 - `NEXT_PUBLIC_API_DOMAIN={YOUR_DOMAIN/api}`
