@@ -136,6 +136,28 @@ describe("shoppingListService", () => {
     });
   });
 
+  describe("setNotes", () => {
+    it("persists the note text so it survives a fresh re-fetch", async () => {
+      const user = await createUser();
+
+      await shoppingListService.setNotes(user._id.toString(), "budget 50€");
+
+      const persisted = await User.findById(user._id);
+      expect(persisted?.notes).toBe("budget 50€");
+    });
+
+    it("overwrites an existing note with an empty string to clear it", async () => {
+      const user = await createUser();
+      user.notes = "return bottles";
+      await user.save();
+
+      await shoppingListService.setNotes(user._id.toString(), "");
+
+      const persisted = await User.findById(user._id);
+      expect(persisted?.notes).toBe("");
+    });
+  });
+
   describe("clearList", () => {
     it("empties the list and resets notes", async () => {
       const user = await createUser();

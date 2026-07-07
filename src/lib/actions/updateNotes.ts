@@ -1,53 +1,41 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { getUser } from "@/lib/dal";
+import { requireUser } from "@/lib/session";
+import connectDB from "@/lib/database";
+import * as shoppingListService from "@/lib/services/shoppingListService";
 
-export async function updateNotes(prevState: any, formData: FormData) {
+export type NotesActionState = {
+  success: boolean;
+  message?: string;
+};
+
+export async function updateNotes(
+  prevState: NotesActionState | undefined,
+  formData: FormData,
+): Promise<NotesActionState> {
   try {
-    const user = await getUser();
+    const notes = (formData.get("notes") as string) ?? "";
 
-    const notesAction = formData.get("action") as
-      | "update-notes"
-      | "add-note"
-      | "remove-note";
-    const notes = formData.get("notes") as string;
+    const auth = await requireUser();
 
-    if (!notesAction) {
-      throw new Error("Invalid action type");
+    if (!auth.authenticated) {
+      return { success: false, message: "Not authenticated" };
     }
 
-    if (notesAction === "update-notes") {
-      if (!notes) {
-        throw new Error("Notes cannot be empty when updating");
-      }
+    await connectDB();
 
-      user.notes = notes; // Update notes field
-    } else if (notesAction === "add-note") {
-      user.notes = notes; // Add new note
-    } else if (notesAction === "remove-note") {
-      user.notes = ""; // Clear notes
-    }
-
-    // Save the user's updated notes to the database
-    await user.save();
+    await shoppingListService.setNotes(auth.userId, notes);
 
     revalidatePath("/shopping-list");
 
-    return {
-      message:
-        notesAction === "remove-note"
-          ? "Notes removed successfully"
-          : "Notes updated successfully",
-      notes,
-    };
-  } catch (error: any) {
-    console.error("Failed to update notes:", error.message);
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to update notes:", error);
 
     return {
-      error: error.message,
-      message: "Failed to update notes",
-      notes: prevState?.notes || "",
+      success: false,
+      message: "Failed to save your note. Please try again.",
     };
   }
 }
