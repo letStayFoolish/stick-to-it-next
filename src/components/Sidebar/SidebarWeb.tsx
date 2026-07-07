@@ -1,4 +1,5 @@
 import React from "react";
+import { getTranslations } from "next-intl/server";
 import Link from "next/link";
 import LogOutBtn from "@/components/LogOutBtn";
 import { requireUser } from "@/lib/session";
@@ -6,7 +7,10 @@ import { LogOut } from "lucide-react";
 import NavLinks from "@/components/Sidebar/NavLinks";
 
 const SidebarWeb: React.FC = async () => {
-  const auth = await requireUser();
+  const [auth, t] = await Promise.all([
+    requireUser(),
+    getTranslations("Brand"),
+  ]);
 
   return (
     <nav className="px-2 text-lg font-medium lg:px-4">
@@ -20,14 +24,14 @@ const SidebarWeb: React.FC = async () => {
             btnVariant="outline"
             className="text-lg py-6 flex items-center"
           >
-            <LogOut /> Sign out
+            <LogOut /> {t("signOut")}
           </LogOutBtn>
         ) : (
           <Link
             href={"/login"}
             className="bg-primary text-primary-foreground rounded-md text-lg px-3 py-2 hover:opacity-90 transition-opacity"
           >
-            Login
+            {t("signIn")}
           </Link>
         )}
       </div>

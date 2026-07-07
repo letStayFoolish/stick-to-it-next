@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useActionState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { ShoppingCart } from "lucide-react";
@@ -13,6 +14,8 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 
 const LoginForm: React.FC = () => {
+  const t = useTranslations("Auth");
+  const tBrand = useTranslations("Brand");
   const [state, formAction, isPending] = useActionState(
     signinAction,
     undefined,
@@ -25,8 +28,8 @@ const LoginForm: React.FC = () => {
   useEffect(() => {
     if (searchParams.get("reason") === "expired") {
       toast({
-        title: "Session expired",
-        description: "Your session expired — please log back in.",
+        title: t("sessionExpiredTitle"),
+        description: t("sessionExpiredDescription"),
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -57,25 +60,25 @@ const LoginForm: React.FC = () => {
             >
               <ShoppingCart />
               <span className="block lg:text-xl font-bold ml-2">
-                Stick To It
+                {tBrand("name")}
               </span>
-              <span className="sr-only">Stick To It</span>
+              <span className="sr-only">{tBrand("name")}</span>
             </Link>
 
-            <h1 className="text-3xl font-bold">Login</h1>
+            <h1 className="text-3xl font-bold">{t("login")}</h1>
             <p className="text-balance text-muted-foreground">
-              Enter Email And Password
+              {t("loginSubheading")}
             </p>
           </div>
           <div className="grid gap-4">
             <div className="grid gap-2">
               <div className="flex flex-col mb-4 gap-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">{t("email")}</Label>
                 <Input
                   id="email"
                   name="email"
                   type="email"
-                  placeholder="johndoe@email.com"
+                  placeholder={t("emailPlaceholder")}
                 />
               </div>
               {state?.errors?.email && (
@@ -95,12 +98,12 @@ const LoginForm: React.FC = () => {
                 {/*</Link>*/}
               </div>
               <div className="flex flex-col gap-2">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password">{t("password")}</Label>
                 <Input
                   id="password"
                   name="password"
                   type="password"
-                  placeholder="********"
+                  placeholder={t("passwordPlaceholder")}
                   onInput={checkPassword}
                 />
               </div>
@@ -112,7 +115,7 @@ const LoginForm: React.FC = () => {
               )}
               {state?.errors?.password && (
                 <div>
-                  <p>Password must:</p>
+                  <p>{t("passwordMustIntro")}</p>
                   <ul>
                     {state?.errors.password.map((error) => (
                       <li className="mt-1 text-sm text-red-500" key={error}>
@@ -129,7 +132,7 @@ const LoginForm: React.FC = () => {
               className="w-full mt-16 py-2 text-lg"
               disabled={isPending || !!isPasswordValid.message}
             >
-              {isPending ? "Logging in..." : "Log in"}
+              {isPending ? t("loggingIn") : t("logIn")}
             </Button>
             {/*<div className="flex items-center justify-center py-3 text-gray-500">*/}
             {/*  <span className="border-b-2 border-border w-1/4"></span>*/}
@@ -140,24 +143,24 @@ const LoginForm: React.FC = () => {
             {/*</div>*/}
           </div>
           <div className="mt-4 text-center text-sm">
-            Do Not Have Account?{" "}
+            {t("noAccount")}{" "}
             <Link
               href={"/register"}
               className="underline hover:opacity-65 hover:text-primary transition duration-300"
             >
-              Sign Up
+              {t("signUp")}
             </Link>
           </div>
         </div>
       </fieldset>
       <div className="hidden h-full lg:flex flex-col justify-end items-start px-3 py-6 border-l-2 border-border text-lg md:text-xl lg:text-2xl font-medium leading-relaxed text-gray-600">
         <div>
-          <h2 className="mb-4">{`Welcome back!`}</h2>
-          <p>{`We're glad to see you again.`}</p>
-          <p>{`Enter your credentials and let's move things forward, together.`}</p>
+          <h2 className="mb-4">{t("loginWelcomeBack")}</h2>
+          <p>{t("loginWelcomeBackBody")}</p>
+          <p>{t("loginWelcomeBackPrompt")}</p>
         </div>
         <blockquote className="italic border-l-4 border-primary pl-4 mt-6 text-base md:text-lg">
-          <p>{`"Success is not the key to happiness. Happiness is the key to success. If you love what you are doing, you will be successful." - Albert Schweitzer`}</p>
+          <p>{t("quote")}</p>
         </blockquote>
       </div>
     </form>

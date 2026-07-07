@@ -13,7 +13,7 @@ describe("QuickAddItem", () => {
   it("defaults the category chip row to 'else'", () => {
     render(<QuickAddItem />);
 
-    expect(screen.getByRole("button", { name: /else/i })).toHaveAttribute(
+    expect(screen.getByRole("button", { name: /other/i })).toHaveAttribute(
       "aria-pressed",
       "true",
     );
@@ -28,7 +28,7 @@ describe("QuickAddItem", () => {
       "aria-pressed",
       "true",
     );
-    expect(screen.getByRole("button", { name: /else/i })).toHaveAttribute(
+    expect(screen.getByRole("button", { name: /other/i })).toHaveAttribute(
       "aria-pressed",
       "false",
     );

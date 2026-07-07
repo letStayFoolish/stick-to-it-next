@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, screen } from "@testing-library/react";
+import { renderWithIntl } from "@/test-utils/renderWithIntl";
 import { Table, TableBody } from "@/components/ui/table";
 import type { ProductPlain } from "@/lib/types";
 
@@ -22,7 +23,7 @@ const product: ProductPlain = {
 };
 
 function renderRow() {
-  return render(
+  return renderWithIntl(
     <Table>
       <TableBody>
         <MyItemRow product={product} />

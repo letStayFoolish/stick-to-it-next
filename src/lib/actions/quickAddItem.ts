@@ -1,10 +1,12 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { getTranslations } from "next-intl/server";
 import { requireUser } from "@/lib/session";
 import connectDB from "@/lib/database";
 import * as productService from "@/lib/services/productService";
 import * as shoppingListService from "@/lib/services/shoppingListService";
+import { PRODUCT_ERROR_MESSAGE_KEYS } from "@/lib/services/productService";
 
 export type QuickAddState = {
   success: boolean;
@@ -18,10 +20,12 @@ export async function quickAddItem(
   const name = (formData.get("name") as string) ?? "";
   const category = (formData.get("category") as string) ?? "";
 
+  const tErrors = await getTranslations("Errors");
+
   const auth = await requireUser();
 
   if (!auth.authenticated) {
-    return { success: false, message: "Not authenticated" };
+    return { success: false, message: tErrors("notAuthenticated") };
   }
 
   await connectDB();
@@ -33,7 +37,10 @@ export async function quickAddItem(
   );
 
   if (!result.ok) {
-    return { success: false, message: result.error };
+    return {
+      success: false,
+      message: tErrors(PRODUCT_ERROR_MESSAGE_KEYS[result.error]),
+    };
   }
 
   await shoppingListService.addItem(auth.userId, result.productId);

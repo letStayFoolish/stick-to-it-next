@@ -3,9 +3,23 @@ import { User as UserSchema } from "@/lib/models/User";
 import { CATEGORIES } from "@/lib/types";
 import type { ProductPlain } from "@/lib/types";
 
+export type ProductErrorCode =
+  | "NAME_REQUIRED"
+  | "NAME_TOO_LONG"
+  | "UNKNOWN_CATEGORY"
+  | "ITEM_NOT_FOUND";
+
+/** Maps a stable error code to its key in the `Errors` message namespace. */
+export const PRODUCT_ERROR_MESSAGE_KEYS: Record<ProductErrorCode, string> = {
+  NAME_REQUIRED: "nameRequired",
+  NAME_TOO_LONG: "nameTooLong",
+  UNKNOWN_CATEGORY: "unknownCategory",
+  ITEM_NOT_FOUND: "itemNotFound",
+};
+
 export type QuickAddResult =
   | { ok: true; productId: string }
-  | { ok: false; error: string };
+  | { ok: false; error: ProductErrorCode };
 
 function visibilityFilter(userId: string | null) {
   return { owner: { $in: [null, userId] } };
@@ -48,15 +62,15 @@ export async function quickAddProduct(
   const name = rawName.trim();
 
   if (!name) {
-    return { ok: false, error: "Name is required" };
+    return { ok: false, error: "NAME_REQUIRED" };
   }
 
   if (name.length > 60) {
-    return { ok: false, error: "Name must be 60 characters or fewer" };
+    return { ok: false, error: "NAME_TOO_LONG" };
   }
 
   if (!CATEGORIES.includes(category as (typeof CATEGORIES)[number])) {
-    return { ok: false, error: "Unknown category" };
+    return { ok: false, error: "UNKNOWN_CATEGORY" };
   }
 
   const escapedName = name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -87,7 +101,9 @@ export async function getOwnedProducts(userId: string): Promise<ProductPlain[]> 
   return withStringId(docs);
 }
 
-export type MutationResult = { ok: true } | { ok: false; error: string };
+export type MutationResult =
+  | { ok: true }
+  | { ok: false; error: ProductErrorCode };
 
 export async function updateOwnedProduct(
   userId: string,
@@ -100,18 +116,18 @@ export async function updateOwnedProduct(
   });
 
   if (!product) {
-    return { ok: false, error: "Item not found" };
+    return { ok: false, error: "ITEM_NOT_FOUND" };
   }
 
   if (updates.name !== undefined) {
     const name = updates.name.trim();
 
     if (!name) {
-      return { ok: false, error: "Name is required" };
+      return { ok: false, error: "NAME_REQUIRED" };
     }
 
     if (name.length > 60) {
-      return { ok: false, error: "Name must be 60 characters or fewer" };
+      return { ok: false, error: "NAME_TOO_LONG" };
     }
 
     product.product_name = name;
@@ -119,7 +135,7 @@ export async function updateOwnedProduct(
 
   if (updates.category !== undefined) {
     if (!CATEGORIES.includes(updates.category as (typeof CATEGORIES)[number])) {
-      return { ok: false, error: "Unknown category" };
+      return { ok: false, error: "UNKNOWN_CATEGORY" };
     }
 
     product.category = updates.category;
@@ -140,7 +156,7 @@ export async function deleteOwnedProduct(
   });
 
   if (!product) {
-    return { ok: false, error: "Item not found" };
+    return { ok: false, error: "ITEM_NOT_FOUND" };
   }
 
   await UserSchema.updateOne(

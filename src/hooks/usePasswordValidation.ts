@@ -1,8 +1,10 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import { useTranslations } from "next-intl";
 
 export function usePasswordValidation() {
+  const t = useTranslations("Validation");
   const [isPasswordValid, setIsPasswordValid] = useState<{
     status: boolean;
     message: string | null;
@@ -14,7 +16,7 @@ export function usePasswordValidation() {
     if (typedPassword.length !== 0 && typedPassword.length < 8) {
       setIsPasswordValid({
         status: false,
-        message: "Password must be at least 8 characters",
+        message: t("passwordMin"),
       });
       return;
     }
@@ -22,7 +24,7 @@ export function usePasswordValidation() {
     if (typedPassword.length !== 0 && !/[a-zA-Z]/.test(typedPassword)) {
       setIsPasswordValid({
         status: false,
-        message: "Password must contain at least one letter.",
+        message: t("passwordLetter"),
       });
       return;
     }
@@ -30,7 +32,7 @@ export function usePasswordValidation() {
     if (typedPassword.length !== 0 && !/[0-9]/.test(typedPassword)) {
       setIsPasswordValid({
         status: false,
-        message: "Password must contain at least one number.",
+        message: t("passwordNumber"),
       });
 
       return;
@@ -38,7 +40,7 @@ export function usePasswordValidation() {
     if (typedPassword.length !== 0 && !/[@$!%*?&#]/.test(typedPassword)) {
       setIsPasswordValid({
         status: false,
-        message: "Password must contain at least one special character",
+        message: t("passwordSpecial"),
       });
       return;
     }

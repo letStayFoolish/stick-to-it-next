@@ -32,7 +32,7 @@ const ClearAll: React.FC<Props> = ({ className, ...props }) => {
         className={classes}
         {...props}
       >
-        {isPending ? `Clearing...` : t("clearList")}
+        {isPending ? t("clearing") : t("clearList")}
       </Button>
 
       <p className="sr-only" aria-live="polite" role="status">

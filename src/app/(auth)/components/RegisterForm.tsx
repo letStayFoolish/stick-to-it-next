@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useActionState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -19,6 +20,8 @@ import { Label } from "@/components/ui/label";
  * @constructor
  */
 const RegisterForm: React.FC = () => {
+  const t = useTranslations("Auth");
+  const tBrand = useTranslations("Brand");
   const [state, formAction, isPending] = useActionState(
     signupAction,
     undefined,
@@ -50,24 +53,24 @@ const RegisterForm: React.FC = () => {
             >
               <ShoppingCart />
               <span className="block lg:text-xl font-bold ml-2">
-                Stick To It
+                {tBrand("name")}
               </span>
-              <span className="sr-only">Stick To It</span>
+              <span className="sr-only">{tBrand("name")}</span>
             </Link>
 
-            <h1 className="text-3xl font-bold">Create an account</h1>
+            <h1 className="text-3xl font-bold">{t("register")}</h1>
             <p className="text-balance text-muted-foreground">
-              {`Enter your full name, email and password below to create your account`}
+              {t("registerSubheading")}
             </p>
           </div>
           <div className="grid gap-4">
             <div className="grid gap-2">
               <div className="flex flex-col mb-4 gap-2">
-                <Label htmlFor="name">Name</Label>
+                <Label htmlFor="name">{t("name")}</Label>
                 <Input
                   id="name"
                   type="name"
-                  placeholder="John Doe"
+                  placeholder={t("namePlaceholder")}
                   name="name"
                 />
               </div>
@@ -79,11 +82,11 @@ const RegisterForm: React.FC = () => {
             </div>
             <div className="grid gap-2">
               <div className="flex flex-col mb-4 gap-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">{t("email")}</Label>
                 <Input
                   id="email"
                   type="email"
-                  placeholder="m@example.com"
+                  placeholder={t("emailPlaceholder")}
                   name="email"
                 />
               </div>
@@ -95,11 +98,11 @@ const RegisterForm: React.FC = () => {
             </div>
             <div className="grid gap-2">
               <div className="flex flex-col gap-2">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password">{t("password")}</Label>
                 <Input
                   id="password"
                   type="password"
-                  placeholder="**********"
+                  placeholder={t("passwordPlaceholder")}
                   name="password"
                   onInput={checkPassword}
                 />
@@ -112,7 +115,7 @@ const RegisterForm: React.FC = () => {
 
               {state?.errors?.password && (
                 <div>
-                  <p>Password must:</p>
+                  <p>{t("passwordMustIntro")}</p>
                   <ul>
                     {state.errors.password.map((error) => (
                       <li className="mt-1 text-sm text-red-500" key={error}>
@@ -128,7 +131,7 @@ const RegisterForm: React.FC = () => {
               className="w-full mt-16 py-2 text-lg"
               disabled={isPending || !!isPasswordValid.message}
             >
-              {isPending ? "Submitting..." : "Register"}
+              {isPending ? t("submitting") : t("register")}
             </Button>
             {/*Todo: In near future I plan to add register/login using Google OAuth*/}
             {/*<div className="flex items-center justify-center py-3 text-gray-500">*/}
@@ -152,24 +155,24 @@ const RegisterForm: React.FC = () => {
             {/* ============================================================ */}
           </div>
           <div className="mt-4 text-center text-sm">
-            Already Have Account?{" "}
+            {t("haveAccount")}{" "}
             <Link
               href={"/login"}
               className="underline hover:opacity-65 hover:text-primary transition duration-300"
             >
-              Sign In
+              {t("signIn")}
             </Link>
           </div>
         </div>
       </fieldset>
       <div className="hidden h-full lg:flex flex-col justify-end items-start px-3 py-6 border-l-2 border-border text-lg md:text-xl lg:text-2xl font-medium leading-relaxed text-gray-600">
         <div>
-          <h2 className="mb-4">{`Welcome!`}</h2>
-          <p>{`Welcome aboard, we're excited to have you join our community!`}</p>
-          <p>{`Enter your name, email, password and let's move things forward, together.`}</p>
+          <h2 className="mb-4">{t("registerWelcome")}</h2>
+          <p>{t("registerWelcomeBody")}</p>
+          <p>{t("registerWelcomePrompt")}</p>
         </div>
         <blockquote className="italic border-l-4 border-primary pl-4 mt-6 text-base md:text-lg">
-          <p>{`"Success is not the key to happiness. Happiness is the key to success. If you love what you are doing, you will be successful." - Albert Schweitzer`}</p>
+          <p>{t("quote")}</p>
         </blockquote>
       </div>
     </form>

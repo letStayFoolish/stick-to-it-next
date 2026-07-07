@@ -1,9 +1,11 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { getTranslations } from "next-intl/server";
 import { requireUser } from "@/lib/session";
 import connectDB from "@/lib/database";
 import * as productService from "@/lib/services/productService";
+import { PRODUCT_ERROR_MESSAGE_KEYS } from "@/lib/services/productService";
 
 export type MyItemActionState = {
   success: boolean;
@@ -18,10 +20,12 @@ export async function updateOwnedItem(
   const name = formData.get("name") as string | null;
   const category = formData.get("category") as string | null;
 
+  const tErrors = await getTranslations("Errors");
+
   const auth = await requireUser();
 
   if (!auth.authenticated) {
-    return { success: false, message: "Not authenticated" };
+    return { success: false, message: tErrors("notAuthenticated") };
   }
 
   await connectDB();
@@ -33,7 +37,10 @@ export async function updateOwnedItem(
   );
 
   if (!result.ok) {
-    return { success: false, message: result.error };
+    return {
+      success: false,
+      message: tErrors(PRODUCT_ERROR_MESSAGE_KEYS[result.error]),
+    };
   }
 
   revalidatePath("/profile");
@@ -48,10 +55,12 @@ export async function deleteOwnedItem(
 ): Promise<MyItemActionState> {
   const productId = (formData.get("product_id") as string) ?? "";
 
+  const tErrors = await getTranslations("Errors");
+
   const auth = await requireUser();
 
   if (!auth.authenticated) {
-    return { success: false, message: "Not authenticated" };
+    return { success: false, message: tErrors("notAuthenticated") };
   }
 
   await connectDB();
@@ -62,7 +71,10 @@ export async function deleteOwnedItem(
   );
 
   if (!result.ok) {
-    return { success: false, message: result.error };
+    return {
+      success: false,
+      message: tErrors(PRODUCT_ERROR_MESSAGE_KEYS[result.error]),
+    };
   }
 
   revalidatePath("/profile");

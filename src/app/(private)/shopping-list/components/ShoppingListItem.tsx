@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { useTranslations } from "next-intl";
 import type { ProductPlain } from "@/lib/types";
 import { Checkbox } from "@/components/ui/checkbox";
 import RemoveFromListBtn from "@/app/(private)/shopping-list/components/RemoveFromListBtn";
@@ -13,6 +14,7 @@ type Props = {
 };
 
 const ShoppingListItem: React.FC<Props> = ({ product }) => {
+  const t = useTranslations("ShoppingListPage");
   const [isChecked, setIsChecked] = useState(product.checked ?? false);
 
   const handleCheckedChange = () => {
@@ -27,7 +29,9 @@ const ShoppingListItem: React.FC<Props> = ({ product }) => {
     <div
       role="checkbox"
       aria-checked={isChecked}
-      aria-label={`Mark ${productDisplayName} as ${isChecked ? "not picked up" : "picked up"}`}
+      aria-label={t(isChecked ? "markNotPickedUp" : "markPickedUp", {
+        name: productDisplayName,
+      })}
       tabIndex={0}
       onClick={handleCheckedChange}
       onKeyDown={(e) => {

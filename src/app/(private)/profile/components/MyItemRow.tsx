@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useActionState, useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
@@ -19,7 +20,7 @@ import { FaEdit } from "react-icons/fa";
 import { Trash2 } from "lucide-react";
 import { CATEGORIES } from "@/lib/types";
 import type { ProductPlain } from "@/lib/types";
-import { handleProductName, cn } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import {
   updateOwnedItem as updateOwnedItemAction,
   deleteOwnedItem as deleteOwnedItemAction,
@@ -30,6 +31,8 @@ type Props = {
 };
 
 const MyItemRow: React.FC<Props> = ({ product }) => {
+  const t = useTranslations("Profile");
+  const tCategories = useTranslations("Categories");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [category, setCategory] = useState<string>(product.category);
 
@@ -57,20 +60,23 @@ const MyItemRow: React.FC<Props> = ({ product }) => {
           href={`/products/${product.category}`}
           className="text-accent-foreground font-bold hover:underline"
         >
-          {handleProductName(product.category)}
+          {tCategories(product.category)}
         </Link>
       </TableCell>
       <TableCell className="text-right">
         <div className="flex gap-4 justify-end">
           <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger asChild>
-              <Button variant="ghost" aria-label={`Edit ${product.product_name}`}>
+              <Button
+                variant="ghost"
+                aria-label={t("editItemLabel", { name: product.product_name })}
+              >
                 <FaEdit />
               </Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Edit item</DialogTitle>
+                <DialogTitle>{t("editItem")}</DialogTitle>
               </DialogHeader>
               <form action={updateFormAction} className="flex flex-col gap-4">
                 <input type="hidden" name="product_id" value={product._id} />
@@ -81,7 +87,7 @@ const MyItemRow: React.FC<Props> = ({ product }) => {
                   defaultValue={product.product_name}
                   maxLength={60}
                   required
-                  aria-label="Item name"
+                  aria-label={t("itemNameLabel")}
                   disabled={isUpdatePending}
                 />
 
@@ -106,14 +112,14 @@ const MyItemRow: React.FC<Props> = ({ product }) => {
                           size="sm"
                           className="size-6"
                         />
-                        {handleProductName(value)}
+                        {tCategories(value)}
                       </button>
                     );
                   })}
                 </div>
 
                 <Button type="submit" disabled={isUpdatePending}>
-                  {isUpdatePending ? <LoadingSpinner /> : "Save changes"}
+                  {isUpdatePending ? <LoadingSpinner /> : t("saveChanges")}
                 </Button>
 
                 <FormError message={updateState.message} />
@@ -127,7 +133,7 @@ const MyItemRow: React.FC<Props> = ({ product }) => {
               variant="ghost"
               className="text-red-500 hover:text-red-700"
               disabled={isDeletePending}
-              aria-label={`Delete ${product.product_name}`}
+              aria-label={t("deleteItemLabel", { name: product.product_name })}
             >
               {isDeletePending ? <LoadingSpinner /> : <Trash2 size={18} />}
             </Button>

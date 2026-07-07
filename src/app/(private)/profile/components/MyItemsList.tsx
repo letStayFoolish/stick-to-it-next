@@ -1,4 +1,5 @@
 import React from "react";
+import { getTranslations } from "next-intl/server";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { fetchOwnedProducts as fetchOwnedProductsAction } from "@/lib/actions/fetchOwnedProducts";
 import NoData from "@/components/ui/NoData";
@@ -8,10 +9,11 @@ export const MyItemsList: React.FC = async () => {
   const ownedProducts = await fetchOwnedProductsAction();
 
   if (!ownedProducts || ownedProducts.length === 0) {
+    const t = await getTranslations("Profile");
     return (
       <TableRow>
         <TableCell>
-          <NoData text={`You haven't added any\n items of your own yet.`} />
+          <NoData text={t("myItemsEmpty")} />
         </TableCell>
       </TableRow>
     );

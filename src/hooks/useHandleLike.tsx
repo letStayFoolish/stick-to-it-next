@@ -1,10 +1,12 @@
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { toggleLike as toggleLikeAction } from "@/lib/actions/toggleLike";
 import type { ProductPlain } from "@/lib/types";
 import { useToast } from "@/hooks/use-toast";
 
 export function useHandleLike(product: ProductPlain) {
   const { toast } = useToast();
+  const t = useTranslations("Favorites");
 
   const [isLikedLocal, setIsLikedLocal] = useState(product.isLiked);
   const [isPending, setIsPending] = useState(false);
@@ -16,16 +18,20 @@ export function useHandleLike(product: ProductPlain) {
       void toggleLikeAction(product._id);
 
       toast({
-        title: "Favorite list updated!",
-        description: `${isLikedLocal ? "Removed" : "Added"} ${product.product_name} ${isLikedLocal ? "from" : "to"} your favorites list.`,
+        title: t("updatedTitle"),
+        description: t(isLikedLocal ? "removed" : "added", {
+          name: product.product_name,
+        }),
       });
 
       setIsLikedLocal(!isLikedLocal);
     } catch (error: any) {
       console.log(error);
       toast({
-        title: "Something went wrong!",
-        description: `Something went wrong while trying to ${product.isLiked ? "dislike" : "like"} ${product.product_name}`,
+        title: t("errorTitle"),
+        description: t(product.isLiked ? "errorDislike" : "errorLike", {
+          name: product.product_name,
+        }),
       });
 
       setIsLikedLocal(!isLikedLocal);

@@ -1,5 +1,6 @@
 import React, { Suspense } from "react";
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import PageHeading from "@/components/PageHeading";
 import Categories from "@/app/products/components/Categories";
 import { getSortedProducts as getSortedProductsAction } from "@/lib/actions/getSortedProducts";
@@ -10,17 +11,20 @@ export const metadata: Metadata = {
 };
 
 const AllProducts: React.FC = async () => {
-  const productsByCategory = await getSortedProductsAction();
+  const [productsByCategory, t] = await Promise.all([
+    getSortedProductsAction(),
+    getTranslations("Products"),
+  ]);
 
   return (
     <main className="flex flex-col items-center p-4">
       <div className="mb-6 text-center">
-        <PageHeading>All Products</PageHeading>
+        <PageHeading>{t("allProducts")}</PageHeading>
       </div>
       <Suspense
         fallback={
           <div className="flex gap-4 items-center justify-center">
-            Loading Products...
+            {t("loadingProducts")}
             <LoadingSpinner />
           </div>
         }

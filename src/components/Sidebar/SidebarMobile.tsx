@@ -1,4 +1,5 @@
 import React from "react";
+import { getTranslations } from "next-intl/server";
 import {
   Sheet,
   SheetContent,
@@ -14,14 +15,17 @@ import { Button } from "@/components/ui/button";
 import NavLinks from "@/components/Sidebar/NavLinks";
 
 const SidebarMobile: React.FC = async () => {
-  const auth = await requireUser();
+  const [auth, t] = await Promise.all([
+    requireUser(),
+    getTranslations("Brand"),
+  ]);
 
   return (
     <Sheet>
       <SheetTrigger asChild>
         <Button variant="outline" size="icon" className="shrink-0 md:hidden">
           <Menu className="h-5 w-5" />
-          <span className="sr-only">Toggle navigation menu</span>
+          <span className="sr-only">{t("toggleNav")}</span>
         </Button>
       </SheetTrigger>
       <SheetContent side="left" className="flex flex-col">
@@ -36,8 +40,8 @@ const SidebarMobile: React.FC = async () => {
               href="/"
               className="flex items-center gap-4 text-lg font-semibold mb-8"
             >
-              <ShoppingCart /> {"Stick To It"}
-              <span className="sr-only">{"Stick To It"}</span>
+              <ShoppingCart /> {t("name")}
+              <span className="sr-only">{t("name")}</span>
             </Link>
             <div className="mb-16">
               <NavLinks />
@@ -46,14 +50,14 @@ const SidebarMobile: React.FC = async () => {
           <div className="mb-6 text-center flex flex-col gap-2 justify-center">
             {auth.authenticated ? (
               <LogOutBtn btnVariant="default" className="text-lg">
-                <LogOut /> Sign Out
+                <LogOut /> {t("signOut")}
               </LogOutBtn>
             ) : (
               <Link
                 href={"/login"}
                 className="bg-stone-950 dark:bg-stone-700 text-accent dark:text-white rounded-md text-lg px-3 py-2"
               >
-                Login
+                {t("signIn")}
               </Link>
             )}
           </div>

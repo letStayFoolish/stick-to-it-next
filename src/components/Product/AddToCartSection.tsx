@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useActionState } from "react";
+import { useTranslations } from "next-intl";
 import {
   Button,
   Button as IncrementDecrementButton,
@@ -20,6 +21,7 @@ const AddToCartSection: React.FC<Props> = ({
   product,
   quantityFromServer = 0,
 }) => {
+  const t = useTranslations("ShoppingListPage");
   const [state, formAction, isPending] = useActionState(updateQuantityAction, {
     message: "",
     success: quantityFromServer > 0,
@@ -63,7 +65,9 @@ const AddToCartSection: React.FC<Props> = ({
               {quantityFromServer}
             </span>
           </span>
-          <span className="text-lg hidden md:block">qty.</span>
+          <span className="text-lg hidden md:block">
+            {t("quantityLabel")}
+          </span>
 
           {/* Increment Button */}
           <form action={formAction}>

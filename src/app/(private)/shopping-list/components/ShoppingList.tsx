@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useCallback } from "react";
+import { useTranslations } from "next-intl";
 import type { ProductPlain } from "@/lib/types";
 import CategoryIcon from "@/components/CategoryIcon";
-import { handleProductName } from "@/lib/utils";
 import Link from "next/link";
 import ShoppingListItem from "@/app/(private)/shopping-list/components/ShoppingListItem";
 import { Button } from "@/components/ui/button";
@@ -14,6 +14,8 @@ type Props = {
 };
 
 export const ShoppingList: React.FC<Props> = ({ products }) => {
+  const t = useTranslations("ShoppingListPage");
+  const tCategories = useTranslations("Categories");
   // Group items by category
   const groupByCategory = useCallback((items: ProductPlain[]) => {
     return items.reduce((acc: Record<string, ProductPlain[]>, product) => {
@@ -35,7 +37,7 @@ export const ShoppingList: React.FC<Props> = ({ products }) => {
           disabled={true}
           className="absolute top-1 right-1"
         >
-          <FaShare /> Share List
+          <FaShare /> {t("shareList")}
         </Button>
         {Object.entries(groupedItems).map(([categoryName, products]) => (
           <li className="w-full" key={categoryName}>
@@ -44,7 +46,7 @@ export const ShoppingList: React.FC<Props> = ({ products }) => {
                 <CategoryIcon category={categoryName} size="sm" />
               </Link>
               <h3 className="uppercase text-lg md:text-xl font-medium lg:font-bold">
-                {handleProductName(categoryName)}
+                {tCategories(categoryName)}
               </h3>
             </div>
             <ul className="w-full">

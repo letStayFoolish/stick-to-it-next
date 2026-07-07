@@ -1,4 +1,5 @@
 import React, { Suspense } from "react";
+import { getTranslations } from "next-intl/server";
 import type {
   CategoriesType,
   ComponentPropsWithParams,
@@ -6,7 +7,6 @@ import type {
 } from "@/lib/types";
 import CategoryIcon from "@/components/CategoryIcon";
 import GoToPage from "@/components/GoToPage";
-import { handleProductName } from "@/lib/utils";
 import PageHeading from "@/components/PageHeading";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { fetchProductsFromCategory as fetchProductsFromCategoryAction } from "@/lib/actions/fetchProductsFromCategory";
@@ -33,13 +33,17 @@ const ProductList: React.FC<{ products: ProductPlain[] }> = ({ products }) => {
 const Products: React.FC<ComponentPropsWithParams> = async ({ params }) => {
   const { slug } = await params;
 
-  const products = await fetchProductsFromCategoryAction(slug);
+  const [products, t, tCategories] = await Promise.all([
+    fetchProductsFromCategoryAction(slug),
+    getTranslations("Products"),
+    getTranslations("Categories"),
+  ]);
 
   return (
     <div className="flex flex-col items-center mt-6 p-4 overflow-x-hidden">
       <div className="flex md:flex-col gap-4 items-center justify-between md:justify-center mx-auto w-full">
         <PageHeading>
-          {handleProductName(slug as CategoriesType).toUpperCase()}
+          {tCategories(slug as CategoriesType).toUpperCase()}
         </PageHeading>
         <CategoryIcon category={slug} size="lg" />
       </div>
@@ -49,27 +53,27 @@ const Products: React.FC<ComponentPropsWithParams> = async ({ params }) => {
           href={"/products"}
           className="self-end mt-4 mb-6 px-4 py-3 md:py-3 bg-secondary rounded-md hover:bg-primary hover:text-primary-foreground transition-opacity"
         >
-          Back To All Products
+          {t("backToAllProducts")}
         </GoToPage>
         <GoToPage
           href={"/shopping-list"}
           className="self-start mt-4 mb-4 px-6 py-3 md:py-3 bg-primary text-primary-foreground rounded-md hover:bg-secondary hover:text-secondary-foreground transition-opacity"
         >
-          Shopping List
+          {t("shoppingList")}
         </GoToPage>
       </div>
       <Suspense
         fallback={
           <div className="flex gap-4 items-center justify-center">
             <LoadingSpinner />
-            <p>Loading Products...</p>
+            <p>{t("loadingProducts")}</p>
           </div>
         }
       >
         {products ? (
           <ProductList products={products} />
         ) : (
-          <NoData text={"No products found"} />
+          <NoData text={t("noProductsFound")} />
         )}
       </Suspense>
     </div>

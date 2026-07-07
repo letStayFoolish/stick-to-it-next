@@ -1,4 +1,5 @@
 import React from "react";
+import { getTranslations } from "next-intl/server";
 import GoToPage from "@/components/GoToPage";
 import HomePageCategories from "@/app/(home)/components/HomePageCategories";
 import type { Metadata } from "next";
@@ -8,7 +9,9 @@ export const metadata: Metadata = {
   title: "Home",
 };
 
-const HomePage: React.FC = () => {
+const HomePage: React.FC = async () => {
+  const t = await getTranslations("Home");
+
   return (
     <main className="flex flex-col items-center p-4">
       <HomePageHeading />
@@ -17,7 +20,7 @@ const HomePage: React.FC = () => {
         href="/products"
         className="mt-6 mb-12 bg-primary text-primary-foreground rounded-md text-xl px-6 py-2 cursor-pointer hover:opacity-80 transition-opacity duration-300 ease-in-out"
       >
-        Browse Products
+        {t("browseProducts")}
       </GoToPage>
     </main>
   );

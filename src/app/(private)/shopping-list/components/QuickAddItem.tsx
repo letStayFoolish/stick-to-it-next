@@ -4,7 +4,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { useActionState } from "react";
 import { useTranslations } from "next-intl";
 import { CATEGORIES } from "@/lib/types";
-import { handleProductName } from "@/lib/utils";
 import { quickAddItem as quickAddItemAction } from "@/lib/actions/quickAddItem";
 import CategoryIcon from "@/components/CategoryIcon";
 import { Input } from "@/components/ui/input";
@@ -18,6 +17,7 @@ const DEFAULT_CATEGORY = "else";
 
 const QuickAddItem: React.FC = () => {
   const t = useTranslations("ShoppingListPage");
+  const tCategories = useTranslations("Categories");
   const [category, setCategory] = useState<string>(DEFAULT_CATEGORY);
   const [state, formAction, isPending] = useActionState(quickAddItemAction, {
     success: false,
@@ -59,7 +59,7 @@ const QuickAddItem: React.FC = () => {
               )}
             >
               <CategoryIcon category={value} size="sm" className="size-6" />
-              {handleProductName(value)}
+              {tCategories(value)}
             </button>
           );
         })}
@@ -72,7 +72,7 @@ const QuickAddItem: React.FC = () => {
           maxLength={60}
           required
           disabled={isPending}
-          aria-label="Item name"
+          aria-label={t("itemNameLabel")}
         />
         <Button type="submit" disabled={isPending}>
           {isPending ? <LoadingSpinner /> : t("quickAddButton")}

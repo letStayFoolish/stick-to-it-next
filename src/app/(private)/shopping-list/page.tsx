@@ -37,7 +37,7 @@ const ShoppingList: React.FC = async () => {
       <Suspense
         fallback={
           <div className="flex gap-4 items-center justify-center">
-            Loading Shopping List Items...
+            {t("loadingItems")}
             <LoadingSpinner />
           </div>
         }

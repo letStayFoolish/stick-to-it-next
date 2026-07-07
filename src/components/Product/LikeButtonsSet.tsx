@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { FaHeart } from "react-icons/fa6";
 import { FaRegHeart } from "react-icons/fa";
@@ -21,6 +22,7 @@ const BURST_DOTS = [
 ];
 
 const LikeButtonsSet: React.FC<Props> = ({ product }) => {
+  const t = useTranslations("Favorites");
   const { isPending, isLikedLocal, handleLike } = useHandleLike(product);
   const [showBurst, setShowBurst] = useState(false);
 
@@ -37,9 +39,7 @@ const LikeButtonsSet: React.FC<Props> = ({ product }) => {
       className="relative text-accent-ink p-0 m-0 hover:bg-transparent"
       disabled={isPending}
       onClick={onClick}
-      aria-label={
-        isLikedLocal ? "Remove from favorites" : "Add to favorites"
-      }
+      aria-label={t(isLikedLocal ? "removeAriaLabel" : "addAriaLabel")}
     >
       {isLikedLocal ? (
         <FaHeart

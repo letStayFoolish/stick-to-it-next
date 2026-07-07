@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { getTranslations } from "next-intl/server";
 import { requireUser } from "@/lib/session";
 import connectDB from "@/lib/database";
 import * as shoppingListService from "@/lib/services/shoppingListService";
@@ -14,13 +15,15 @@ export async function updateNotes(
   prevState: NotesActionState | undefined,
   formData: FormData,
 ): Promise<NotesActionState> {
+  const tErrors = await getTranslations("Errors");
+
   try {
     const notes = (formData.get("notes") as string) ?? "";
 
     const auth = await requireUser();
 
     if (!auth.authenticated) {
-      return { success: false, message: "Not authenticated" };
+      return { success: false, message: tErrors("notAuthenticated") };
     }
 
     await connectDB();
@@ -35,7 +38,7 @@ export async function updateNotes(
 
     return {
       success: false,
-      message: "Failed to save your note. Please try again.",
+      message: tErrors("saveNoteFailed"),
     };
   }
 }
