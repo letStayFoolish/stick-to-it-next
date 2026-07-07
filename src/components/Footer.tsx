@@ -32,7 +32,13 @@ const Footer: React.FC = () => {
           <span className="sr-only">Stick To It</span>
         </div>
 
-        <div className="w-full md:hidden mb-4 md:mb-0 rounded-2xl border border-border bg-card p-1.5 shadow-soft">
+        <div>
+          <p className="text-sm text-secondary-foreground mb-6 md:mb-0 text-center">
+            &copy; {yearInFooter()} by Nemanja Karaklajic
+          </p>
+        </div>
+
+        <div className="w-full md:hidden rounded-2xl border border-border bg-card p-1.5 shadow-soft">
           <div className="relative flex w-full">
             {activeIndex >= 0 && (
               <span
@@ -67,12 +73,6 @@ const Footer: React.FC = () => {
               })}
             </ul>
           </div>
-        </div>
-
-        <div>
-          <p className="text-sm text-secondary-foreground mt-8 md:mt-0 text-center">
-            &copy; {yearInFooter()} by Nemanja Karaklajic
-          </p>
         </div>
       </div>
     </footer>

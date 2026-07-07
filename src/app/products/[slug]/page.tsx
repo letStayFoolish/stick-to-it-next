@@ -12,6 +12,10 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { fetchProductsFromCategory as fetchProductsFromCategoryAction } from "@/lib/actions/fetchProductsFromCategory";
 import ProductItem from "@/components/Product/ProductItem";
 import NoData from "@/components/ui/NoData";
+import Pagination from "@/components/Pagination";
+import { paginate } from "@/lib/pagination";
+
+const PAGE_SIZE = 10;
 
 const ProductList: React.FC<{ products: ProductPlain[] }> = ({ products }) => {
   return (
@@ -30,14 +34,24 @@ const ProductList: React.FC<{ products: ProductPlain[] }> = ({ products }) => {
   );
 };
 
-const Products: React.FC<ComponentPropsWithParams> = async ({ params }) => {
+type Props = ComponentPropsWithParams & {
+  searchParams: Promise<{ page?: string }>;
+};
+
+const Products: React.FC<Props> = async ({ params, searchParams }) => {
   const { slug } = await params;
+  const { page } = await searchParams;
 
   const [products, t, tCategories] = await Promise.all([
     fetchProductsFromCategoryAction(slug),
     getTranslations("Products"),
     getTranslations("Categories"),
   ]);
+  const {
+    items: pageOfProducts,
+    currentPage,
+    totalPages,
+  } = paginate(products ?? [], Number(page) || 1, PAGE_SIZE);
 
   return (
     <div className="flex flex-col items-center mt-6 p-4 overflow-x-hidden">
@@ -70,8 +84,15 @@ const Products: React.FC<ComponentPropsWithParams> = async ({ params }) => {
           </div>
         }
       >
-        {products ? (
-          <ProductList products={products} />
+        {products?.length ? (
+          <>
+            <ProductList products={pageOfProducts} />
+            <Pagination
+              basePath={`/products/${slug}`}
+              currentPage={currentPage}
+              totalPages={totalPages}
+            />
+          </>
         ) : (
           <NoData text={t("noProductsFound")} />
         )}
