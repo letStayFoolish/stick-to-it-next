@@ -96,7 +96,8 @@
     "backToAllProducts": "Volver a todos los productos",
     "shoppingList": "Lista de compras",
     "loadingProducts": "Cargando productos...",
-    "noProductsFound": "No se encontraron productos"
+    "noProductsFound": "No se encontraron productos",
+    "itemsPerPage": "Elementos por página"
   },
   "ShoppingListPage": {
     "heading": "Lista de compras",

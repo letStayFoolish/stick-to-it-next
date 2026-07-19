@@ -7,14 +7,21 @@ type Props = {
   basePath: string;
   currentPage: number;
   totalPages: number;
+  pageSize?: number;
 };
 
-const pageHref = (basePath: string, page: number) => `${basePath}?page=${page}`;
+const pageHref = (basePath: string, page: number, pageSize?: number) =>
+  pageSize ? `${basePath}?page=${page}&pageSize=${pageSize}` : `${basePath}?page=${page}`;
 
 const navLinkClasses =
   "flex items-center gap-1 min-h-11 px-3 rounded-md text-sm font-medium hover:bg-accent/30 active:bg-accent/50 transition-colors";
 
-const Pagination: React.FC<Props> = ({ basePath, currentPage, totalPages }) => {
+const Pagination: React.FC<Props> = ({
+  basePath,
+  currentPage,
+  totalPages,
+  pageSize,
+}) => {
   if (totalPages <= 1) {
     return null;
   }
@@ -26,7 +33,7 @@ const Pagination: React.FC<Props> = ({ basePath, currentPage, totalPages }) => {
     >
       {currentPage > 1 ? (
         <Link
-          href={pageHref(basePath, currentPage - 1)}
+          href={pageHref(basePath, currentPage - 1, pageSize)}
           className={navLinkClasses}
         >
           <ChevronLeft aria-hidden="true" className="size-4" />
@@ -48,7 +55,7 @@ const Pagination: React.FC<Props> = ({ basePath, currentPage, totalPages }) => {
               </span>
             ) : (
               <Link
-                href={pageHref(basePath, page)}
+                href={pageHref(basePath, page, pageSize)}
                 className="flex items-center justify-center size-9 rounded-md text-sm font-medium hover:bg-accent/30 active:bg-accent/50 transition-colors"
               >
                 {page}
@@ -60,7 +67,7 @@ const Pagination: React.FC<Props> = ({ basePath, currentPage, totalPages }) => {
 
       {currentPage < totalPages ? (
         <Link
-          href={pageHref(basePath, currentPage + 1)}
+          href={pageHref(basePath, currentPage + 1, pageSize)}
           className={cn(navLinkClasses, "flex-row-reverse")}
         >
           <ChevronRight aria-hidden="true" className="size-4" />

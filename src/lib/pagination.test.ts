@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { paginate } from "@/lib/pagination";
+import { parsePageSize, paginate } from "@/lib/pagination";
 
 describe("paginate", () => {
   it("slices the requested page and reports total pages", () => {
@@ -35,5 +35,19 @@ describe("paginate", () => {
 
     expect(result.totalPages).toBe(1);
     expect(result.items).toEqual([]);
+  });
+});
+
+describe("parsePageSize", () => {
+  it("accepts a value from the allowed options", () => {
+    expect(parsePageSize("30")).toBe(30);
+  });
+
+  it("falls back to the default for an unsupported value", () => {
+    expect(parsePageSize("7")).toBe(10);
+  });
+
+  it("falls back to the default when no value is given", () => {
+    expect(parsePageSize(undefined)).toBe(10);
   });
 });

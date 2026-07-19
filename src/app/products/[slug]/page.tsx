@@ -13,9 +13,8 @@ import { fetchProductsFromCategory as fetchProductsFromCategoryAction } from "@/
 import ProductItem from "@/components/Product/ProductItem";
 import NoData from "@/components/ui/NoData";
 import Pagination from "@/components/Pagination";
-import { paginate } from "@/lib/pagination";
-
-const PAGE_SIZE = 10;
+import PageSizeSelect from "@/components/PageSizeSelect";
+import { parsePageSize, paginate } from "@/lib/pagination";
 
 const ProductList: React.FC<{ products: ProductPlain[] }> = ({ products }) => {
   return (
@@ -35,12 +34,13 @@ const ProductList: React.FC<{ products: ProductPlain[] }> = ({ products }) => {
 };
 
 type Props = ComponentPropsWithParams & {
-  searchParams: Promise<{ page?: string }>;
+  searchParams: Promise<{ page?: string; pageSize?: string }>;
 };
 
 const Products: React.FC<Props> = async ({ params, searchParams }) => {
   const { slug } = await params;
-  const { page } = await searchParams;
+  const { page, pageSize } = await searchParams;
+  const parsedPageSize = parsePageSize(pageSize);
 
   const [products, t, tCategories] = await Promise.all([
     fetchProductsFromCategoryAction(slug),
@@ -51,7 +51,7 @@ const Products: React.FC<Props> = async ({ params, searchParams }) => {
     items: pageOfProducts,
     currentPage,
     totalPages,
-  } = paginate(products ?? [], Number(page) || 1, PAGE_SIZE);
+  } = paginate(products ?? [], Number(page) || 1, parsedPageSize);
 
   return (
     <div className="flex flex-col items-center mt-6 p-4 overflow-x-hidden">
@@ -86,11 +86,15 @@ const Products: React.FC<Props> = async ({ params, searchParams }) => {
       >
         {products?.length ? (
           <>
+            <div className="self-end">
+              <PageSizeSelect pageSize={parsedPageSize} />
+            </div>
             <ProductList products={pageOfProducts} />
             <Pagination
               basePath={`/products/${slug}`}
               currentPage={currentPage}
               totalPages={totalPages}
+              pageSize={parsedPageSize}
             />
           </>
         ) : (

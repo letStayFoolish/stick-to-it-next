@@ -96,7 +96,8 @@
     "backToAllProducts": "Назад ко всем товарам",
     "shoppingList": "Список покупок",
     "loadingProducts": "Загрузка товаров...",
-    "noProductsFound": "Товары не найдены"
+    "noProductsFound": "Товары не найдены",
+    "itemsPerPage": "Элементов на странице"
   },
   "ShoppingListPage": {
     "heading": "Список покупок",

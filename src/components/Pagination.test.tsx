@@ -36,6 +36,26 @@ describe("Pagination", () => {
     expect(current.closest("a")).toBeNull();
   });
 
+  it("includes pageSize in each link when provided", () => {
+    render(
+      <Pagination
+        basePath="/products/vegetables"
+        currentPage={2}
+        totalPages={4}
+        pageSize={30}
+      />,
+    );
+
+    expect(screen.getByRole("link", { name: "1" })).toHaveAttribute(
+      "href",
+      "/products/vegetables?page=1&pageSize=30",
+    );
+    expect(screen.getByRole("link", { name: /next/i })).toHaveAttribute(
+      "href",
+      "/products/vegetables?page=3&pageSize=30",
+    );
+  });
+
   it("hides Previous on the first page and Next on the last page", () => {
     const { rerender } = render(
       <Pagination basePath="/products/vegetables" currentPage={1} totalPages={4} />,

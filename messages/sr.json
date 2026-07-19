@@ -96,7 +96,8 @@
     "backToAllProducts": "Nazad na sve proizvode",
     "shoppingList": "Lista za kupovinu",
     "loadingProducts": "Učitavanje proizvoda...",
-    "noProductsFound": "Nema pronađenih proizvoda"
+    "noProductsFound": "Nema pronađenih proizvoda",
+    "itemsPerPage": "Stavki po strani"
   },
   "ShoppingListPage": {
     "heading": "Lista za kupovinu",
