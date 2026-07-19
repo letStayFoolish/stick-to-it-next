@@ -53,15 +53,12 @@ const ClearAll: React.FC<Props> = ({ className, ...props }) => {
           </DialogDescription>
         </DialogHeader>
 
-        <DialogFooter>
+        <DialogFooter className="gap-6 sm:gap-0">
           <Button variant="outline" onClick={() => setDialogOpen(false)}>
             {t("clearListConfirmCancel")}
           </Button>
 
-          <form
-            action={formAction}
-            onSubmit={() => setDialogOpen(false)}
-          >
+          <form action={formAction} onSubmit={() => setDialogOpen(false)}>
             <input type="hidden" name="action" value="clear-all" />
             <Button
               type="submit"
